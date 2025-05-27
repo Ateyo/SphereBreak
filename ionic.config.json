@@ -1,0 +1,7 @@
+{
+  "name": "SphereBreak",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

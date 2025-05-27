@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      SphereBreak
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">SphereBreak</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <div id="container">
+    <ng-container *ngIf="isCoinsSet === true">
+      <button (click)="newTurn()">New Turn</button>
+      <div>
+        <div class="total">
+          <strong>Total: <p>{{ total }}</p></strong>
+        </div>
+        <div class="next-multiples">
+          <strong>Next multiples: 
+            <span>{{ nextMultiples[0] }}</span>
+            <span>{{ nextMultiples[1] }}</span>
+            <span>{{ nextMultiples[2] }}</span>
+          </strong>
+        </div>
+      </div>
+      <app-grid></app-grid>
+    </ng-container>
+    <ng-container *ngIf="isCoinsSet === false">
+      <strong>Haven't set coins ?</strong>
+      <p>Click to <a routerLink="/form">set coins</a></p>
+    </ng-container>
+  </div>
+</ion-content>
