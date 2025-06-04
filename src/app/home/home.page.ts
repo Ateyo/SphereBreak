@@ -30,7 +30,7 @@ export class HomePage implements OnChanges {
       this.total = value;
     });
     this._mathsService.nextMultiples$.subscribe((value) => {
-      console.log(value);
+      console.log('home page next multiples', value);
       this.nextMultiples = value;
     });
     this._mathsService.break$.subscribe((value) => {
@@ -65,7 +65,7 @@ export class HomePage implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.total);
+    console.log('home page total', this.total);
     this.isCoinsSet = this._coinsService.isCoinsSet;
   }
 

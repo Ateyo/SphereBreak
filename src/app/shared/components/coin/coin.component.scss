@@ -9,6 +9,10 @@
   width: 4rem;
   transition: background-color 0.3s ease-in;
 
+  &.hidden {
+    visibility: hidden;
+  }
+
   &:hover {
     background-color: rgba(255, 255, 255, 0.2);
     animation: 3s ease-in-out oscilloRotate3d infinite;

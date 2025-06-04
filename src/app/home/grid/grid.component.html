@@ -3,13 +3,14 @@
     <ng-container *ngFor="let entryCoin of entryCoinsArray">
       <app-coin
         class="entry-coin"
+        [coinId]="entryCoin.id"
         [entryCoin]="true"
         [coinValue]="entryCoin.coin.value"
       ></app-coin>
     </ng-container>
 
     <ng-container *ngFor="let coin of coinsArray">
-      <app-coin [coinValue]="coin.coin.value"></app-coin>
+      <app-coin [coinId]="coin.id" [coinValue]="coin.coin.value"></app-coin>
     </ng-container>
     <app-core-sphere></app-core-sphere>
   </ng-container>

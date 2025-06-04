@@ -6,36 +6,25 @@ import { MathsService } from './maths.service';
   providedIn: 'root',
 })
 export class CoinsService {
+  turn: number = 1;
+  coinSave: Array<{ id: number; breakCount: number }> = [];
+
   private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([
     { id: 1, coin: { value: 0, entryCoin: true } },
   ]);
   private _quota = 0;
-
-  get entryCoinsArray$() {
-    return this._entryCoinsArray.asReadonly();
-  }
-  set entryCoinsArray(value: CoinArray[]) {
-    this._entryCoinsArray.set(
-      value.map((coin, index) => ({
-        id: index + 1,
-        coin: { ...coin.coin, entryCoin: true },
-      }))
-    );
-    this.isCoinsSet = true;
-  }
-  get entryCoinsArray(): CoinArray[] {
-    return this._entryCoinsArray();
-  }
-
   private _coinsArray: CoinArray[] = [
     { id: 1, coin: { value: 0, entryCoin: false } },
   ];
   private _selectedCoins: Array<Coin> = [];
+  private _breakCounter = 0; // Track number of breaks
+  private _coinZeroBreaks = new Map<number, number>(); // Track at which break count each coin was set to 0
 
   entryCoinFirst = false;
   isCoinsSet = false;
+
   constructor(private _mathsService: MathsService) {
-    //@TODO remove sometime, set coins for testing purposes
+    // Initialize with test coins
     this.entryCoinsArray = [
       { id: 1, coin: { value: 2, entryCoin: true } },
       { id: 2, coin: { value: 3, entryCoin: true } },
@@ -58,12 +47,32 @@ export class CoinsService {
     ];
     this.isCoinsSet = true;
 
+    this._mathsService.turn$.subscribe((value) => {
+      this.turn = value;
+    });
     // Subscribe to break$ to update quota on break
     this._mathsService.break$.subscribe((isBreak) => {
       if (isBreak) {
         this.updateQuotaForBreak();
       }
     });
+  }
+
+  get entryCoinsArray$() {
+    return this._entryCoinsArray.asReadonly();
+  }
+
+  set entryCoinsArray(value: CoinArray[]) {
+    this._entryCoinsArray.set(
+      value.map((coin, index) => ({
+        id: index + 1,
+        coin: { ...coin.coin, entryCoin: true },
+      }))
+    );
+    this.isCoinsSet = true;
+  }
+  get entryCoinsArray(): CoinArray[] {
+    return this._entryCoinsArray();
   }
 
   get coinsArray(): CoinArray[] {
@@ -75,13 +84,18 @@ export class CoinsService {
     this.isCoinsSet = true;
   }
 
-  get selectedCoinsArray(): Array<Coin> {
-    //console.log('Selected coins array:', this._selectedCoins);
-    return this._selectedCoins;
+  get selectedCoinsArray(): CoinArray[] {
+    return this._selectedCoins.map((coin) => ({
+      id: coin.id || 0, // Use stored ID or 0 as fallback
+      coin: coin,
+    }));
   }
 
-  set selectedCoinsArray(value: Array<Coin>) {
-    this._selectedCoins = value;
+  set selectedCoinsArray(coins: CoinArray[]) {
+    this._selectedCoins = coins.map((c) => ({
+      ...c.coin,
+      id: c.id, // Preserve the ID when setting selected coins
+    }));
   }
 
   public checkEntryCoinFirst(entryCoin: boolean): boolean {
@@ -93,71 +107,138 @@ export class CoinsService {
     }
   }
 
-  public addSelectedCoin(coinValue: number) {
-    if (coinValue !== undefined) {
-      this.selectedCoinsArray.push({ value: coinValue, entryCoin: false });
+  public addSelectedCoin(coin: Coin, coinId?: number) {
+    if (coin !== undefined) {
+      this._selectedCoins.push({
+        value: coin.value,
+        entryCoin: coin.entryCoin,
+        id: coinId, // Store the ID with the selected coin
+      });
+
       // Use makeAdditions to update total and trigger break logic
-      this._mathsService.makeAdditions(
-        this.selectedCoinsArray.map((c) => c.value)
-      );
+      this._mathsService.makeAdditions(this._selectedCoins.map((c) => c.value));
     }
   }
 
   public clearSelectedCoins() {
-    this.selectedCoinsArray = [];
+    this._selectedCoins = [];
   }
 
   public incrementCoinsArray() {
-    console.log(this.coinsArray);
+    console.log('before increm ', this.coinsArray);
 
-    let counter = 1;
-    this.coinsArray.forEach((c, index) => {
-      let coin = c;
-      if (coin.coin.value === 9) {
-        coin.coin.value = 0;
-      } else if (coin.coin.value === 0 && counter < 4) {
-        counter++;
-      } else {
-        coin.coin.value++;
+    // Process only border coins
+    this.coinsArray.forEach((coin, index) => {
+      if (!coin.coin.entryCoin) {
+        // Skip entry coins
+        if (coin.coin.value === 9) {
+          coin.coin.value = 0;
+
+          this.coinSave.push({ id: coin.id, breakCount: this.turn });
+          console.log(this.coinSave);
+        } else if (coin.coin.value === 0) {
+          console.log(
+            'find ',
+            coin.id,
+            ' in ',
+            this.coinSave,
+            this.countTurns(
+              this.coinSave.find((c) => c.id === coin.id)?.breakCount || 0
+            )
+          );
+          if (
+            this.countTurns(
+              this.coinSave.find((c) => c.id === coin.id)?.breakCount || 0
+            )
+          ) {
+            console.log(coin.id);
+            // Check if we've had 3 or more breaks
+            console.log('incrementing coin from 0 to 1 after 3 breaks');
+            coin.coin.value = 1;
+            this.coinSave.splice(
+              this.coinSave.findIndex((c) => c.id === coin.id),
+              1
+            ); // Remove the coin from coinSave after incrementing
+          }
+        } else {
+          coin.coin.value++;
+        }
+        this.coinsArray = [...this.coinsArray];
       }
-      this.coinsArray[index] = coin;
     });
-    console.log(this.coinsArray);
+
+    console.log(
+      'after increm ',
+      this.coinsArray,
+      'breaks:',
+      this._breakCounter
+    );
+  }
+
+  public countTurns(breakCount: number): boolean {
+    console.log(
+      'count turns',
+      this.turn,
+      ' - ',
+      breakCount,
+      ' = ',
+      this.turn - breakCount
+    );
+    //breakCount--;
+    if (this.turn - breakCount >= 4) {
+      console.log('count turns 3 true');
+      return true; // Coin has been set to 0 for 3 or more breaks
+    }
+    console.log('count turns 3 false');
+    return false; // Coin has not been set to 0 for 3 or more breaks
   }
 
   // Returns true if an entry coin is selected in the current selection
-  public isEntryCoinSelected(): boolean {
-    // Check if any selected coin is an entry coin
-    return this.selectedCoinsArray.some((coin) =>
-      this.entryCoinsArray.some(
-        (entryCoin) => entryCoin.coin.value === coin.value
-      )
+  public isEntryCoinSelected(coins: CoinArray): boolean {
+    return this.selectedCoinsArray.some(
+      (selectedCoin) =>
+        selectedCoin.coin.entryCoin &&
+        selectedCoin.coin.value === coins.coin.value
     );
   }
 
   // Returns true if the coin is a border coin (not an entry coin)
-  public isBorderCoin(coinValue: number): boolean {
-    return !this.entryCoinsArray.some(
-      (entryCoin) => entryCoin.coin.value === coinValue
-    );
+  public isBorderCoin(coin: Coin): boolean {
+    return !coin.entryCoin;
   }
 
-  // Quota tracking: how many border coins have been used this game
+  // Quota tracking
   get quota(): number {
     return this._quota;
   }
+
   set quota(val: number) {
     this._quota = val;
   }
 
   // Call this when a break is made to update quota
   public updateQuotaForBreak(): void {
-    // Only count border coins in the last selection
-    const borderCoinsUsed = this.selectedCoinsArray.filter((coin) =>
-      this.isBorderCoin(coin.value)
+    // Only count and process border coins in the last selection
+    const borderCoinsUsed = this._selectedCoins.filter(
+      (coin) => !coin.entryCoin
     );
     this._quota += borderCoinsUsed.length;
-    // Remove used border coins and schedule their return
+    this._breakCounter++; // Increment break counter
+
+    // Set used border coins to 0
+    borderCoinsUsed.forEach((usedCoin) => {
+      if (usedCoin.id) {
+        const coinIndex = this._coinsArray.findIndex(
+          (c) => c.id === usedCoin.id
+        );
+        if (coinIndex !== -1) {
+          this._coinsArray[coinIndex].coin.value = 0;
+          // Track when this coin was set to 0
+          this._coinZeroBreaks.set(usedCoin.id, this._breakCounter);
+        }
+      }
+    });
+
     // Check for end of game and quota win/loss
     if (this._mathsService.turn$.value > this._mathsService.turnLimit) {
       if (this._quota >= 20) {
