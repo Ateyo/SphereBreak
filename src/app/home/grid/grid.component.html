@@ -1,15 +1,15 @@
 <div class="app-grid">
   <ng-container *ngIf="entryCoinsArray.length === 4">
-    <ng-container *ngFor="let entryCoinValue of entryCoinsArray">
+    <ng-container *ngFor="let entryCoin of entryCoinsArray">
       <app-coin
         class="entry-coin"
         [entryCoin]="true"
-        [coinValue]="entryCoinValue"
+        [coinValue]="entryCoin.coin.value"
       ></app-coin>
     </ng-container>
 
-    <ng-container *ngFor="let coinValue of coinsArray">
-      <app-coin [coinValue]="coinValue"></app-coin>
+    <ng-container *ngFor="let coin of coinsArray">
+      <app-coin [coinValue]="coin.coin.value"></app-coin>
     </ng-container>
     <app-core-sphere></app-core-sphere>
   </ng-container>

@@ -1,3 +1,12 @@
-<div *ngIf="display" (click)="coinSelection()" [ngClass]="{'entry-coin': entryCoin === true, 'selectedCoin': selectedCoin === true}" class="coin">
- {{ coinValue ? coinValue : number }}
+<div
+  *ngIf="display"
+  (click)="coinSelection()"
+  [ngClass]="{
+    'entry-coin': entryCoin === true,
+    'border-coin': entryCoin === false,
+    selectedCoin: selectedCoin === true
+  }"
+  class="coin"
+>
+  {{ coinValue ? coinValue : number }}
 </div>

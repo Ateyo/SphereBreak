@@ -9,9 +9,13 @@ export class MathsService {
   currentScore$ = new BehaviorSubject<number>(0);
   currentTotal$ = new BehaviorSubject<number>(0);
   nextMultiples$ = new BehaviorSubject<number[]>([]);
+  break$ = new BehaviorSubject<boolean>(false);
+  turn$ = new BehaviorSubject<number>(1);
+  turnLimit = 15;
 
   constructor() {
-    this._coreSphere = this.getRandomIntInclusive(1, 9);
+    this._coreSphere = 1;
+    this.changeCoreSphere();
   }
 
   get coreSphere(): number {
@@ -31,7 +35,9 @@ export class MathsService {
   // }
 
   public changeCoreSphere() {
-    this.coreSphere = this.getRandomIntInclusive(1, 9);
+    //this._coreSphere = this.getRandomIntInclusive(1, 9);
+    this._coreSphere = 7; // For testing purposes, set to 1
+    console.log('Core sphere changed to: ' + this._coreSphere);
   }
 
   public getRandomIntInclusive(min: number, max: number) {
@@ -46,19 +52,24 @@ export class MathsService {
       total += c;
     });
     this.currentTotal$.next(total);
-    this.checkForVictory(total);
+    this.checkForBreak(total);
   }
 
-  public checkForVictory(total: number): void {
-    console.log('checking for victory' + total);
-    let nextMultiples = this.getNextMultiples();
-    if (total === nextMultiples[0]) {
-      console.log('VICTORY');
-    } else if (total > nextMultiples[0]) {
-      console.log('uhhfkjds');
-      this.getNextMultiples(total);
-    } else if (total < nextMultiples[0]) {
-      console.log('not yet');
+  public checkForBreak(total: number): void {
+    console.log('checking for break ' + total);
+    if (total > 0 && total % this._coreSphere === 0) {
+      console.log(
+        'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH'
+      );
+      this.breakLap();
+    } else {
+      const nextMultiples = this.getNextMultiples(total);
+      if (total > nextMultiples[0]) {
+        console.log('Exceeded next multiple, recalculate.');
+        this.getNextMultiples(total);
+      } else {
+        console.log('not yet');
+      }
     }
   }
 
@@ -83,9 +94,38 @@ export class MathsService {
   }
 
   public newTurn() {
-    this.changeCoreSphere();
-    this.getNextMultiples();
+    if (this.turn$.value < this.turnLimit) {
+      this.changeCoreSphere();
+      this.getNextMultiples(0);
+      this.currentTotal$.next(0);
+      this.turn$.next(this.turn$.value + 1);
+      this.break$.next(false);
+    } else {
+      // Game over: emit event only, quota check should be handled elsewhere
+      this.break$.next(false);
+      // Optionally emit a game over event here
+      console.log('Turn limit reached! Game over.');
+    }
   }
 
-  public calculateScore() {}
+  public breakLap() {
+    console.log('Break!');
+    // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
+    const coinsUsed =
+      this.currentTotal$.value > 0
+        ? this.currentTotal$.value / this._coreSphere
+        : 0;
+    this.calculateScore(coinsUsed, 1);
+    this.break$.next(true);
+    this.newTurn();
+  }
+
+  public calculateScore(coinsUsed: number, multiplesFound: number): number {
+    // Example scoring: each coin used = 10 pts, each multiple found = 50 pts
+    const coinPoints = coinsUsed * 10;
+    const multiplePoints = multiplesFound * 50;
+    const score = coinPoints + multiplePoints;
+    this.currentScore$.next(this.currentScore$.value + score);
+    return score;
+  }
 }

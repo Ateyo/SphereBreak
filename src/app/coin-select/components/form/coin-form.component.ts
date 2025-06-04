@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular/standalone';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { CoinArray } from 'src/app/shared/interfaces';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CoinsService } from '../../../shared/services/coins.service';
 
@@ -25,7 +26,7 @@ export class CoinFormComponent implements OnInit {
   }
   ngOnInit() {}
 
-  get entryCoinsArray() {
+  get entryCoinsArray(): CoinArray[] {
     return this._coinsService.entryCoinsArray$();
   }
 

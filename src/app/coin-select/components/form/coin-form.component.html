@@ -2,43 +2,65 @@
   <ion-row>
     <ion-col class="ion-align-self-start">
       <ion-title size="large">Choose Coins</ion-title>
-          <ion-input [formControl]="coinNumber" label="Number" type="number" placeholder="1-9"></ion-input>
+      <ion-input
+        [formControl]="coinNumber"
+        label="Number"
+        type="number"
+        placeholder="1-9"
+      ></ion-input>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
-        <ion-button color="primary" (click)="onSubmit()">Submit</ion-button>
+      <ion-button color="primary" (click)="onSubmit()">Submit</ion-button>
     </ion-col>
   </ion-row>
   <ion-grid *ngIf="entryCoinsArray.length > 0">
     <ion-row>
-      <ion-col *ngFor="let entryCoinValue of entryCoinsArray">
-        <app-coin [entryCoin]=true [coinValue]=entryCoinValue></app-coin>
+      <ion-col *ngFor="let entryCoin of entryCoinsArray; let i = index">
+        <app-coin
+          [entryCoin]="entryCoin.coin.entryCoin"
+          [coinValue]="entryCoin.coin.value"
+        ></app-coin>
+        <ion-input
+          type="number"
+          min="1"
+          max="9"
+          [value]="entryCoin.coin.value"
+          style="width: 60px; margin-top: 8px"
+        ></ion-input>
       </ion-col>
     </ion-row>
+  </ion-grid>
+  <ion-modal
+    #modal
+    [isOpen]="isModalOpen"
+    (willDismiss)="onWillDismiss($event)"
+  >
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">Cancel</ion-button>
+          </ion-buttons>
+          <ion-title>Validate coins</ion-title>
+          <ion-buttons slot="end">
+            <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid *ngIf="entryCoinsArray.length > 0">
+          <ion-row>
+            <ion-col *ngFor="let entryCoinValue of entryCoinsArray">
+              <app-coin
+                [entryCoin]="true"
+                [coinValue]="entryCoinValue.coin.value"
+              ></app-coin>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-grid>
-<ion-modal #modal [isOpen]="isModalOpen" (willDismiss)="onWillDismiss($event)">
-  <ng-template>
-    <ion-header>
-      <ion-toolbar>
-        <ion-buttons slot="start">
-          <ion-button (click)="cancel()">Cancel</ion-button>
-        </ion-buttons>
-        <ion-title>Validate coins</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding">
-      <ion-grid *ngIf="entryCoinsArray.length > 0">
-        <ion-row>
-        <ion-col *ngFor="let entryCoinValue of entryCoinsArray">
-          <app-coin [entryCoin]=true [coinValue]=entryCoinValue></app-coin>
-        </ion-col>
-    </ion-row>
-    </ion-grid>
-    </ion-content>
-  </ng-template>
-</ion-modal>
-

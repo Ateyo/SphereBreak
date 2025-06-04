@@ -6,14 +6,17 @@ import { MathsService } from 'src/app/shared/services/maths.service';
   templateUrl: './core-sphere.component.html',
   styleUrls: ['./core-sphere.component.scss'],
 })
-export class CoreSphereComponent  implements OnInit {
-  value: number;
-  constructor(
-    private _mathsService: MathsService
-  ) { 
-    this.value = this._mathsService.coreSphere;
+export class CoreSphereComponent implements OnInit {
+  value: number = 1;
+  constructor(private _mathsService: MathsService) {}
+
+  ngOnInit() {
+    this._mathsService.currentTotal$.subscribe(() => {
+      this.value = this._mathsService.coreSphere;
+    });
+    // Also update on turn change (in case coreSphere changes at new turn)
+    this._mathsService.turn$.subscribe(() => {
+      this.value = this._mathsService.coreSphere;
+    });
   }
-
-  ngOnInit() {}
-
 }
