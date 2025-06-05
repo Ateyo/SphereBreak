@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  OnChanges,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { CoinsService } from '../shared/services/coins.service';
 import { MathsService } from '../shared/services/maths.service';
@@ -43,11 +49,8 @@ export class HomePage implements OnChanges {
         }, 1000);
       }
     });
-    this._mathsService.currentScore$.subscribe((value) => {
-      this.score = value;
-    });
-    this._mathsService.turn$.subscribe((value) => {
-      this.turn = value;
+    effect(() => {
+      this.score = this._mathsService._currentScore$();
     });
     this.turnLimit = this._mathsService.turnLimit;
     this.nextMultiples = this._mathsService.getNextMultiples();

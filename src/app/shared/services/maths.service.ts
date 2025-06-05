@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
@@ -6,7 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MathsService {
   private _coreSphere: number;
-  currentScore$ = new BehaviorSubject<number>(0);
+  //currentScore$ = new BehaviorSubject<number>(0);
+  _currentScore$: WritableSignal<number> = signal(0);
   currentTotal$ = new BehaviorSubject<number>(0);
   nextMultiples$ = new BehaviorSubject<number[]>([]);
   break$ = new BehaviorSubject<boolean>(false);
@@ -125,7 +126,7 @@ export class MathsService {
     const coinPoints = coinsUsed * 10;
     const multiplePoints = multiplesFound * 50;
     const score = coinPoints + multiplePoints;
-    this.currentScore$.next(this.currentScore$.value + score);
+    this._currentScore$.set(this._currentScore$() + score);
     return score;
   }
 }
