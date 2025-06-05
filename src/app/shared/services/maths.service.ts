@@ -6,9 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class MathsService {
   private _coreSphere: number;
-  //currentScore$ = new BehaviorSubject<number>(0);
-  _currentScore$: WritableSignal<number> = signal(0);
-  currentTotal$ = new BehaviorSubject<number>(0);
+  currentScore$: WritableSignal<number> = signal(0);
+  currentTotal$: WritableSignal<number> = signal(0);
   nextMultiples$ = new BehaviorSubject<number[]>([]);
   break$ = new BehaviorSubject<boolean>(false);
   turn$ = new BehaviorSubject<number>(1);
@@ -52,7 +51,7 @@ export class MathsService {
     selectedCoinsArray.forEach((c) => {
       total += c;
     });
-    this.currentTotal$.next(total);
+    this.currentTotal$.set(total);
     this.checkForBreak(total);
   }
 
@@ -98,7 +97,7 @@ export class MathsService {
     if (this.turn$.value < this.turnLimit) {
       this.changeCoreSphere();
       this.getNextMultiples(0);
-      this.currentTotal$.next(0);
+      this.currentTotal$.set(0);
       this.turn$.next(this.turn$.value + 1);
       this.break$.next(false);
     } else {
@@ -113,9 +112,7 @@ export class MathsService {
     console.log('Break!');
     // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
     const coinsUsed =
-      this.currentTotal$.value > 0
-        ? this.currentTotal$.value / this._coreSphere
-        : 0;
+      this.currentTotal$() > 0 ? this.currentTotal$() / this._coreSphere : 0;
     this.calculateScore(coinsUsed, 1);
     this.break$.next(true);
     this.newTurn();
@@ -126,7 +123,7 @@ export class MathsService {
     const coinPoints = coinsUsed * 10;
     const multiplePoints = multiplesFound * 50;
     const score = coinPoints + multiplePoints;
-    this._currentScore$.set(this._currentScore$() + score);
+    this.currentScore$.set(this.currentScore$() + score);
     return score;
   }
 }

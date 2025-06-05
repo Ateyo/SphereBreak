@@ -154,7 +154,7 @@ export class CoinsService {
             console.log(coin.id);
             // Check if we've had 3 or more breaks
             console.log('incrementing coin from 0 to 1 after 3 breaks');
-            coin.coin.value = 1;
+            coin.coin.value = this._mathsService.getRandomIntInclusive(1, 9);
             this.coinSave.splice(
               this.coinSave.findIndex((c) => c.id === coin.id),
               1

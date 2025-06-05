@@ -32,9 +32,7 @@ export class HomePage implements OnChanges {
     private _mathsService: MathsService,
     private toastController: ToastController
   ) {
-    this._mathsService.currentTotal$.subscribe((value) => {
-      this.total = value;
-    });
+    this.total = this._mathsService.currentTotal$();
     this._mathsService.nextMultiples$.subscribe((value) => {
       console.log('home page next multiples', value);
       this.nextMultiples = value;
@@ -50,7 +48,7 @@ export class HomePage implements OnChanges {
       }
     });
     effect(() => {
-      this.score = this._mathsService._currentScore$();
+      this.score = this._mathsService.currentScore$();
     });
     this.turnLimit = this._mathsService.turnLimit;
     this.nextMultiples = this._mathsService.getNextMultiples();
