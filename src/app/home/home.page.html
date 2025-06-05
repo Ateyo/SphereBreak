@@ -20,7 +20,8 @@
             <div class="turn">
               <strong>
                 Turn:
-                <span>{{ turn }}</span> /
+                <span>{{ turn }}</span>
+                /
                 <span>{{ turnLimit }}</span>
               </strong>
             </div>
@@ -32,8 +33,21 @@
             </div>
             <div class="quota">
               <strong>
-                Quota (border coins used):
+                Quota:
                 <span>{{ quota }}</span>
+              </strong>
+            </div>
+            <div class="echo">
+              <strong>
+                Echo:
+                <span>{{ echo }}</span>
+              </strong>
+            </div>
+
+            <div class="coinCounter">
+              <strong>
+                Coins Used:
+                <span>{{ coinCounter }}</span>
               </strong>
             </div>
           </div>
@@ -48,8 +62,8 @@
                 </strong>
               </div>
               <div class="next-multiples">
-                <strong
-                  >Next multiples:
+                <strong>
+                  Next multiples:
                   <span>{{ nextMultiples[0] }}</span>
                   <span>{{ nextMultiples[1] }}</span>
                   <span>{{ nextMultiples[2] }}</span>
@@ -69,7 +83,10 @@
     </ion-grid>
     <ng-container *ngIf="isCoinsSet === false">
       <strong>Haven't set coins ?</strong>
-      <p>Click to <a routerLink="/form">set coins</a></p>
+      <p>
+        Click to
+        <a routerLink="/form">set coins</a>
+      </p>
     </ng-container>
   </div>
 </ion-content>

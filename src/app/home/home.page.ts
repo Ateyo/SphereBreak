@@ -4,7 +4,7 @@ import {
   effect,
   OnChanges,
   SimpleChanges,
-  ViewChild,
+  ViewChild
 } from '@angular/core';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { CoinsService } from '../shared/services/coins.service';
@@ -15,7 +15,7 @@ import { GridComponent } from './grid/grid.component';
   selector: 'app-home',
   imports: [GridComponent, IonicModule, CommonModule],
   templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
+  styleUrls: ['home.page.scss']
 })
 export class HomePage implements OnChanges {
   isCoinsSet = false;
@@ -25,6 +25,8 @@ export class HomePage implements OnChanges {
   score: number = 0;
   turn: number = 1;
   turnLimit: number = 15;
+  echo = 0;
+  coinCounter = 0;
   @ViewChild(IonToast) toast: IonToast | undefined;
 
   constructor(
@@ -33,23 +35,25 @@ export class HomePage implements OnChanges {
     private toastController: ToastController
   ) {
     effect(() => {
-      this.total = this._mathsService.currentTotal$();
+      this.total = this._mathsService.currentTotal();
+      this.nextMultiples = this._mathsService.nextMultiples();
+      this.turn = this._mathsService.turn();
+      this.echo = this._mathsService.echo();
+      // this.coinCounter = this._mathsService.coinCounter();
     });
-    effect(() => {
-      this.nextMultiples = this._mathsService.nextMultiples$();
-    });
+
     this._mathsService.break$.subscribe((value) => {
       this.break = value;
       if (value) {
         this._coinsService.clearSelectedCoins();
-        this.presentBreakToast('bottom');
+        this.presentBreakToast('middle');
         setTimeout(() => {
           this.startNewTurn();
         }, 1000);
       }
     });
     effect(() => {
-      this.score = this._mathsService.currentScore$();
+      this.score = this._mathsService.currentScore();
     });
     this.turnLimit = this._mathsService.turnLimit;
     this.nextMultiples = this._mathsService.getNextMultiples();
@@ -75,7 +79,7 @@ export class HomePage implements OnChanges {
     const toast = await this.toastController.create({
       message: 'Break! You matched a multiple of the core sphere!',
       duration: 1500,
-      position: position,
+      position: position
     });
 
     await toast.present();

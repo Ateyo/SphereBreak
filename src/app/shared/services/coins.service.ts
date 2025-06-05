@@ -1,20 +1,20 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { effect, Injectable, signal, WritableSignal } from '@angular/core';
 import { Coin, CoinArray } from '../interfaces';
 import { MathsService } from './maths.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class CoinsService {
   turn: number = 1;
   coinSave: Array<{ id: number; breakCount: number }> = [];
 
   private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([
-    { id: 1, coin: { value: 0, entryCoin: true } },
+    { id: 1, coin: { value: 0, entryCoin: true } }
   ]);
   private _quota = 0;
   private _coinsArray: CoinArray[] = [
-    { id: 1, coin: { value: 0, entryCoin: false } },
+    { id: 1, coin: { value: 0, entryCoin: false } }
   ];
   private _selectedCoins: Array<Coin> = [];
   private _breakCounter = 0; // Track number of breaks
@@ -29,7 +29,7 @@ export class CoinsService {
       { id: 1, coin: { value: 2, entryCoin: true } },
       { id: 2, coin: { value: 3, entryCoin: true } },
       { id: 3, coin: { value: 5, entryCoin: true } },
-      { id: 4, coin: { value: 8, entryCoin: true } },
+      { id: 4, coin: { value: 8, entryCoin: true } }
     ];
     this._coinsArray = [
       { id: 1, coin: { value: 1, entryCoin: false } },
@@ -43,12 +43,12 @@ export class CoinsService {
       { id: 9, coin: { value: 9, entryCoin: false } },
       { id: 10, coin: { value: 1, entryCoin: false } },
       { id: 11, coin: { value: 2, entryCoin: false } },
-      { id: 12, coin: { value: 3, entryCoin: false } },
+      { id: 12, coin: { value: 3, entryCoin: false } }
     ];
     this.isCoinsSet = true;
 
-    this._mathsService.turn$.subscribe((value) => {
-      this.turn = value;
+    effect(() => {
+      this.turn = this._mathsService.turn();
     });
     // Subscribe to break$ to update quota on break
     this._mathsService.break$.subscribe((isBreak) => {
@@ -66,7 +66,7 @@ export class CoinsService {
     this._entryCoinsArray.set(
       value.map((coin, index) => ({
         id: index + 1,
-        coin: { ...coin.coin, entryCoin: true },
+        coin: { ...coin.coin, entryCoin: true }
       }))
     );
     this.isCoinsSet = true;
@@ -87,14 +87,14 @@ export class CoinsService {
   get selectedCoinsArray(): CoinArray[] {
     return this._selectedCoins.map((coin) => ({
       id: coin.id || 0, // Use stored ID or 0 as fallback
-      coin: coin,
+      coin: coin
     }));
   }
 
   set selectedCoinsArray(coins: CoinArray[]) {
     this._selectedCoins = coins.map((c) => ({
       ...c.coin,
-      id: c.id, // Preserve the ID when setting selected coins
+      id: c.id // Preserve the ID when setting selected coins
     }));
   }
 
@@ -112,7 +112,7 @@ export class CoinsService {
       this._selectedCoins.push({
         value: coin.value,
         entryCoin: coin.entryCoin,
-        id: coinId, // Store the ID with the selected coin
+        id: coinId // Store the ID with the selected coin
       });
 
       // Use makeAdditions to update total and trigger break logic
@@ -120,10 +120,16 @@ export class CoinsService {
     }
   }
 
+  // Clear selected coins
   public clearSelectedCoins() {
     this._selectedCoins = [];
   }
 
+  // Increment coins in the coinsArray
+  // This will increment the value of each coin in the coinsArray
+  // If a coin's value is 9, it will be set to 0 and tracked in coinSave
+  // If a coin's value is 0, it will be set to a random value between 1 and 9 after 3 breaks
+  // If a coin's value is between 1 and 8, it will be incremented by 1
   public incrementCoinsArray() {
     console.log('before increm ', this.coinsArray);
 
@@ -137,28 +143,22 @@ export class CoinsService {
           this.coinSave.push({ id: coin.id, breakCount: this.turn });
           console.log(this.coinSave);
         } else if (coin.coin.value === 0) {
-          console.log(
-            'find ',
-            coin.id,
-            ' in ',
-            this.coinSave,
-            this.countTurns(
-              this.coinSave.find((c) => c.id === coin.id)?.breakCount || 0
-            )
-          );
           if (
             this.countTurns(
               this.coinSave.find((c) => c.id === coin.id)?.breakCount || 0
             )
           ) {
-            console.log(coin.id);
             // Check if we've had 3 or more breaks
-            console.log('incrementing coin from 0 to 1 after 3 breaks');
+            console.log(
+              'incrementing coin: ',
+              coin.id,
+              ' from 0 to 1 after 3 breaks'
+            );
             coin.coin.value = this._mathsService.getRandomIntInclusive(1, 9);
             this.coinSave.splice(
               this.coinSave.findIndex((c) => c.id === coin.id),
               1
-            ); // Remove the coin from coinSave after incrementing
+            );
           }
         } else {
           coin.coin.value++;
@@ -175,25 +175,19 @@ export class CoinsService {
     );
   }
 
+  // countTurns before a coin needs to reappear
+  // Returns true if the coin has been set to 0 for 3 or more breaks
+  // @Param breakCount: number - The break count when the coin was set to 0
   public countTurns(breakCount: number): boolean {
-    console.log(
-      'count turns',
-      this.turn,
-      ' - ',
-      breakCount,
-      ' = ',
-      this.turn - breakCount
-    );
     //breakCount--;
     if (this.turn - breakCount >= 4) {
-      console.log('count turns 3 true');
       return true; // Coin has been set to 0 for 3 or more breaks
     }
-    console.log('count turns 3 false');
     return false; // Coin has not been set to 0 for 3 or more breaks
   }
 
   // Returns true if an entry coin is selected in the current selection
+  // @Param coins: CoinArray - The coin to check
   public isEntryCoinSelected(coins: CoinArray): boolean {
     return this.selectedCoinsArray.some(
       (selectedCoin) =>
@@ -203,6 +197,7 @@ export class CoinsService {
   }
 
   // Returns true if the coin is a border coin (not an entry coin)
+  // @Param coin: Coin - The coin to check
   public isBorderCoin(coin: Coin): boolean {
     return !coin.entryCoin;
   }
@@ -240,7 +235,7 @@ export class CoinsService {
     });
 
     // Check for end of game and quota win/loss
-    if (this._mathsService.turn$.value > this._mathsService.turnLimit) {
+    if (this._mathsService.turn() > this._mathsService.turnLimit) {
       if (this._quota >= 20) {
         alert('Victory! You met the quota!');
       } else {
