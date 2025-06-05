@@ -32,10 +32,11 @@ export class HomePage implements OnChanges {
     private _mathsService: MathsService,
     private toastController: ToastController
   ) {
-    this.total = this._mathsService.currentTotal$();
-    this._mathsService.nextMultiples$.subscribe((value) => {
-      console.log('home page next multiples', value);
-      this.nextMultiples = value;
+    effect(() => {
+      this.total = this._mathsService.currentTotal$();
+    });
+    effect(() => {
+      this.nextMultiples = this._mathsService.nextMultiples$();
     });
     this._mathsService.break$.subscribe((value) => {
       this.break = value;

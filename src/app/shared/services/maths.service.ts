@@ -8,7 +8,9 @@ export class MathsService {
   private _coreSphere: number;
   currentScore$: WritableSignal<number> = signal(0);
   currentTotal$: WritableSignal<number> = signal(0);
-  nextMultiples$ = new BehaviorSubject<number[]>([]);
+  //nextMultiples$ = new BehaviorSubject<number[]>([]);
+
+  nextMultiples$: WritableSignal<number[]> = signal([]);
   break$ = new BehaviorSubject<boolean>(false);
   turn$ = new BehaviorSubject<number>(1);
   turnLimit = 15;
@@ -89,7 +91,7 @@ export class MathsService {
       }
       currentNumber++;
     }
-    this.nextMultiples$.next(result);
+    this.nextMultiples$.set(result);
     return result;
   }
 
