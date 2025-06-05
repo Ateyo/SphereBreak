@@ -4,10 +4,9 @@
     [ngClass]="{
       'entry-coin': entryCoin === true,
       'border-coin': entryCoin === false,
-      selectedCoin: selectedCoin === true,
-      hidden: coinValue === 0 || coinValue === undefined || coinValue === null
+      'selected-coin': selectedCoin === true,
+      hidden: coinValue === 0
     }">
-    <!--  -->
     <div class="tails"></div>
     <div class="heads"></div>
   </div>

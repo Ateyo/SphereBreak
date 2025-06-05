@@ -4,7 +4,7 @@ import {
   Input,
   OnChanges,
   OnInit,
-  SimpleChanges,
+  SimpleChanges
 } from '@angular/core';
 import { CoinsService } from '../../services/coins.service';
 import { MathsService } from '../../services/maths.service';
@@ -13,16 +13,16 @@ import { MathsService } from '../../services/maths.service';
   selector: 'app-coin',
   imports: [CommonModule],
   templateUrl: './coin.component.html',
-  styleUrls: ['./coin.component.scss'],
+  styleUrls: ['./coin.component.scss']
 })
 export class CoinComponent implements OnInit, OnChanges {
-  @Input() coinId!: number;
+  @Input() coinId: number = 0;
   number: number;
   display = true;
-  selectedCoin = false;
+  selectedCoin: boolean = false;
   entryCoinFirst = false;
-  @Input() coinValue: number | undefined;
-  @Input() entryCoin = false;
+  @Input() coinValue: number = 0;
+  @Input() entryCoin: boolean = false;
 
   constructor(
     private mathsService: MathsService,
@@ -58,24 +58,20 @@ export class CoinComponent implements OnInit, OnChanges {
   }
 
   coinSelection(): void {
-    if (!this.display) return;
-    if (this.selectedCoin) return;
+    // Only allow selection if coin has a valid value
+    if (this.coinValue && this.coinValue > 0) {
+      this.selectedCoin = !this.selectedCoin;
 
-    const coinToAdd = {
-      value: this.coinValue !== undefined ? this.coinValue : this.number,
-      entryCoin: this.entryCoin,
-      id: this.coinId,
-    };
-
-    // Allow selecting multiple entry coins, but border coins require at least one entry coin
-    if (this.entryCoin) {
-      this.selectedCoin = true;
-      this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
-    } else {
-      // Border coin: only allow if at least one entry coin is selected
-      if (this._coinsService.selectedCoinsArray.some((c) => c.coin.entryCoin)) {
-        this.selectedCoin = true;
-        this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
+      if (this.selectedCoin) {
+        this._coinsService.addSelectedCoin(
+          {
+            value: this.coinValue,
+            entryCoin: this.entryCoin
+          },
+          this.coinId
+        );
+      } else {
+        this._coinsService.clearSelectedCoins();
       }
     }
   }
