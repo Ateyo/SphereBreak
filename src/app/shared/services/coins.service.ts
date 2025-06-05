@@ -96,6 +96,8 @@ export class CoinsService {
       ...c.coin,
       id: c.id // Preserve the ID when setting selected coins
     }));
+
+    // Update coin counter in MathsService with number of coins
   }
 
   public checkEntryCoinFirst(entryCoin: boolean): boolean {
@@ -131,59 +133,39 @@ export class CoinsService {
   // If a coin's value is 0, it will be set to a random value between 1 and 9 after 3 breaks
   // If a coin's value is between 1 and 8, it will be incremented by 1
   public incrementCoinsArray() {
-    console.log('before increm ', this.coinsArray);
-
-    // Process only border coins
-    this.coinsArray.forEach((coin, index) => {
+    this.coinsArray.forEach((coin) => {
       if (!coin.coin.entryCoin) {
         // Skip entry coins
         if (coin.coin.value === 9) {
+          this.coinSave.push({
+            id: coin.id,
+            breakCount: this._mathsService.turn()
+          });
           coin.coin.value = 0;
-
-          this.coinSave.push({ id: coin.id, breakCount: this.turn });
-          console.log(this.coinSave);
         } else if (coin.coin.value === 0) {
-          if (
-            this.countTurns(
-              this.coinSave.find((c) => c.id === coin.id)?.breakCount || 0
-            )
-          ) {
-            // Check if we've had 3 or more breaks
-            console.log(
-              'incrementing coin: ',
-              coin.id,
-              ' from 0 to 1 after 3 breaks'
-            );
+          const savedCoin = this.coinSave.find((c) => c.id === coin.id);
+          if (savedCoin && this.countTurns(savedCoin.breakCount)) {
             coin.coin.value = this._mathsService.getRandomIntInclusive(1, 9);
-            this.coinSave.splice(
-              this.coinSave.findIndex((c) => c.id === coin.id),
-              1
-            );
+            // Remove from coinSave as it's no longer at 0
+            this.coinSave = this.coinSave.filter((c) => c.id !== coin.id);
           }
         } else {
           coin.coin.value++;
         }
-        this.coinsArray = [...this.coinsArray];
       }
     });
 
-    console.log(
-      'after increm ',
-      this.coinsArray,
-      'breaks:',
-      this._breakCounter
-    );
+    // Trigger change detection
+    this._coinsArray = [...this._coinsArray];
   }
 
   // countTurns before a coin needs to reappear
   // Returns true if the coin has been set to 0 for 3 or more breaks
   // @Param breakCount: number - The break count when the coin was set to 0
   public countTurns(breakCount: number): boolean {
-    //breakCount--;
-    if (this.turn - breakCount >= 4) {
-      return true; // Coin has been set to 0 for 3 or more breaks
-    }
-    return false; // Coin has not been set to 0 for 3 or more breaks
+    if (!breakCount) return false;
+    // A coin should be restored after 3 turns (so on the 4th turn)
+    return this.turn - breakCount >= 3;
   }
 
   // Returns true if an entry coin is selected in the current selection
@@ -223,11 +205,14 @@ export class CoinsService {
     // Set used border coins to 0
     borderCoinsUsed.forEach((usedCoin) => {
       if (usedCoin.id) {
-        const coinIndex = this._coinsArray.findIndex(
-          (c) => c.id === usedCoin.id
-        );
-        if (coinIndex !== -1) {
-          this._coinsArray[coinIndex].coin.value = 0;
+        const coin = this._coinsArray.find((c) => c.id === usedCoin.id);
+        if (coin) {
+          coin.coin.value = 0;
+
+          this.coinSave.push({
+            id: usedCoin.id,
+            breakCount: this._mathsService.turn()
+          });
           // Track when this coin was set to 0
           this._coinZeroBreaks.set(usedCoin.id, this._breakCounter);
         }

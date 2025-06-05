@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   effect,
+  Inject,
   OnChanges,
   SimpleChanges,
   ViewChild
@@ -30,16 +31,16 @@ export class HomePage implements OnChanges {
   @ViewChild(IonToast) toast: IonToast | undefined;
 
   constructor(
-    private _coinsService: CoinsService,
-    private _mathsService: MathsService,
-    private toastController: ToastController
+    @Inject(CoinsService) private _coinsService: CoinsService,
+    @Inject(MathsService) private _mathsService: MathsService,
+    @Inject(ToastController) private toastController: ToastController
   ) {
     effect(() => {
       this.total = this._mathsService.currentTotal();
       this.nextMultiples = this._mathsService.nextMultiples();
       this.turn = this._mathsService.turn();
       this.echo = this._mathsService.echo();
-      // this.coinCounter = this._mathsService.coinCounter();
+      this.coinCounter = this._mathsService.coinCounter();
     });
 
     this._mathsService.break$.subscribe((value) => {

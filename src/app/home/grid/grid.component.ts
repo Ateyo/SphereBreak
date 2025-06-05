@@ -10,7 +10,7 @@ import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
   imports: [SharedModule, CoreSphereComponent, CoinComponent],
   standalone: true,
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss'],
+  styleUrls: ['./grid.component.scss']
 })
 export class GridComponent implements OnInit {
   entryCoinsArray: CoinArray[];
@@ -20,7 +20,7 @@ export class GridComponent implements OnInit {
     this.coinsArray = this.coinsService.coinsArray;
     this.entryCoinsArray = this.coinsService.entryCoinsArray$();
     effect(() => {
-      this.entryCoinsArray = this.coinsService.entryCoinsArray$();
+      this.entryCoinsArray = [...this.coinsService.entryCoinsArray$()];
     });
   }
 

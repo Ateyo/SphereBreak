@@ -12,7 +12,7 @@ export class MathsService {
   turn: WritableSignal<number> = signal(1);
   echo: WritableSignal<number> = signal(0);
   break$ = new BehaviorSubject<boolean>(false);
-  // coinCounter: WritableSignal<number> = signal(0);
+  coinCounter: WritableSignal<number> = signal(0);
   coinUsedSave: number = 0;
   turnLimit = 15;
 
@@ -89,34 +89,36 @@ export class MathsService {
     return result;
   }
 
+  public breakLap() {
+    console.log('Break!');
+    // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
+    const coinsUsed = this.currentTotal() / this._coreSphere;
+    this.calculateScore(coinsUsed, 1);
+    if (this.coinUsedSave === coinsUsed) {
+      this.echo.set(this.echo() + 1);
+    }
+
+    this.coinCounter.set(coinsUsed);
+    this.coinUsedSave = coinsUsed;
+    this.break$.next(true);
+    this.newTurn();
+  }
+
   public newTurn() {
     if (this.turn() < this.turnLimit) {
+      console.log('Starting new turn: ' + this.turn());
       this.changeCoreSphere();
       this.getNextMultiples(0);
       this.currentTotal.set(0);
       this.turn.set(this.turn() + 1);
       this.break$.next(false);
+      // Reset coin counter for new turn
     } else {
       // Game over: emit event only, quota check should be handled elsewhere
       this.break$.next(false);
       // Optionally emit a game over event here
       console.log('Turn limit reached! Game over.');
     }
-  }
-
-  public breakLap() {
-    console.log('Break!');
-    // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
-
-    const coinsUsed = this.currentTotal() / this._coreSphere;
-    // this.coinCounter.set(coinsUsed);
-    this.calculateScore(coinsUsed, 1);
-    if (this.coinUsedSave === coinsUsed) {
-      this.echo.set(this.echo() + 1);
-    }
-    this.coinUsedSave = coinsUsed;
-    this.break$.next(true);
-    this.newTurn();
   }
 
   public calculateScore(coinsUsed: number, multiplesFound: number): number {
