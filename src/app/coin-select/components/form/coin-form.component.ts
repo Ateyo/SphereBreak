@@ -1,30 +1,35 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { IonModal } from '@ionic/angular/standalone';
-import { OverlayEventDetail } from '@ionic/core/components';
+import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
+import { DialogComponent } from 'src/app/shared/components/dialog/dialog.component';
 import { CoinArray } from 'src/app/shared/interfaces';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CoinsService } from '../../../shared/services/coins.service';
 
 @Component({
   selector: 'app-form',
-  imports: [SharedModule],
+  imports: [
+    SharedModule,
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule,
+    CoinComponent
+  ],
   templateUrl: './coin-form.component.html',
-  styleUrls: ['./coin-form.component.scss'],
+  styleUrls: ['./coin-form.component.scss']
 })
-export class CoinFormComponent implements OnInit {
-  @ViewChild('modal') modal!: IonModal;
+export class CoinFormComponent {
+  readonly dialog = inject(MatDialog);
   coinNumber = new FormControl();
-  name: string;
-  message =
-    'This modal example uses triggers to automatically open a modal when the button is clicked.';
-  isModalOpen = false;
 
-  constructor(private router: Router, private _coinsService: CoinsService) {
-    this.name = 'yeah';
-  }
-  ngOnInit() {}
+  constructor(
+    private router: Router,
+    private _coinsService: CoinsService
+  ) {}
 
   get entryCoinsArray(): CoinArray[] {
     return this._coinsService.entryCoinsArray$();
@@ -34,37 +39,29 @@ export class CoinFormComponent implements OnInit {
     if (this.entryCoinsArray.length < 4) {
       this._coinsService.entryCoinsArray = [
         ...this.entryCoinsArray,
-        this.coinNumber.value,
+        this.coinNumber.value
       ];
     } else {
-      this.setOpen(true);
+      this.openDialog();
     }
-    this.coinNumber.reset();
   }
 
-  setOpen(isOpen: boolean) {
-    this.isModalOpen = isOpen;
-  }
+  openDialog() {
+    const dialogRef = this.dialog.open(DialogComponent, {
+      data: {
+        title: 'Ready to Start?',
+        content:
+          'You have selected 4 entry coins. Would you like to start the game?',
+        confirmText: 'Start Game',
+        cancelText: 'Keep Editing',
+        selectedCoins: this.entryCoinsArray // Pass the selected coins
+      }
+    });
 
-  cancel() {
-    if (this.modal) {
-      this.modal.dismiss(null, 'cancel');
-    }
-    this.isModalOpen = false;
-  }
-
-  confirm() {
-    if (this.modal) {
-      this.modal.dismiss(this.name, 'confirm');
-    }
-    this.router.navigate(['/home']);
-    this.isModalOpen = false;
-  }
-
-  onWillDismiss(event: Event) {
-    const ev = event as CustomEvent<OverlayEventDetail<string>>;
-    if (ev.detail.role === 'confirm') {
-      this.message = `Hello, ${ev.detail.data}!`;
-    }
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.router.navigate(['/home']);
+      }
+    });
   }
 }

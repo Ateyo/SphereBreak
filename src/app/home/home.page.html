@@ -1,92 +1,71 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title> SphereBreak </ion-title>
-  </ion-toolbar>
-</ion-header> -->
-
-<ion-content class="ion-padding">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">SphereBreak</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="3">
-          <button (click)="newTurn()">New Turn</button>
-          <div>
-            <div class="turn">
-              <strong>
-                Turn:
-                <span>{{ turn }}</span>
-                /
-                <span>{{ turnLimit }}</span>
-              </strong>
-            </div>
-            <div class="score">
-              <strong>
-                Score:
-                <p>{{ score }}</p>
-              </strong>
-            </div>
-            <div class="quota">
-              <strong>
-                Quota:
-                <span>{{ quota }}</span>
-              </strong>
-            </div>
-            <div class="echo">
-              <strong>
-                Echo:
-                <span>{{ echo }} times</span>
-              </strong>
-            </div>
-
-            <div class="coinCounter">
-              <strong>
-                Coins count:
-                <span>{{ coinCounter }}</span>
-              </strong>
-            </div>
-          </div>
-        </ion-col>
-        <ion-col>
-          <ion-row>
-            <ion-col>
-              <div class="total">
-                <strong>
-                  Sum:
-                  <p>{{ total }}</p>
-                </strong>
-              </div>
-              <div class="next-multiples">
-                <strong>
-                  Next multiples:
-                  <span>{{ nextMultiples[0] }}</span>
-                  <span>{{ nextMultiples[1] }}</span>
-                  <span>{{ nextMultiples[2] }}</span>
-                </strong>
-              </div>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ng-container *ngIf="isCoinsSet === true">
-                <app-grid></app-grid>
-              </ng-container>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ng-container *ngIf="isCoinsSet === false">
-      <strong>Haven't set coins ?</strong>
-      <p>
-        Click to
-        <a routerLink="/form">set coins</a>
-      </p>
-    </ng-container>
+<div id="container">
+  <div class="left-side border border-indigo-600">
+    <button (click)="newTurn()">New Turn</button>
+    <div>
+      <div class="turn">
+        <strong>
+          Turn:
+          <span>{{ turn }}</span>
+          /
+          <span>{{ turnLimit }}</span>
+        </strong>
+      </div>
+      <div class="score">
+        <strong>
+          Score:
+          <p>{{ score }}</p>
+        </strong>
+      </div>
+      <div class="quota">
+        <strong>
+          Quota:
+          <span>{{ quota }}</span>
+        </strong>
+      </div>
+    </div>
   </div>
-</ion-content>
+  <div class="right-side border border-indigo-600">
+    <div>
+      <div class="total">
+        <strong>
+          Sum:
+          <p>{{ total }}</p>
+        </strong>
+      </div>
+      <div class="next-multiples">
+        <strong>
+          Next multiples:
+          <span>{{ nextMultiples[0] }}</span>
+          <span>{{ nextMultiples[1] }}</span>
+          <span>{{ nextMultiples[2] }}</span>
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="">
+    <div class="echo">
+      <strong>
+        Echo:
+        <span>{{ echo }} times</span>
+      </strong>
+    </div>
+
+    <div class="coinCounter">
+      <strong>
+        Coins count:
+        <span>{{ coinCounter }}</span>
+      </strong>
+    </div>
+  </div>
+  <ng-container *ngIf="isCoinsSet === true">
+    <app-grid></app-grid>
+  </ng-container>
+</div>
+<ng-container *ngIf="isCoinsSet === false">
+  <strong>Haven't set coins ?</strong>
+  <p>
+    Click to
+    <a routerLink="/form">set coins</a>
+  </p>
+</ng-container>

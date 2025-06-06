@@ -1,6 +1,6 @@
 import { Coin } from './coin';
 
 export interface CoinArray {
-  id: number;
+  readonly id: number;
   coin: Coin;
 }

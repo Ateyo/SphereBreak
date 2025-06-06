@@ -1,17 +1,16 @@
 <div class="app-grid">
-  <ng-container *ngIf="entryCoinsArray.length === 4">
-    <ng-container *ngFor="let entryCoin of entryCoinsArray">
+  @if (entryCoinsArray.length === 4) {
+    @for (entryCoin of entryCoinsArray; track entryCoin) {
       <app-coin
         class="entry-coin"
         [coinId]="entryCoin.id"
         [entryCoin]="true"
-        [coinValue]="entryCoin.coin.value"
-      ></app-coin>
-    </ng-container>
+        [coinValue]="entryCoin.coin.value"></app-coin>
+    }
 
-    <ng-container *ngFor="let coin of coinsArray">
+    @for (coin of coinsArray; track coin) {
       <app-coin [coinId]="coin.id" [coinValue]="coin.coin.value"></app-coin>
-    </ng-container>
+    }
     <app-core-sphere></app-core-sphere>
-  </ng-container>
+  }
 </div>

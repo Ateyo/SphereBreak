@@ -100,6 +100,15 @@ export class CoinsService {
     // Update coin counter in MathsService with number of coins
   }
 
+  // Quota tracking
+  get quota(): number {
+    return this._quota;
+  }
+
+  set quota(val: number) {
+    this._quota = val;
+  }
+
   public checkEntryCoinFirst(entryCoin: boolean): boolean {
     if (entryCoin && this.selectedCoinsArray.length === 0) {
       this.entryCoinFirst = true;
@@ -123,7 +132,7 @@ export class CoinsService {
   }
 
   // Clear selected coins
-  public clearSelectedCoins() {
+  public clearSelectedCoins(): void {
     this._selectedCoins = [];
   }
 
@@ -132,7 +141,7 @@ export class CoinsService {
   // If a coin's value is 9, it will be set to 0 and tracked in coinSave
   // If a coin's value is 0, it will be set to a random value between 1 and 9 after 3 breaks
   // If a coin's value is between 1 and 8, it will be incremented by 1
-  public incrementCoinsArray() {
+  public incrementCoinsArray(): void {
     this.coinsArray.forEach((coin) => {
       if (!coin.coin.entryCoin) {
         // Skip entry coins
@@ -168,38 +177,13 @@ export class CoinsService {
     return this.turn - breakCount >= 3;
   }
 
-  // Returns true if an entry coin is selected in the current selection
-  // @Param coins: CoinArray - The coin to check
-  public isEntryCoinSelected(coins: CoinArray): boolean {
-    return this.selectedCoinsArray.some(
-      (selectedCoin) =>
-        selectedCoin.coin.entryCoin &&
-        selectedCoin.coin.value === coins.coin.value
-    );
-  }
-
-  // Returns true if the coin is a border coin (not an entry coin)
-  // @Param coin: Coin - The coin to check
-  public isBorderCoin(coin: Coin): boolean {
-    return !coin.entryCoin;
-  }
-
-  // Quota tracking
-  get quota(): number {
-    return this._quota;
-  }
-
-  set quota(val: number) {
-    this._quota = val;
-  }
-
   // Call this when a break is made to update quota
   public updateQuotaForBreak(): void {
     // Only count and process border coins in the last selection
     const borderCoinsUsed = this._selectedCoins.filter(
       (coin) => !coin.entryCoin
     );
-    this._quota += borderCoinsUsed.length;
+    this.quota += borderCoinsUsed.length;
     this._breakCounter++; // Increment break counter
 
     // Set used border coins to 0
@@ -221,7 +205,7 @@ export class CoinsService {
 
     // Check for end of game and quota win/loss
     if (this._mathsService.turn() > this._mathsService.turnLimit) {
-      if (this._quota >= 20) {
+      if (this.quota >= 20) {
         alert('Victory! You met the quota!');
       } else {
         alert('Game Over! You did not meet the quota.');

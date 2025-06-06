@@ -15,15 +15,16 @@
   .coin {
     display: flex;
     align-items: center;
-    border: 1px solid grey;
+    border: 1px solid #5c5551;
     border-radius: 50%;
     cursor: pointer;
     height: 6rem;
     justify-content: center;
-    padding: 14px;
     width: 6rem;
     transition: background-color 0.3s ease-in;
     position: relative;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
 
     &.hidden {
       visibility: hidden;
@@ -37,57 +38,18 @@
       -webkit-transform-style: preserve-3d;
       transform-style: preserve-3d;
       animation: spin 2s linear infinite;
-
-      &.border-coin {
-        background-color: #52595d;
-      }
     }
 
-    &.selected-coin {
-      -webkit-transform-style: preserve-3d;
-      transform-style: preserve-3d;
-      animation: spin 2s linear infinite;
-
-      & * {
-        outline: 0.25rem rgba(0, 255, 255, 0.5) solid;
-      }
-    }
-
-    &:before {
-      // background-color: #5c5551;
-      position: absolute;
-      border-radius: 50%;
-      content: '';
-      height: 6rem;
-      width: 6rem;
-      -webkit-transform: translateZ(-0.75em);
-      transform: translateZ(-0.75em);
-    }
-
-    &:after {
-      // background-color: #5C5551;
-      content: '';
-      position: absolute;
-      height: 6rem;
-      width: 0.75em;
-      z-index: -10;
-      -webkit-transform: rotateY(-90deg);
-      transform: rotateY(-90deg);
-      -webkit-transform-origin: 100% 50%;
-      transform-origin: 100% 50%;
-    }
     &.border-coin {
+      background-color: #52595d;
+
       & + .coin-number {
         color: rgba(183, 183, 183, 0.9);
       }
-      &:after {
-        background-color: #5c5551;
-      }
-
+      &:after,
       &:before {
         background-color: #5c5551;
       }
-
       .tails {
         background-color: #5c5551;
         border: 1px solid #5c5551;
@@ -98,11 +60,54 @@
         border: 1px solid #5c5551;
       }
     }
+
+    &.selected-coin {
+      animation: spin 2s linear infinite;
+
+      &.entry-coin {
+        background-color: #ffd900;
+      }
+      & * {
+        box-shadow: 0 0 12px #00bfff;
+        outline: 2px rgba(0, 255, 255, 0.5) solid;
+      }
+      &:after,
+      &:before {
+        background-color: #00bfff;
+      }
+
+      .tails {
+        box-shadow: 0 0 12px #00bfff;
+        background-color: #00bfff;
+      }
+    }
+
+    &:before {
+      position: absolute;
+      border-radius: 50%;
+      content: '';
+      height: 6rem;
+      width: 6rem;
+      -webkit-transform: translateZ(-0.75em);
+      transform: translateZ(-0.75em);
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      height: 6rem;
+      width: 0.75em;
+      left: 2.55rem;
+      z-index: -10;
+      -webkit-transform: rotateY(-90deg);
+      transform: rotateY(-90deg);
+      -webkit-transform-origin: 100% 50%;
+      transform-origin: 100% 50%;
+    }
   }
 }
 .entry-coin {
-  background-color: rgb(255, 215, 0);
-
+  background-color: #ffd900;
   &:after {
     background-color: #ff9900;
   }
@@ -112,7 +117,6 @@
   }
 
   &:hover {
-    background-color: rgba(255, 215, 0, 0.8);
     animation: 3s ease-in-out oscilloRotate3d infinite;
   }
   .tails {
@@ -121,7 +125,7 @@
   }
 
   .heads {
-    background-color: #ffde00;
+    background-color: #ffd900;
     border: 1px solid #ff9900;
   }
 }
@@ -148,9 +152,9 @@
 
 @keyframes spin {
   0% {
-    transform: rotateY(0deg);
+    transform: rotateY(180deg);
   }
   100% {
-    transform: rotateY(360deg);
+    transform: rotateY(-180deg);
   }
 }

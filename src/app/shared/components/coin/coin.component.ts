@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges
-} from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CoinsService } from '../../services/coins.service';
 import { MathsService } from '../../services/maths.service';
 
@@ -15,10 +9,9 @@ import { MathsService } from '../../services/maths.service';
   templateUrl: './coin.component.html',
   styleUrls: ['./coin.component.scss']
 })
-export class CoinComponent implements OnInit, OnChanges {
+export class CoinComponent implements OnChanges {
   @Input() coinId: number = 0;
   number: number;
-  display = true;
   selectedCoin: boolean = false;
   entryCoinFirst = false;
   @Input() coinValue: number = 0;
@@ -33,15 +26,8 @@ export class CoinComponent implements OnInit, OnChanges {
       : this.mathsService.getRandomIntInclusive(1, 9);
   }
 
-  ngOnInit() {
-    if (this.coinValue === 0) {
-      this.display = false;
-    }
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['coinValue'] && changes['coinValue'].currentValue === 0) {
-      this.display = false;
     }
     this.number = this.coinValue
       ? this.coinValue
@@ -58,20 +44,21 @@ export class CoinComponent implements OnInit, OnChanges {
   }
 
   coinSelection(): void {
-    // Only allow selection if coin has a valid value
-    if (this.coinValue && this.coinValue > 0) {
-      this.selectedCoin = !this.selectedCoin;
+    const coinToAdd = {
+      value: this.coinValue !== undefined ? this.coinValue : this.number,
+      entryCoin: this.entryCoin,
+      id: this.coinId
+    };
 
-      if (this.selectedCoin) {
-        this._coinsService.addSelectedCoin(
-          {
-            value: this.coinValue,
-            entryCoin: this.entryCoin
-          },
-          this.coinId
-        );
-      } else {
-        this._coinsService.clearSelectedCoins();
+    // Allow selecting multiple entry coins, but border coins require at least one entry coin
+    if (this.entryCoin) {
+      this.selectedCoin = true;
+      this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
+    } else {
+      // Border coin: only allow if at least one entry coin is selected
+      if (this._coinsService.selectedCoinsArray.some((c) => c.coin.entryCoin)) {
+        this.selectedCoin = true;
+        this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
       }
     }
   }

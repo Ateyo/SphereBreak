@@ -1,3 +1,22 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use 'tailwindcss';
+
+html {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette
+      ),
+      typography: Roboto,
+      density: 0
+    )
+  );
+}
+
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -10,33 +29,43 @@
  */
 
 /* Core CSS required for Ionic components to work properly */
-@import '@ionic/angular/css/core.css';
+// @import '@ionic/angular/css/core.css';
 
-/* Basic CSS for apps built with Ionic */
-@import '@ionic/angular/css/normalize.css';
-@import '@ionic/angular/css/structure.css';
-@import '@ionic/angular/css/typography.css';
-@import '@ionic/angular/css/display.css';
+// /* Basic CSS for apps built with Ionic */
+// @import '@ionic/angular/css/normalize.css';
+// @import '@ionic/angular/css/structure.css';
+// @import '@ionic/angular/css/typography.css';
+// @import '@ionic/angular/css/display.css';
 
-/* Optional CSS utils that can be commented out */
-@import '@ionic/angular/css/padding.css';
-@import '@ionic/angular/css/float-elements.css';
-@import '@ionic/angular/css/text-alignment.css';
-@import '@ionic/angular/css/text-transformation.css';
-@import '@ionic/angular/css/flex-utils.css';
+// /* Optional CSS utils that can be commented out */
+// @import '@ionic/angular/css/padding.css';
+// @import '@ionic/angular/css/float-elements.css';
+// @import '@ionic/angular/css/text-alignment.css';
+// @import '@ionic/angular/css/text-transformation.css';
+// @import '@ionic/angular/css/flex-utils.css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
+// /**
+//  * Ionic Dark Mode
+//  * -----------------------------------------------------
+//  * For more info, please see:
+//  * https://ionicframework.com/docs/theming/dark-mode
+//  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// /* @import "@ionic/angular/css/palettes/dark.always.css"; */
+// /* @import "@ionic/angular/css/palettes/dark.class.css"; */
+// @import '@ionic/angular/css/palettes/dark.system.css';
 
 @font-face {
   font-family: kiwi_font;
   src: url(assets/Kiwi_Fruit.otf) format('opentype');
+}
+
+html,
+body {
+  background-color: var(--mat-sys-surface);
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
