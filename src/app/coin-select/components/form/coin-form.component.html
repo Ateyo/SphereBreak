@@ -157,27 +157,29 @@
         </div>
       </section>
     </div>
-    <div class="flex" *ngIf="entryCoinsArray.length > 0">
-      <div class="flex flex-row">
-        @for (entryCoin of entryCoinsArray; track entryCoin) {
-          <div>
-            <app-coin
-              class="flex"
-              [entryCoin]="entryCoin.coin.entryCoin"
-              [coinValue]="entryCoin.coin.value"></app-coin>
+    @if (entryCoinsArray.length > 0) {
+      <div class="flex">
+        <div class="flex flex-row">
+          @for (entryCoin of entryCoinsArray; track entryCoin) {
             <div>
-              <mat-label>Coin Value</mat-label>
-              <input
-                type="number"
-                min="1"
-                max="9"
-                [value]="entryCoin.coin.value"
-                style="width: 60px; margin-top: 8px"
-                readonly />
+              <app-coin
+                class="flex"
+                [entryCoin]="entryCoin.coin.entryCoin"
+              [coinValue]="entryCoin.coin.value"></app-coin>
+              <div>
+                <mat-label>Coin Value</mat-label>
+                <input
+                  type="number"
+                  min="1"
+                  max="9"
+                  [value]="entryCoin.coin.value"
+                  style="width: 60px; margin-top: 8px"
+                  readonly />
+              </div>
             </div>
-          </div>
-        }
+          }
+        </div>
       </div>
-    </div>
+    }
   </div>
 </div>

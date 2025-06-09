@@ -58,14 +58,14 @@
       </strong>
     </div>
   </div>
-  <ng-container *ngIf="isCoinsSet === true">
+  @if (isCoinsSet === true) {
     <app-grid></app-grid>
-  </ng-container>
+  }
 </div>
-<ng-container *ngIf="isCoinsSet === false">
+@if (isCoinsSet === false) {
   <strong>Haven't set coins ?</strong>
   <p>
     Click to
     <a routerLink="/form">set coins</a>
   </p>
-</ng-container>
+}

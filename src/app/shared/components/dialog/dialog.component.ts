@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -23,19 +23,22 @@ export interface DialogData {
     <h2 mat-dialog-title>{{ data.title }}</h2>
     <mat-dialog-content>
       <p>{{ data.content }}</p>
-      <div class="selected-coins" *ngIf="data.selectedCoins">
-        <h3>Selected Entry Coins:</h3>
-        <div class="flex flex-row">
-          @if (data.selectedCoins.length === 0) {
-            <p>No coins selected.</p>
-          } @else {
-            <app-coin
-              *ngFor="let coin of data.selectedCoins"
-              [entryCoin]="coin.coin.entryCoin"
-              [coinValue]="coin.coin.value"></app-coin>
-          }
+      @if (data.selectedCoins) {
+        <div class="selected-coins">
+          <h3>Selected Entry Coins:</h3>
+          <div class="flex flex-row">
+            @if (data.selectedCoins.length === 0) {
+              <p>No coins selected.</p>
+            } @else {
+              @for (coin of data.selectedCoins; track coin) {
+                <app-coin
+                  [entryCoin]="coin.coin.entryCoin"
+                [coinValue]="coin.coin.value"></app-coin>
+              }
+            }
+          </div>
         </div>
-      </div>
+      }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="onCancel()">
@@ -45,9 +48,9 @@ export interface DialogData {
         {{ data.confirmText || 'Confirm' }}
       </button>
     </mat-dialog-actions>
-  `,
+    `,
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, CommonModule, CoinComponent]
+  imports: [MatDialogModule, MatButtonModule, CoinComponent]
 })
 export class DialogComponent {
   constructor(

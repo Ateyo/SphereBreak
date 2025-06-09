@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   effect,
@@ -14,7 +14,7 @@ import { GridComponent } from './grid/grid.component';
 
 @Component({
   selector: 'app-home',
-  imports: [GridComponent, IonicModule, CommonModule],
+  imports: [GridComponent, IonicModule],
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
