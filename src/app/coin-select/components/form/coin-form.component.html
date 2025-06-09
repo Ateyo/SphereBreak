@@ -1,36 +1,49 @@
-<div class="flex flex-col">
-  <div class="">
-    <h2>Choose Coins</h2>
-    <div class="flex flex-row">
-      <mat-form-field>
-        <mat-label>Enter Coin Value</mat-label>
-        <input
-          matInput
-          [formControl]="coinNumber"
-          type="number"
-          min="1"
-          max="9"
-          placeholder="1-9" />
-      </mat-form-field>
-      <button mat-raised-button color="primary" (click)="onSubmit()">
-        Submit
-      </button>
+<div class="flex justify-center">
+  <div class="container card flex flex-col">
+    <div class="flex">
+      <h2 class="mt-4 mb-5">Choose Coins</h2>
+      <div class="flex flex-row align-items-center">
+        <mat-form-field>
+          <mat-label>Enter Coin Value</mat-label>
+          <input
+            matInput
+            [formControl]="coinNumber"
+            type="number"
+            min="1"
+            max="9"
+            placeholder="1-9" />
+        </mat-form-field>
+        <button
+          matButton="filled"
+          color="primary"
+          (click)="onSubmit()"
+          type="button">
+          Submit
+        </button>
+
+        <button matButton="filled">Basic</button>
+        <button matButton="filled" disabled>Disabled</button>
+        <a matButton="filled" href="https://www.google.com/" target="_blank">
+          Link
+        </a>
+      </div>
     </div>
-  </div>
-  <div class="flex" *ngIf="entryCoinsArray.length > 0">
-    <div class="flex flex-row">
-      <div *ngFor="let entryCoin of entryCoinsArray; let i = index">
-        <app-coin
-          [entryCoin]="entryCoin.coin.entryCoin"
-          [coinValue]="entryCoin.coin.value"></app-coin>
-        <mat-label>Coin Value</mat-label>
-        <input
-          type="number"
-          min="1"
-          max="9"
-          [value]="entryCoin.coin.value"
-          style="width: 60px; margin-top: 8px"
-          readonly />
+    <div class="flex" *ngIf="entryCoinsArray.length > 0">
+      <div class="flex flex-row">
+        @for (entryCoin of entryCoinsArray; track entryCoin) {
+          <app-coin
+            class="flex"
+            [entryCoin]="entryCoin.coin.entryCoin"
+            [coinValue]="entryCoin.coin.value"></app-coin>
+          <mat-label>Coin Value</mat-label>
+          <input
+            type="number"
+            min="1"
+            max="9"
+            [value]="entryCoin.coin.value"
+            style="width: 60px; margin-top: 8px"
+            readonly />
+        }
       </div>
     </div>
   </div>
