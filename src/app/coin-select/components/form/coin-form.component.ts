@@ -1,24 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatInputModule } from '@angular/material/input';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
 import { DialogComponent } from 'src/app/shared/components/dialog/dialog.component';
 import { CoinArray } from 'src/app/shared/interfaces';
 import { SharedModule } from 'src/app/shared/shared.module';
+
 import { CoinsService } from '../../../shared/services/coins.service';
 
 @Component({
   selector: 'app-form',
-  imports: [
-    SharedModule,
-    MatDialogModule,
-    MatInputModule,
-    MatButtonModule,
-    CoinComponent
-  ],
+  imports: [SharedModule, CoinComponent, ReactiveFormsModule],
   templateUrl: './coin-form.component.html',
   styleUrls: ['./coin-form.component.scss']
 })

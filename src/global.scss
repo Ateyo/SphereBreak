@@ -3,7 +3,7 @@
 @use '@angular/material' as mat;
 @use '@angular/material/prebuilt-themes/cyan-orange.css';
 @use 'tailwindcss';
-@plugin "daisyui";
+// @plugin "daisyui";
 
 html {
   @include mat.theme(
@@ -152,6 +152,9 @@ body {
 body {
   background-color: var(--mat-sys-background);
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 img {
