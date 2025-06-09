@@ -41,13 +41,16 @@ export class CoinFormComponent {
 
   openDialog() {
     const dialogRef = this.dialog.open(DialogComponent, {
+      position: {
+        top: '20px'
+      },
       data: {
         title: 'Ready to Start?',
         content:
           'You have selected 4 entry coins. Would you like to start the game?',
         confirmText: 'Start Game',
-        cancelText: 'Keep Editing',
-        selectedCoins: this.entryCoinsArray // Pass the selected coins
+        cancelText: 'Keep Editing'
+        // selectedCoins: this.entryCoinsArray // Pass the selected coins
       }
     });
 

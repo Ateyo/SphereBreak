@@ -117,7 +117,7 @@ html {
 // }
 
 :root {
-  --page-width: 800px;
+  // --page-width: 800px;
   --layout-padding: 0.625rem;
   --mat-sys-background: rgb(0 0 0 / 19%);
   --border-radius: 0.5rem;
@@ -125,13 +125,13 @@ html {
   --mat-sys-warning: #ffbb00;
   --mat-sys-error: #db4437;
   @media only screen and (min-width: 768px) {
-    --layout-padding: 3.12rem;
+    // --layout-padding: 3.12rem;
   }
 }
 
 html {
   color-scheme: dark;
-  // background: url(../public/img/asfalt-light.png); //--mat-sys-background: rgb(0 0 0 / 19%)
+  background: url(assets/asfalt-light.png); //--mat-sys-background: rgb(0 0 0 / 19%)
 
   @include mat.theme(
     (
@@ -147,14 +147,23 @@ body {
   margin: 0;
   padding: 0;
   color: rgba(255, 255, 255, 0.8);
-  height: 100%;
 }
 body {
-  background-color: var(--mat-sys-background);
+  // background-color: var(--mat-sys-background);
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  app-root {
+    display: flex;
+    flex: 1 1 100%;
+  }
+
+  app-home {
+    display: flex;
+    flex: 1 1 100%;
+  }
 }
 
 img {

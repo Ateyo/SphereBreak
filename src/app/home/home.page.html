@@ -1,5 +1,5 @@
 <div id="container">
-  <div class="left-side border border-indigo-600">
+  <div class="card left-side">
     <button (click)="newTurn()">New Turn</button>
     <div>
       <div class="turn">
@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-  <div class="right-side border border-indigo-600">
+  <div class="card right-side">
     <div>
       <div class="total">
         <strong>
@@ -43,7 +43,7 @@
     </div>
   </div>
 
-  <div class="">
+  <div class="card">
     <div class="echo">
       <strong>
         Echo:
@@ -59,13 +59,13 @@
     </div>
   </div>
   @if (isCoinsSet === true) {
-    <app-grid></app-grid>
+  <app-grid></app-grid>
   }
 </div>
 @if (isCoinsSet === false) {
-  <strong>Haven't set coins ?</strong>
-  <p>
-    Click to
-    <a routerLink="/form">set coins</a>
-  </p>
+<strong>Haven't set coins ?</strong>
+<p>
+  Click to
+  <a routerLink="/form">set coins</a>
+</p>
 }

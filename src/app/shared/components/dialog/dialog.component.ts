@@ -1,4 +1,3 @@
-
 import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -33,7 +32,7 @@ export interface DialogData {
               @for (coin of data.selectedCoins; track coin) {
                 <app-coin
                   [entryCoin]="coin.coin.entryCoin"
-                [coinValue]="coin.coin.value"></app-coin>
+                  [coinValue]="coin.coin.value"></app-coin>
               }
             }
           </div>
@@ -48,7 +47,7 @@ export interface DialogData {
         {{ data.confirmText || 'Confirm' }}
       </button>
     </mat-dialog-actions>
-    `,
+  `,
   standalone: true,
   imports: [MatDialogModule, MatButtonModule, CoinComponent]
 })

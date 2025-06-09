@@ -4,6 +4,7 @@
   grid-template-columns: 1fr 4fr;
   grid-template-rows: auto auto;
   flex-direction: column;
+  width: 100%;
 
   .right-side {
     display: flex;
@@ -14,6 +15,10 @@
   strong {
     font-size: 20px;
     line-height: 26px;
+  }
+
+  .card {
+    margin: 0.25rem;
   }
 }
 
