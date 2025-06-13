@@ -204,12 +204,16 @@ export class CoinsService {
     });
 
     // Check for end of game and quota win/loss
-    if (this._mathsService.turn() > this._mathsService.turnLimit) {
-      if (this.quota >= 20) {
+    if (this._mathsService.turn() >= this._mathsService.turnLimit) {
+      if (this.checkForQuotaWin()) {
         alert('Victory! You met the quota!');
       } else {
         alert('Game Over! You did not meet the quota.');
       }
     }
+  }
+
+  checkForQuotaWin(): boolean {
+    return this.quota >= 20;
   }
 }

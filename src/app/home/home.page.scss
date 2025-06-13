@@ -12,14 +12,35 @@
     justify-content: center;
   }
 
-  strong {
-    font-size: 20px;
-    line-height: 26px;
-  }
-
   .card {
     margin: 0.25rem;
+
+    /* Extra small devices (phones, 600px and down) */
+    @media only screen and (max-width: 600px) {
+      &:nth-child(3) {
+        grid-column-start: 1;
+        grid-column-end: 3;
+      }
+    }
   }
+}
+
+@media only screen and (max-width: 600px) {
+  app-grid {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+}
+
+.echo {
+  background-color: color-mix(
+    in hsl,
+    var(--mat-sys-analogous),
+    transparent 75%
+  ) !important;
+  border-top: 2px solid;
+  border-bottom: 2px solid;
+  border-color: var(--mat-sys-analogous);
 }
 
 .next-multiples {
