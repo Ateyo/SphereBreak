@@ -50,12 +50,16 @@ export class CoinsService {
     effect(() => {
       this.turn = this._mathsService.turn();
     });
-    // Subscribe to break$ to update quota on break
-    this._mathsService.break$.subscribe((isBreak) => {
-      if (isBreak) {
-        this.updateQuotaForBreak();
-      }
+    effect(() => {
+      this._mathsService.break();
+      this.updateQuotaForBreak();
     });
+    // Subscribe to break$ to update quota on break
+    // this._mathsService.break$.subscribe((isBreak) => {
+    //   if (isBreak) {
+    //     this.updateQuotaForBreak();
+    //   }
+    // });
   }
 
   get entryCoinsArray$() {

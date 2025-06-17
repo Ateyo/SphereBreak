@@ -59,7 +59,7 @@
     </div>
   </div>
   @if (isCoinsSet === true) {
-  <app-grid></app-grid>
+  <app-grid [class.blocked]="break"></app-grid>
   }
 </div>
 @if (isCoinsSet === false) {

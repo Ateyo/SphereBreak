@@ -1,5 +1,4 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ export class MathsService {
   nextMultiples: WritableSignal<number[]> = signal([]);
   turn: WritableSignal<number> = signal(1);
   echo: WritableSignal<number> = signal(0);
-  break$ = new BehaviorSubject<boolean>(false);
+  break: WritableSignal<boolean> = signal(false);
   coinCounter: WritableSignal<number> = signal(0);
   coinUsedSave: number = 0;
   turnLimit = 15;
@@ -65,7 +64,6 @@ export class MathsService {
       const nextMultiples = this.getNextMultiples(total);
       if (total > nextMultiples[0]) {
         this.getNextMultiples(total);
-      } else {
       }
     }
   }
@@ -91,6 +89,7 @@ export class MathsService {
 
   public breakLap() {
     console.log('Break!');
+    this.break.set(true);
     // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
     const coinsUsed = this.currentTotal() / this._coreSphere;
     this.calculateScore(coinsUsed, 1);
@@ -100,7 +99,6 @@ export class MathsService {
 
     this.coinCounter.set(coinsUsed);
     this.coinUsedSave = coinsUsed;
-    this.break$.next(true);
     this.newTurn();
   }
 
@@ -111,11 +109,11 @@ export class MathsService {
       this.getNextMultiples(0);
       this.currentTotal.set(0);
       this.turn.set(this.turn() + 1);
-      this.break$.next(false);
+      this.break.set(false);
       // Reset coin counter for new turn
     } else {
       // Game over: emit event only, quota check should be handled elsewhere
-      this.break$.next(false);
+      this.break.set(false);
       // Optionally emit a game over event here
       //@Todo add game over logic
     }

@@ -57,6 +57,8 @@ html {
 // /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import '@ionic/angular/css/palettes/dark.system.css';
 
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
 @font-face {
   font-family: kiwi_font;
   src: url(assets/Kiwi_Fruit.otf) format('opentype');
@@ -133,6 +135,11 @@ html {
   color-scheme: dark;
   background: url(assets/asfalt-light.png); //--mat-sys-background: rgb(0 0 0 / 19%)
 
+  font-family:
+    'Share Tech Mono', 'Consolas', 'Menlo', 'Monaco', monospace !important;
+  letter-spacing: 0.02em;
+  font-size: 1.1em;
+
   @include mat.theme(
     (
       color: mat.$cyan-palette,
@@ -160,7 +167,7 @@ body {
 }
 body {
   // background-color: var(--mat-sys-background);
-  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  // font-family: Roboto, 'Helvetica Neue', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -277,26 +284,147 @@ h6,
 }
 
 .card {
-  background-color: color-mix(
-    in hsl,
-    var(--mat-sys-surface-container-low),
-    transparent 5%
-  ) !important;
-  border: 1px solid
-    color-mix(in hsl, var(--mat-sys-primary-fixed), transparent 5%) !important;
-  border-radius: var(--border-radius);
-  transition: border-color 0.1s ease !important;
-  padding: 1rem;
+  background: var(--game-surface);
+  border: 1px solid var(--mat-sys-primary);
+  padding: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
-  // &:hover {
-  //   border-color: color-mix(
-  //     in hsl,
-  //     var(--mat-sys-primary-fixed),
-  //     transparent 5%
-  //   ) !important;
-  // }
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--mat-sys-primary),
+      transparent
+    );
+    // box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.left-side,
+  &.right-side {
+    display: flex;
+    // align-items: center;
+    justify-content: center;
+  }
 }
 
+.future-grid-wrapper {
+  display: block;
+  box-sizing: content-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  // max-height: calc(100vh - 86px);
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+}
+.future-grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  gap: 1rem;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  mask-image: linear-gradient(to top, transparent 0%, black 30%);
+  perspective: 100px;
+  width: 100%;
+
+  &:after {
+    content: '';
+    display: block;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+  }
+  & > div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+
+    &:first-child {
+      transform: rotateY(10deg);
+      -webkit-mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        black 60%,
+        black 100%
+      );
+      mask-image: linear-gradient(
+        to left,
+        transparent 0%,
+        black 60%,
+        black 100%
+      );
+    }
+
+    &:last-child {
+      transform: rotateY(-10deg);
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 60%,
+        black 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 60%,
+        black 100%
+      );
+    }
+  }
+
+  .future-grid-item {
+    border: 1px solid var(--mat-sys-primary);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    height: 200px;
+    box-shadow:
+      0 0 1px var(--mat-sys-primary),
+      0 0 4px var(--mat-sys-primary);
+
+    &:hover {
+      opacity: 1;
+      scale: 1.02;
+      background-color: color-mix(
+        in hsl,
+        var(--mat-sys-primary),
+        transparent 20%
+      );
+      box-shadow:
+        0 0 10px var(--mat-sys-primary),
+        0 0 40px var(--mat-sys-primary);
+    }
+  }
+
+  #folder_smile {
+    width: 150px;
+    height: 150px;
+
+    path {
+      stroke: rgba(0, 0, 0, 0);
+      transition: all 0.3s ease-in-out;
+    }
+  }
+  #ehe:hover {
+    #folder_smile {
+      path {
+        stroke: var(--mat-sys-on-primary-container);
+      }
+    }
+  }
+}
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
 }

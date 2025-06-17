@@ -29,6 +29,19 @@
   app-grid {
     grid-column-start: 1;
     grid-column-end: 3;
+
+    &.blocked {
+      &:after {
+        content: 'Blocked';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: rgba(255, 0, 0, 0.8);
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+    }
   }
 }
 
