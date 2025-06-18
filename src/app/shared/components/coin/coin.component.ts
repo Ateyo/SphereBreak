@@ -34,15 +34,6 @@ export class CoinComponent implements OnChanges {
       : this.mathsService.getRandomIntInclusive(1, 9);
   }
 
-  ngDoCheck(): void {
-    if (
-      this._coinsService.selectedCoinsArray.length === 0 &&
-      this.selectedCoin
-    ) {
-      this.selectedCoin = false;
-    }
-  }
-
   coinSelection(): void {
     const coinToAdd = {
       value: this.coinValue !== undefined ? this.coinValue : this.number,
@@ -50,10 +41,18 @@ export class CoinComponent implements OnChanges {
       id: this.coinId
     };
 
-    // Allow selecting multiple entry coins, but border coins require at least one entry coin
+    // Allow selecting multiple unique entry coins, but border coins require at least one entry coin
     if (this.entryCoin) {
-      this.selectedCoin = true;
-      this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
+      if (
+        this._coinsService.selectedCoinsArray.some(
+          (c) => c.coin.id === this.coinId
+        )
+      ) {
+        return;
+      } else {
+        this.selectedCoin = true;
+        this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
+      }
     } else {
       // Border coin: only allow if at least one entry coin is selected
       if (this._coinsService.selectedCoinsArray.some((c) => c.coin.entryCoin)) {

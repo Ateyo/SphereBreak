@@ -1,4 +1,3 @@
-
 import {
   Component,
   effect,
@@ -43,12 +42,12 @@ export class HomePage implements OnChanges {
       this.coinCounter = this._mathsService.coinCounter();
     });
 
-    this._mathsService.break$.subscribe((value) => {
-      this.break = value;
-      if (value) {
-        this._coinsService.clearSelectedCoins();
-        this.presentBreakToast('middle');
+    effect(() => {
+      this.break = this._mathsService.break();
+      if (this.break) {
         setTimeout(() => {
+          this._coinsService.clearSelectedCoins();
+          this.presentBreakToast('middle');
           this.startNewTurn();
         }, 1000);
       }

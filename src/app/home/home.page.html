@@ -1,6 +1,6 @@
 <div id="container">
   <div class="card left-side">
-    <button (click)="newTurn()">New Turn</button>
+    <!-- <button (click)="newTurn()">New Turn</button> -->
     <div>
       <div class="turn">
         <strong>
@@ -59,7 +59,7 @@
     </div>
   </div>
   @if (isCoinsSet === true) {
-  <app-grid></app-grid>
+  <app-grid [class.blocked]="break"></app-grid>
   }
 </div>
 @if (isCoinsSet === false) {

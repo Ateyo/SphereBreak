@@ -9,8 +9,7 @@ describe('CoinComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoinComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(),CoinComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoinComponent);
@@ -20,5 +19,13 @@ describe('CoinComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('coin should have value', () => {
+    fixture.componentRef.setInput('coinValue', 2);
+    fixture.detectChanges();
+    const coinElement: HTMLElement = fixture.nativeElement.querySelector('.coin-number');
+    expect(coinElement).toBeTruthy();
+    expect(coinElement.textContent).toContain(2); // Adjust based on actual value
   });
 });

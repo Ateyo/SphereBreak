@@ -50,12 +50,16 @@ export class CoinsService {
     effect(() => {
       this.turn = this._mathsService.turn();
     });
-    // Subscribe to break$ to update quota on break
-    this._mathsService.break$.subscribe((isBreak) => {
-      if (isBreak) {
-        this.updateQuotaForBreak();
-      }
+    effect(() => {
+      this._mathsService.break();
+      this.updateQuotaForBreak();
     });
+    // Subscribe to break$ to update quota on break
+    // this._mathsService.break$.subscribe((isBreak) => {
+    //   if (isBreak) {
+    //     this.updateQuotaForBreak();
+    //   }
+    // });
   }
 
   get entryCoinsArray$() {
@@ -204,12 +208,16 @@ export class CoinsService {
     });
 
     // Check for end of game and quota win/loss
-    if (this._mathsService.turn() > this._mathsService.turnLimit) {
-      if (this.quota >= 20) {
+    if (this._mathsService.turn() >= this._mathsService.turnLimit) {
+      if (this.checkForQuotaWin()) {
         alert('Victory! You met the quota!');
       } else {
         alert('Game Over! You did not meet the quota.');
       }
     }
+  }
+
+  checkForQuotaWin(): boolean {
+    return this.quota >= 20;
   }
 }
