@@ -39,13 +39,12 @@ export class MathsService {
   public changeCoreSphere() {
     //this._coreSphere = this.getRandomIntInclusive(1, 9);
     this._coreSphere = 7; // For testing purposes, set to 1
-    console.log('Core sphere changed to: ' + this._coreSphere);
   }
 
   public getRandomIntInclusive(min: number, max: number) {
     min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min); // The maximum is inclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
   public makeAdditions(selectedCoinsArray: number[]): void {

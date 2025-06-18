@@ -1,5 +1,4 @@
 import {
-  beforeEach,
   ComponentFixture,
   TestBed,
   waitForAsync,
@@ -14,8 +13,7 @@ describe('CoinFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CoinFormComponent],
-      imports: [IonicModule.forRoot()],
+      imports: [IonicModule.forRoot(), CoinFormComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoinFormComponent);

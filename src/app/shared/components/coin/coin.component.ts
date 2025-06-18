@@ -34,15 +34,6 @@ export class CoinComponent implements OnChanges {
       : this.mathsService.getRandomIntInclusive(1, 9);
   }
 
-  ngDoCheck(): void {
-    if (
-      this._coinsService.selectedCoinsArray.length === 0 &&
-      this.selectedCoin
-    ) {
-      this.selectedCoin = false;
-    }
-  }
-
   coinSelection(): void {
     const coinToAdd = {
       value: this.coinValue !== undefined ? this.coinValue : this.number,
