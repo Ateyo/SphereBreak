@@ -71,6 +71,10 @@ export class HomePage implements OnInit, OnDestroy {
         }, 1000);
       }
     });
+
+    effect(() => {
+      this.score = this._mathsService.currentScore();
+    });
   }
 
   ngOnInit(): void {
@@ -82,9 +86,6 @@ export class HomePage implements OnInit, OnDestroy {
     if (this.breakTimeout) {
       clearTimeout(this.breakTimeout);
     }
-    effect(() => {
-      this.score = this._mathsService.currentScore();
-    });
   }
 
   startNewTurn() {
@@ -151,7 +152,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.turnLimit = levels[level].turns;
     this._mathsService.setQuotaLimit(levels[level].quota);
     this._mathsService.turn.set(1);
-    this._mathsService.currentScore.set(0);
     this._coinsService.setQuota(0);
     this._coinsService.reset();
     this.nextMultiples = this._mathsService.getNextMultiples();

@@ -48,11 +48,14 @@ export class MathsService {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  private _numberOfCoinsAdded: number = 0;
+
   public makeAdditions(selectedCoinsArray: number[]): void {
     let total = 0;
     selectedCoinsArray.forEach((c) => {
       total += c;
     });
+    this._numberOfCoinsAdded = selectedCoinsArray.length;
     this.currentTotal.set(total);
     this.getNextMultiples(this.currentTotal());
     this.checkForBreak(total);
@@ -86,15 +89,15 @@ export class MathsService {
   public breakLap() {
     console.log('Break!');
     this.break.set(true);
-    // Calculate score: coins used = currentTotal / coreSphere, multiples found = 1 (for this turn)
-    const coinsUsed = this.currentTotal() / this._coreSphere;
-    this.calculateScore(coinsUsed, 1);
-    if (this.coinUsedSave === coinsUsed) {
+    // Calculate score: coins used = number of coins added, multiples found = currentTotal / coreSphere
+    const multiplesFound = this.currentTotal() / this._coreSphere;
+    this.calculateScore(this._numberOfCoinsAdded, multiplesFound);
+    if (this.coinUsedSave === this._numberOfCoinsAdded) {
       this.echo.set(this.echo() + 1);
     }
 
-    this.coinCounter.set(coinsUsed);
-    this.coinUsedSave = coinsUsed;
+    this.coinCounter.set(this._numberOfCoinsAdded);
+    this.coinUsedSave = this._numberOfCoinsAdded;
     this.newTurn();
   }
 
@@ -104,6 +107,7 @@ export class MathsService {
       this.changeCoreSphere();
       this.getNextMultiples(0);
       this.currentTotal.set(0);
+      this._numberOfCoinsAdded = 0;
       this.turn.set(this.turn() + 1);
       // Reset coin counter for new turn
     } else {
@@ -114,13 +118,15 @@ export class MathsService {
     }
   }
 
-  public calculateScore(coinsUsed: number, multiplesFound: number): number {
+  public calculateScore(coinsUsed: number, multiplesFound: number): void {
     // Example scoring: each coin used = 10 pts, each multiple found = 50 pts
+    console.log(
+      `Calculating score: coinsUsed=${coinsUsed}, multiplesFound=${multiplesFound}`
+    );
     const coinPoints = coinsUsed * 10;
     const multiplePoints = multiplesFound * 50;
     const score = coinPoints + multiplePoints;
     this.currentScore.set(this.currentScore() + score);
-    return score;
   }
 
   public setQuotaLimit(limit: number): void {

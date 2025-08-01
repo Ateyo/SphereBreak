@@ -42,18 +42,90 @@ export class CoinsService {
       { id: 4, coin: { value: 8, entryCoin: true } }
     ];
     this._coinsArray = [
-      { id: 101, coin: { value: 1, entryCoin: false } },
-      { id: 102, coin: { value: 2, entryCoin: false } },
-      { id: 103, coin: { value: 3, entryCoin: false } },
-      { id: 104, coin: { value: 4, entryCoin: false } },
-      { id: 105, coin: { value: 5, entryCoin: false } },
-      { id: 106, coin: { value: 6, entryCoin: false } },
-      { id: 107, coin: { value: 7, entryCoin: false } },
-      { id: 108, coin: { value: 8, entryCoin: false } },
-      { id: 109, coin: { value: 9, entryCoin: false } },
-      { id: 110, coin: { value: 1, entryCoin: false } },
-      { id: 111, coin: { value: 2, entryCoin: false } },
-      { id: 112, coin: { value: 3, entryCoin: false } }
+      {
+        id: 101,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 102,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 103,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 104,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 105,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 106,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 107,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 108,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 109,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 110,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 111,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 112,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      }
     ];
     this.isCoinsSet.set(true);
 
