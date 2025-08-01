@@ -1,4 +1,11 @@
-import { effect, Injectable, signal, WritableSignal } from '@angular/core';
+import {
+  effect,
+  inject,
+  Injectable,
+  signal,
+  WritableSignal
+} from '@angular/core';
+
 import { Coin, CoinArray } from '../interfaces';
 import { MathsService } from './maths.service';
 
@@ -6,24 +13,27 @@ import { MathsService } from './maths.service';
   providedIn: 'root'
 })
 export class CoinsService {
+  private _mathsService = inject<MathsService>(MathsService);
+
   turn: number = 1;
   coinSave: Array<{ id: number; breakCount: number }> = [];
 
   private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([
     { id: 1, coin: { value: 0, entryCoin: true } }
   ]);
-  private _quota = 0;
+  private _quota: WritableSignal<number> = signal(0);
   private _coinsArray: CoinArray[] = [
     { id: 1, coin: { value: 0, entryCoin: false } }
   ];
-  private _selectedCoins: Array<Coin> = [];
+  private _selectedCoins: WritableSignal<Array<Coin>> = signal([]);
   private _breakCounter = 0; // Track number of breaks
   private _coinZeroBreaks = new Map<number, number>(); // Track at which break count each coin was set to 0
+  gameWon: WritableSignal<boolean> = signal(false);
 
   entryCoinFirst = false;
   isCoinsSet = false;
 
-  constructor(private _mathsService: MathsService) {
+  constructor() {
     // Initialize with test coins
     this.entryCoinsArray = [
       { id: 1, coin: { value: 2, entryCoin: true } },
@@ -32,27 +42,23 @@ export class CoinsService {
       { id: 4, coin: { value: 8, entryCoin: true } }
     ];
     this._coinsArray = [
-      { id: 1, coin: { value: 1, entryCoin: false } },
-      { id: 2, coin: { value: 2, entryCoin: false } },
-      { id: 3, coin: { value: 3, entryCoin: false } },
-      { id: 4, coin: { value: 4, entryCoin: false } },
-      { id: 5, coin: { value: 5, entryCoin: false } },
-      { id: 6, coin: { value: 6, entryCoin: false } },
-      { id: 7, coin: { value: 7, entryCoin: false } },
-      { id: 8, coin: { value: 8, entryCoin: false } },
-      { id: 9, coin: { value: 9, entryCoin: false } },
-      { id: 10, coin: { value: 1, entryCoin: false } },
-      { id: 11, coin: { value: 2, entryCoin: false } },
-      { id: 12, coin: { value: 3, entryCoin: false } }
+      { id: 101, coin: { value: 1, entryCoin: false } },
+      { id: 102, coin: { value: 2, entryCoin: false } },
+      { id: 103, coin: { value: 3, entryCoin: false } },
+      { id: 104, coin: { value: 4, entryCoin: false } },
+      { id: 105, coin: { value: 5, entryCoin: false } },
+      { id: 106, coin: { value: 6, entryCoin: false } },
+      { id: 107, coin: { value: 7, entryCoin: false } },
+      { id: 108, coin: { value: 8, entryCoin: false } },
+      { id: 109, coin: { value: 9, entryCoin: false } },
+      { id: 110, coin: { value: 1, entryCoin: false } },
+      { id: 111, coin: { value: 2, entryCoin: false } },
+      { id: 112, coin: { value: 3, entryCoin: false } }
     ];
     this.isCoinsSet = true;
 
     effect(() => {
       this.turn = this._mathsService.turn();
-    });
-    effect(() => {
-      this._mathsService.break();
-      this.updateQuotaForBreak();
     });
     // Subscribe to break$ to update quota on break
     // this._mathsService.break$.subscribe((isBreak) => {
@@ -88,33 +94,33 @@ export class CoinsService {
     this.isCoinsSet = true;
   }
 
-  get selectedCoinsArray(): CoinArray[] {
-    return this._selectedCoins.map((coin) => ({
-      id: coin.id || 0, // Use stored ID or 0 as fallback
-      coin: coin
-    }));
+  get selectedCoinsArray(): Coin[] {
+    return this._selectedCoins();
   }
 
-  set selectedCoinsArray(coins: CoinArray[]) {
-    this._selectedCoins = coins.map((c) => ({
-      ...c.coin,
-      id: c.id // Preserve the ID when setting selected coins
-    }));
+  set selectedCoinsArray(coins: Coin[]) {
+    this._selectedCoins.set(coins);
 
     // Update coin counter in MathsService with number of coins
   }
 
   // Quota tracking
   get quota(): number {
-    return this._quota;
+    return this._quota();
   }
 
-  set quota(val: number) {
-    this._quota = val;
+  public setQuota(val: number) {
+    this._quota.set(val);
+  }
+
+  public reset() {
+    this.gameWon.set(false);
+    this.setQuota(0);
+    this.clearSelectedCoins();
   }
 
   public checkEntryCoinFirst(entryCoin: boolean): boolean {
-    if (entryCoin && this.selectedCoinsArray.length === 0) {
+    if (entryCoin && this._selectedCoins().length === 0) {
       this.entryCoinFirst = true;
       return true;
     } else {
@@ -124,20 +130,31 @@ export class CoinsService {
 
   public addSelectedCoin(coin: Coin, coinId?: number) {
     if (coin !== undefined) {
-      this._selectedCoins.push({
-        value: coin.value,
-        entryCoin: coin.entryCoin,
-        id: coinId // Store the ID with the selected coin
-      });
+      this._selectedCoins.update((currentCoins) => [
+        ...currentCoins,
+        {
+          value: coin.value,
+          entryCoin: coin.entryCoin,
+          id: coinId // Store the ID with the selected coin
+        }
+      ]);
 
       // Use makeAdditions to update total and trigger break logic
-      this._mathsService.makeAdditions(this._selectedCoins.map((c) => c.value));
+      this._mathsService.makeAdditions(
+        this._selectedCoins().map((c) => c.value)
+      );
     }
   }
 
   // Clear selected coins
   public clearSelectedCoins(): void {
-    this._selectedCoins = [];
+    this._selectedCoins.set([]);
+  }
+
+  public removeSelectedCoin(coinId: number): void {
+    this._selectedCoins.update((currentCoins) =>
+      currentCoins.filter((coin) => coin.id !== coinId)
+    );
   }
 
   // Increment coins in the coinsArray
@@ -184,10 +201,10 @@ export class CoinsService {
   // Call this when a break is made to update quota
   public updateQuotaForBreak(): void {
     // Only count and process border coins in the last selection
-    const borderCoinsUsed = this._selectedCoins.filter(
+    const borderCoinsUsed = this._selectedCoins().filter(
       (coin) => !coin.entryCoin
     );
-    this.quota += borderCoinsUsed.length;
+    this._quota.update((currentQuota) => currentQuota + borderCoinsUsed.length);
     this._breakCounter++; // Increment break counter
 
     // Set used border coins to 0
@@ -210,14 +227,14 @@ export class CoinsService {
     // Check for end of game and quota win/loss
     if (this._mathsService.turn() >= this._mathsService.turnLimit) {
       if (this.checkForQuotaWin()) {
-        alert('Victory! You met the quota!');
+        this.gameWon.set(true);
       } else {
-        alert('Game Over! You did not meet the quota.');
+        this.gameWon.set(false);
       }
     }
   }
 
   checkForQuotaWin(): boolean {
-    return this.quota >= 20;
+    return this.quota >= this._mathsService.quotaLimit();
   }
 }

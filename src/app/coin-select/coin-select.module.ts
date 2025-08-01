@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { CoinSelectRoutingModule } from './coin-select-rounting.module';
+
+import { CoinSelectRoutingModule } from './coin-select-routing.module';
 
 @NgModule({
   imports: [
@@ -11,8 +12,8 @@ import { CoinSelectRoutingModule } from './coin-select-rounting.module';
     IonicModule,
     CoinSelectRoutingModule,
     FormsModule,
-    ReactiveFormsModule,
+    ReactiveFormsModule
   ],
-  declarations: [],
+  declarations: []
 })
 export class CoinSelectModule {}

@@ -1,0 +1,20 @@
+[
+  {
+    "level": 1,
+    "turns": 15,
+    "quota": 20,
+    "timeLimit": 60
+  },
+  {
+    "level": 2,
+    "turns": 15,
+    "quota": 30,
+    "timeLimit": 60
+  },
+  {
+    "level": 3,
+    "turns": 20,
+    "quota": 50,
+    "timeLimit": 45
+  }
+]
