@@ -1,19 +1,67 @@
 import js from '@eslint/js';
+import angular from 'angular-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier';
-import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import { defineConfig } from 'eslint/config';
+import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
+import globals from 'globals';
+import ts from 'typescript-eslint';
 
-export default defineConfig([
+export default ts.config(
+  {
+    files: ['**/*.ts'],
+    extends: [js.configs.recommended, ...angular.configs.tsRecommended],
+    processor: angular.processInlineTemplates,
+    languageOptions: {
+      globals: {
+        ...globals.browser
+      }
+    },
+    rules: {
+      '@angular-eslint/directive-selector': [
+        'error',
+        {
+          type: 'attribute',
+          prefix: 'app',
+          style: 'camelCase'
+        }
+      ],
+      '@angular-eslint/component-selector': [
+        'error',
+        {
+          type: 'element',
+          prefix: 'app',
+          style: 'kebab-case'
+        }
+      ]
+    }
+  },
+  {
+    files: ['**/*.html'],
+    extends: [
+      ...angular.configs.templateRecommended,
+      ...angular.configs.templateAccessibility
+    ],
+    rules: {}
+  },
+  {
+    files: ['**/*.spec.ts'],
+    languageOptions: {
+      globals: {
+        ...globals.jasmine
+      }
+    },
+    rules: {
+      // your overrides
+    }
+  },
   {
     files: ['**/*.js', '**/*.ts'],
     plugins: {
-      js,
       prettier: prettierPlugin,
-      'simple-import-sort': simpleImportSort
+      'simple-import-sort': simpleImportSortPlugin
     },
-    extends: ['eslint:recommended', 'plugin:prettier/recommended'],
     rules: {
+      ...eslintConfigPrettier.rules,
       'prettier/prettier': [
         'error',
         {
@@ -28,6 +76,5 @@ export default defineConfig([
       'simple-import-sort/exports': 'error',
       'no-unused-vars': 'error'
     }
-  },
-  eslintConfigPrettier // This disables ESLint rules that conflict with Prettier
-]);
+  }
+);

@@ -14,6 +14,7 @@ export class MathsService {
   coinCounter: WritableSignal<number> = signal(0);
   coinUsedSave: number = 0;
   turnLimit = 15;
+  quotaLimit: WritableSignal<number> = signal(20);
 
   constructor() {
     this._coreSphere = 1;
@@ -37,8 +38,8 @@ export class MathsService {
   // }
 
   public changeCoreSphere() {
-    //this._coreSphere = this.getRandomIntInclusive(1, 9);
-    this._coreSphere = 7; // For testing purposes, set to 1
+    this._coreSphere = this.getRandomIntInclusive(1, 9);
+    //this._coreSphere = 7; // For testing purposes, set to 1
   }
 
   public getRandomIntInclusive(min: number, max: number) {
@@ -108,7 +109,6 @@ export class MathsService {
       this.getNextMultiples(0);
       this.currentTotal.set(0);
       this.turn.set(this.turn() + 1);
-      this.break.set(false);
       // Reset coin counter for new turn
     } else {
       // Game over: emit event only, quota check should be handled elsewhere
@@ -125,5 +125,9 @@ export class MathsService {
     const score = coinPoints + multiplePoints;
     this.currentScore.set(this.currentScore() + score);
     return score;
+  }
+
+  public setQuotaLimit(limit: number): void {
+    this.quotaLimit.set(limit);
   }
 }

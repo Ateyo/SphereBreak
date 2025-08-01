@@ -20,7 +20,8 @@ describe('MathsService', () => {
   });
 
   it('should generate random int in range', () => {
-    const min = 1, max = 5;
+    const min = 1,
+      max = 5;
     const value = service.getRandomIntInclusive(min, max);
     expect(value).toBeGreaterThanOrEqual(min);
     expect(value).toBeLessThanOrEqual(max);

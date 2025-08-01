@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+
+import { Coin } from '../interfaces/coin';
 import { CoinsService } from './coins.service';
 import { MathsService } from './maths.service';
-import { Coin } from '../interfaces/coin';
 
 describe('CoinsService', () => {
   let service: CoinsService;
@@ -34,7 +35,7 @@ describe('CoinsService', () => {
     service.clearSelectedCoins();
     service.addSelectedCoin(coin, 99);
     expect(service.selectedCoinsArray.length).toBe(1);
-    expect(service.selectedCoinsArray[0].coin.value).toBe(5);
+    expect(service.selectedCoinsArray[0].value).toBe(5);
   });
 
   it('should clear selected coins', () => {
@@ -45,9 +46,9 @@ describe('CoinsService', () => {
   });
 
   it('should increment coinsArray', () => {
-    const before = service.coinsArray.map(c => c.coin.value);
+    const before = service.coinsArray.map((c) => c.coin.value);
     service.incrementCoinsArray();
-    const after = service.coinsArray.map(c => c.coin.value);
+    const after = service.coinsArray.map((c) => c.coin.value);
     expect(after.length).toBe(before.length);
   });
 

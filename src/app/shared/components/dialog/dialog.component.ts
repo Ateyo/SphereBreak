@@ -1,10 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
+
 import { CoinArray } from '../../interfaces';
 import { CoinComponent } from '../coin/coin.component';
 
@@ -52,10 +53,8 @@ export interface DialogData {
   imports: [MatDialogModule, MatButtonModule, CoinComponent]
 })
 export class DialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+  dialogRef = inject<MatDialogRef<DialogComponent>>(MatDialogRef);
+  data = inject<DialogData>(MAT_DIALOG_DATA);
 
   onConfirm(): void {
     this.dialogRef.close(true);

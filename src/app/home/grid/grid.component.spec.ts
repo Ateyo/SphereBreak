@@ -9,7 +9,7 @@ describe('GridComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(),GridComponent],
+      imports: [IonicModule.forRoot(), GridComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(GridComponent);

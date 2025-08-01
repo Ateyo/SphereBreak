@@ -16,13 +16,11 @@ import { CoinsService } from '../../../shared/services/coins.service';
   styleUrls: ['./coin-form.component.scss']
 })
 export class CoinFormComponent {
+  private router = inject(Router);
+  private _coinsService = inject(CoinsService);
+
   readonly dialog = inject(MatDialog);
   coinNumber = new FormControl();
-
-  constructor(
-    private router: Router,
-    private _coinsService: CoinsService
-  ) {}
 
   get entryCoinsArray(): CoinArray[] {
     return this._coinsService.entryCoinsArray$();
