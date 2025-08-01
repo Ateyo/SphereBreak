@@ -2,18 +2,15 @@ import { TestBed } from '@angular/core/testing';
 
 import { Coin } from '../interfaces/coin';
 import { CoinsService } from './coins.service';
-import { MathsService } from './maths.service';
 
 describe('CoinsService', () => {
   let service: CoinsService;
-  let mathsService: MathsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [CoinsService, MathsService]
+      providers: [CoinsService]
     });
     service = TestBed.inject(CoinsService);
-    mathsService = TestBed.inject(MathsService);
   });
 
   it('should be created', () => {
@@ -52,12 +49,6 @@ describe('CoinsService', () => {
     expect(after.length).toBe(before.length);
   });
 
-  it('should check entryCoinFirst', () => {
-    service.clearSelectedCoins();
-    expect(service.checkEntryCoinFirst(true)).toBeTrue();
-    expect(service.entryCoinFirst).toBeTrue();
-  });
-
   it('should update quota for break', () => {
     service.clearSelectedCoins();
     service.addSelectedCoin({ value: 2, entryCoin: false, id: 1 }, 1);
@@ -67,9 +58,9 @@ describe('CoinsService', () => {
   });
 
   it('should check for quota win', () => {
-    service.quota = 20;
+    service.setQuota(20);
     expect(service.checkForQuotaWin()).toBeTrue();
-    service.quota = 10;
+    service.setQuota(10);
     expect(service.checkForQuotaWin()).toBeFalse();
   });
 });

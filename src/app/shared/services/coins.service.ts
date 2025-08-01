@@ -31,7 +31,7 @@ export class CoinsService {
   gameWon: WritableSignal<boolean> = signal(false);
 
   entryCoinFirst = false;
-  isCoinsSet = false;
+  isCoinsSet: WritableSignal<boolean> = signal(false);
 
   constructor() {
     // Initialize with test coins
@@ -42,20 +42,92 @@ export class CoinsService {
       { id: 4, coin: { value: 8, entryCoin: true } }
     ];
     this._coinsArray = [
-      { id: 101, coin: { value: 1, entryCoin: false } },
-      { id: 102, coin: { value: 2, entryCoin: false } },
-      { id: 103, coin: { value: 3, entryCoin: false } },
-      { id: 104, coin: { value: 4, entryCoin: false } },
-      { id: 105, coin: { value: 5, entryCoin: false } },
-      { id: 106, coin: { value: 6, entryCoin: false } },
-      { id: 107, coin: { value: 7, entryCoin: false } },
-      { id: 108, coin: { value: 8, entryCoin: false } },
-      { id: 109, coin: { value: 9, entryCoin: false } },
-      { id: 110, coin: { value: 1, entryCoin: false } },
-      { id: 111, coin: { value: 2, entryCoin: false } },
-      { id: 112, coin: { value: 3, entryCoin: false } }
+      {
+        id: 101,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 102,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 103,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 104,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 105,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 106,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 107,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 108,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 109,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 110,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 111,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      },
+      {
+        id: 112,
+        coin: {
+          value: this._mathsService.getRandomIntInclusive(1, 9),
+          entryCoin: false
+        }
+      }
     ];
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
 
     effect(() => {
       this.turn = this._mathsService.turn();
@@ -79,7 +151,7 @@ export class CoinsService {
         coin: { ...coin.coin, entryCoin: true }
       }))
     );
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
   }
   get entryCoinsArray(): CoinArray[] {
     return this._entryCoinsArray();
@@ -91,7 +163,7 @@ export class CoinsService {
 
   set coinsArray(value: CoinArray[]) {
     this._coinsArray = value;
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
   }
 
   get selectedCoinsArray(): Coin[] {
@@ -119,15 +191,6 @@ export class CoinsService {
     this.clearSelectedCoins();
   }
 
-  public checkEntryCoinFirst(entryCoin: boolean): boolean {
-    if (entryCoin && this._selectedCoins().length === 0) {
-      this.entryCoinFirst = true;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public addSelectedCoin(coin: Coin, coinId?: number) {
     if (coin !== undefined) {
       this._selectedCoins.update((currentCoins) => [
@@ -138,12 +201,10 @@ export class CoinsService {
           id: coinId // Store the ID with the selected coin
         }
       ]);
-
-      // Use makeAdditions to update total and trigger break logic
-      this._mathsService.makeAdditions(
-        this._selectedCoins().map((c) => c.value)
-      );
     }
+
+    // Use makeAdditions to update total and trigger break logic
+    this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
   }
 
   // Clear selected coins
@@ -155,6 +216,8 @@ export class CoinsService {
     this._selectedCoins.update((currentCoins) =>
       currentCoins.filter((coin) => coin.id !== coinId)
     );
+    // Update the total after removing a coin
+    this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
   }
 
   // Increment coins in the coinsArray

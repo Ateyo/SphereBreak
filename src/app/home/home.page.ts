@@ -1,4 +1,11 @@
-import { Component, effect, inject, OnChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 
@@ -14,7 +21,7 @@ import { WinDialogComponent } from './win-dialog/win-dialog.component';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss']
 })
-export class HomePage implements OnChanges {
+export class HomePage implements OnInit, OnDestroy {
   private _coinsService = inject<CoinsService>(CoinsService);
   private _mathsService = inject<MathsService>(MathsService);
   private toastController = inject<ToastController>(ToastController);
@@ -32,9 +39,14 @@ export class HomePage implements OnChanges {
   coinCounter = 0;
   gameWon = false;
   level = 0;
+
+  private breakTimeout?: ReturnType<typeof setTimeout>;
   @ViewChild(IonToast) toast: IonToast | undefined;
 
   constructor() {
+    effect(() => {
+      this.isCoinsSet = this._coinsService.isCoinsSet();
+    });
     effect(() => {
       this.total = this._mathsService.currentTotal();
       this.nextMultiples = this._mathsService.nextMultiples();
@@ -51,7 +63,7 @@ export class HomePage implements OnChanges {
     effect(() => {
       this.break = this._mathsService.break();
       if (this.break) {
-        setTimeout(() => {
+        this.breakTimeout = setTimeout(() => {
           this.presentBreakToast('middle');
           this._coinsService.updateQuotaForBreak();
           this.startNewTurn();
@@ -59,11 +71,21 @@ export class HomePage implements OnChanges {
         }, 1000);
       }
     });
+
     effect(() => {
       this.score = this._mathsService.currentScore();
     });
+  }
+
+  ngOnInit(): void {
     this.loadLevel(this.level);
-    this.isCoinsSet = this._coinsService.isCoinsSet;
+    this.isCoinsSet = this._coinsService.isCoinsSet();
+  }
+
+  ngOnDestroy(): void {
+    if (this.breakTimeout) {
+      clearTimeout(this.breakTimeout);
+    }
   }
 
   startNewTurn() {
@@ -73,13 +95,7 @@ export class HomePage implements OnChanges {
   }
 
   newTurn() {
-    console.log('newturn');
     this.startNewTurn();
-  }
-
-  ngOnChanges(): void {
-    console.log('home page total', this.total);
-    this.isCoinsSet = this._coinsService.isCoinsSet;
   }
 
   async presentBreakToast(position: 'top' | 'middle' | 'bottom') {
@@ -136,7 +152,6 @@ export class HomePage implements OnChanges {
     this.turnLimit = levels[level].turns;
     this._mathsService.setQuotaLimit(levels[level].quota);
     this._mathsService.turn.set(1);
-    this._mathsService.currentScore.set(0);
     this._coinsService.setQuota(0);
     this._coinsService.reset();
     this.nextMultiples = this._mathsService.getNextMultiples();
