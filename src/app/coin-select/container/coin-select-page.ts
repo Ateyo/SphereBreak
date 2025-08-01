@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+
 import { CoinFormComponent } from '../components/form/coin-form.component';
 
 @Component({
-  selector: 'page-form',
+  selector: 'app-page-form',
   templateUrl: './coin-select-page.html',
   styleUrls: ['./coin-select-page.scss'],
+  standalone: true,
   imports: [CoinFormComponent]
 })
-export class CoinSelectPageComponent implements OnInit {
+export class CoinSelectPageComponent {
   constructor() {}
-
-  ngOnInit() {}
 }

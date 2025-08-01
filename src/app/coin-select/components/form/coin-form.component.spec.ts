@@ -1,9 +1,4 @@
-import {
-  beforeEach,
-  ComponentFixture,
-  TestBed,
-  waitForAsync,
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { CoinFormComponent } from './coin-form.component';
@@ -14,8 +9,7 @@ describe('CoinFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [CoinFormComponent],
-      imports: [IonicModule.forRoot()],
+      imports: [IonicModule.forRoot(), CoinFormComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoinFormComponent);

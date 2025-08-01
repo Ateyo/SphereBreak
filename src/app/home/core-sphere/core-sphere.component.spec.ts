@@ -9,8 +9,7 @@ describe('CoreSphereComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CoreSphereComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), CoreSphereComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoreSphereComponent);

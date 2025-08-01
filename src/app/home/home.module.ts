@@ -7,8 +7,8 @@ import { CoinComponent } from '../shared/components/coin/coin.component';
 import { SharedModule } from '../shared/shared.module';
 import { CoreSphereComponent } from './core-sphere/core-sphere.component';
 import { GridComponent } from './grid/grid.component';
-import { HomePageRoutingModule } from './home-routing.module';
 import { HomePage } from './home.page';
+import { HomePageRoutingModule } from './home-routing.module';
 
 @NgModule({
   imports: [
@@ -20,14 +20,14 @@ import { HomePage } from './home.page';
     HomePage,
     GridComponent,
     CoreSphereComponent,
-    SharedModule,
+    SharedModule
   ],
   exports: [
     CoinComponent,
     HomePage,
     GridComponent,
     CoreSphereComponent,
-    SharedModule,
-  ],
+    SharedModule
+  ]
 })
 export class HomePageModule {}

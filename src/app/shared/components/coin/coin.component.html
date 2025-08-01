@@ -1,4 +1,11 @@
-<div (click)="coinSelection()" class="coin-wrapper">
+<div
+  (click)="coinSelection()"
+  (keyup.enter)="coinSelection()"
+  (keyup.space)="coinSelection()"
+  role="button"
+  tabindex="0"
+  aria-label="Select coin"
+  class="coin-wrapper">
   <div
     class="coin"
     [ngClass]="{

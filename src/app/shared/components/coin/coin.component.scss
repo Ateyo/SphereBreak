@@ -7,7 +7,7 @@
     animation: none;
     color: rgba(128, 128, 128, 0.9);
     font-family: kiwi_font;
-    font-size: 5rem;
+    font-size: 4rem;
     left: 50%;
     pointer-events: none;
     top: 50%;
@@ -19,9 +19,9 @@
     border: 1px solid #5c5551;
     border-radius: 50%;
     cursor: pointer;
-    height: 6rem;
+    height: 5rem;
     justify-content: center;
-    width: 6rem;
+    width: 5rem;
     transition: background-color 0.3s ease-in;
     position: relative;
     -webkit-transform-style: preserve-3d;
@@ -87,8 +87,8 @@
       position: absolute;
       border-radius: 50%;
       content: '';
-      height: 6rem;
-      width: 6rem;
+      height: 5rem;
+      width: 5rem;
       -webkit-transform: translateZ(-0.75em);
       transform: translateZ(-0.75em);
     }
@@ -96,9 +96,9 @@
     &:after {
       content: '';
       position: absolute;
-      height: 6rem;
+      height: 5rem;
       width: 0.75em;
-      left: 2.55rem;
+      left: 2.13rem;
       z-index: -10;
       -webkit-transform: rotateY(-90deg);
       transform: rotateY(-90deg);
@@ -135,8 +135,8 @@
   position: absolute;
   border-radius: 50%;
   content: '';
-  height: 6rem;
-  width: 6rem;
+  height: 5rem;
+  width: 5rem;
   -webkit-transform: translateZ(-0.005em);
   transform: translateZ(-0.005em);
 }
@@ -145,8 +145,8 @@
   position: absolute;
   border-radius: 50%;
   content: '';
-  height: 6rem;
-  width: 6rem;
+  height: 5rem;
+  width: 5rem;
   -webkit-transform: translateZ(-0.755em);
   transform: translateZ(-0.755em);
 }
