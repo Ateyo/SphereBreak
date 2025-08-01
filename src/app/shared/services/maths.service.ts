@@ -53,6 +53,7 @@ export class MathsService {
     selectedCoinsArray.forEach((c) => {
       total += c;
     });
+    this.getNextMultiples(this.currentTotal());
     this.currentTotal.set(total);
     this.checkForBreak(total);
   }
@@ -60,11 +61,6 @@ export class MathsService {
   public checkForBreak(total: number): void {
     if (total > 0 && total % this._coreSphere === 0) {
       this.breakLap();
-    } else {
-      const nextMultiples = this.getNextMultiples(total);
-      if (total > nextMultiples[0]) {
-        this.getNextMultiples(total);
-      }
     }
   }
 
@@ -73,7 +69,7 @@ export class MathsService {
     let count = 0;
     let currentNumber = this._coreSphere;
 
-    while (count < 3) {
+    while (count < 5) {
       if (
         currentNumber % this._coreSphere === 0 &&
         currentNumber > (total ? total : 0)

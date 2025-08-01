@@ -31,7 +31,7 @@ export class CoinsService {
   gameWon: WritableSignal<boolean> = signal(false);
 
   entryCoinFirst = false;
-  isCoinsSet = false;
+  isCoinsSet: WritableSignal<boolean> = signal(false);
 
   constructor() {
     // Initialize with test coins
@@ -55,7 +55,7 @@ export class CoinsService {
       { id: 111, coin: { value: 2, entryCoin: false } },
       { id: 112, coin: { value: 3, entryCoin: false } }
     ];
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
 
     effect(() => {
       this.turn = this._mathsService.turn();
@@ -79,7 +79,7 @@ export class CoinsService {
         coin: { ...coin.coin, entryCoin: true }
       }))
     );
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
   }
   get entryCoinsArray(): CoinArray[] {
     return this._entryCoinsArray();
@@ -91,7 +91,7 @@ export class CoinsService {
 
   set coinsArray(value: CoinArray[]) {
     this._coinsArray = value;
-    this.isCoinsSet = true;
+    this.isCoinsSet.set(true);
   }
 
   get selectedCoinsArray(): Coin[] {
@@ -119,15 +119,6 @@ export class CoinsService {
     this.clearSelectedCoins();
   }
 
-  public checkEntryCoinFirst(entryCoin: boolean): boolean {
-    if (entryCoin && this._selectedCoins().length === 0) {
-      this.entryCoinFirst = true;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   public addSelectedCoin(coin: Coin, coinId?: number) {
     if (coin !== undefined) {
       this._selectedCoins.update((currentCoins) => [
@@ -138,12 +129,10 @@ export class CoinsService {
           id: coinId // Store the ID with the selected coin
         }
       ]);
-
-      // Use makeAdditions to update total and trigger break logic
-      this._mathsService.makeAdditions(
-        this._selectedCoins().map((c) => c.value)
-      );
     }
+
+    // Use makeAdditions to update total and trigger break logic
+    this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
   }
 
   // Clear selected coins
@@ -155,6 +144,8 @@ export class CoinsService {
     this._selectedCoins.update((currentCoins) =>
       currentCoins.filter((coin) => coin.id !== coinId)
     );
+    // Update the total after removing a coin
+    this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
   }
 
   // Increment coins in the coinsArray
