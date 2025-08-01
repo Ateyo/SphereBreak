@@ -16,5 +16,77 @@
     "turns": 20,
     "quota": 50,
     "timeLimit": 45
+  },
+  {
+    "level": 4,
+    "turns": 20,
+    "quota": 70,
+    "timeLimit": 45
+  },
+  {
+    "level": 5,
+    "turns": 25,
+    "quota": 95,
+    "timeLimit": 40
+  },
+  {
+    "level": 6,
+    "turns": 25,
+    "quota": 120,
+    "timeLimit": 40
+  },
+  {
+    "level": 7,
+    "turns": 30,
+    "quota": 150,
+    "timeLimit": 35
+  },
+  {
+    "level": 8,
+    "turns": 30,
+    "quota": 180,
+    "timeLimit": 35
+  },
+  {
+    "level": 9,
+    "turns": 35,
+    "quota": 215,
+    "timeLimit": 30
+  },
+  {
+    "level": 10,
+    "turns": 35,
+    "quota": 250,
+    "timeLimit": 30
+  },
+  {
+    "level": 11,
+    "turns": 40,
+    "quota": 290,
+    "timeLimit": 25
+  },
+  {
+    "level": 12,
+    "turns": 40,
+    "quota": 330,
+    "timeLimit": 25
+  },
+  {
+    "level": 13,
+    "turns": 45,
+    "quota": 380,
+    "timeLimit": 20
+  },
+  {
+    "level": 14,
+    "turns": 45,
+    "quota": 430,
+    "timeLimit": 20
+  },
+  {
+    "level": 15,
+    "turns": 50,
+    "quota": 480,
+    "timeLimit": 15
   }
 ]

@@ -53,8 +53,8 @@ export class MathsService {
     selectedCoinsArray.forEach((c) => {
       total += c;
     });
-    this.getNextMultiples(this.currentTotal());
     this.currentTotal.set(total);
+    this.getNextMultiples(this.currentTotal());
     this.checkForBreak(total);
   }
 
