@@ -11,6 +11,7 @@ import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { take } from 'rxjs';
 
 import levels from '../../assets/levels.json';
+//import levels from '../../assets/levels_tests.json';
 import { CoinsService } from '../shared/services/coins.service';
 import { HighscoreService } from '../shared/services/highscore.service';
 import { MathsService } from '../shared/services/maths.service';
@@ -33,6 +34,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private _highscoreService = inject<HighscoreService>(HighscoreService);
   private _playerService = inject<PlayerService>(PlayerService);
 
+  levelQuota$ = this._coinsService.levelQuota$;
   isCoinsSet = false;
   total: number = 0;
   nextMultiples: Array<number> = [];
@@ -67,20 +69,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
     effect(() => {
       this.break = this._mathsService.break();
       if (this.break) {
-        effect(() => {
-          this.break = this._mathsService.break();
-          if (this.break) {
-            if (this.breakTimeout) {
-              clearTimeout(this.breakTimeout);
-            }
-            this.breakTimeout = setTimeout(() => {
-              this.presentBreakToast('middle');
-              this._coinsService.updateQuotaForBreak();
-              this.startNewTurn();
-              this._mathsService.break.set(false);
-            }, 1000);
-          }
-        });
+        if (this.breakTimeout) {
+          clearTimeout(this.breakTimeout);
+        }
+        this.breakTimeout = setTimeout(() => {
+          this.presentBreakToast('middle');
+          this._coinsService.updateQuotaForBreak();
+          this.startNewTurn();
+          this._mathsService.break.set(false);
+        }, 1000);
       }
     });
 
@@ -139,7 +136,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   handleGameEnd() {
     this.dialogOpen = true;
-    const isWin = this._coinsService.quota >= this._mathsService.quotaLimit();
+    const isWin = this.levelQuota$() >= this._mathsService.quotaLimit();
 
     if (isWin) {
       const isLastLevel = this.level + 1 >= levels.length;
@@ -170,10 +167,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     } else {
       this.openLossDialog();
     }
-  }
-
-  get quota(): number {
-    return this._coinsService.quota;
   }
 
   openWinDialog(isHighscore: boolean) {
@@ -246,7 +239,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this._mathsService.setTurnLimit(levels[level].turns);
     this._mathsService.setQuotaLimit(levels[level].quota);
     this._mathsService.turn.set(1);
-    this._coinsService.setQuota(0);
     this._coinsService.reset();
     this._mathsService.gameEnded.set(false); // Reset gameEnded state on level load
     this.dialogOpen = false; // Reset dialogOpen flag on level load

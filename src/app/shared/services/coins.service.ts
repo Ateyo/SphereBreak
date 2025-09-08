@@ -20,6 +20,7 @@ export class CoinsService {
 
   private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([]);
   private _quota: WritableSignal<number> = signal(0);
+  private _levelQuota: WritableSignal<number> = signal(0);
   private _coinsArray: CoinArray[] = [
     { id: 1, coin: { value: 0, entryCoin: false } }
   ];
@@ -32,6 +33,13 @@ export class CoinsService {
   isCoinsSet: WritableSignal<boolean> = signal(false);
 
   constructor() {
+    // Initialize with test coins
+    this.entryCoinsArray = [
+      { id: 1, coin: { value: 2, entryCoin: true } },
+      { id: 2, coin: { value: 3, entryCoin: true } },
+      { id: 3, coin: { value: 5, entryCoin: true } },
+      { id: 4, coin: { value: 8, entryCoin: true } }
+    ];
     this._coinsArray = [
       {
         id: 101,
@@ -147,11 +155,13 @@ export class CoinsService {
       id: this._entryCoinsArray().length + 1,
       coin: { value, entryCoin: true }
     };
-    this._entryCoinsArray.update(coins => [...coins, newCoin]);
+    this._entryCoinsArray.update((coins) => [...coins, newCoin]);
   }
 
   removeEntryCoin(coin: CoinArray) {
-    this._entryCoinsArray.update(coins => coins.filter(c => c.id !== coin.id));
+    this._entryCoinsArray.update((coins) =>
+      coins.filter((c) => c.id !== coin.id)
+    );
   }
 
   get coinsArray(): CoinArray[] {
@@ -174,17 +184,30 @@ export class CoinsService {
   }
 
   // Quota tracking
-  get quota(): number {
-    return this._quota();
+  get quota$() {
+    return this._quota.asReadonly();
+  }
+
+  get levelQuota$() {
+    return this._levelQuota.asReadonly();
   }
 
   public setQuota(val: number) {
     this._quota.set(val);
   }
 
+  public updateQuota(): void {
+    const borderCoinsUsed = this._selectedCoins().filter(
+      (coin) => !coin.entryCoin
+    );
+    this.setQuota(borderCoinsUsed.length);
+    this._levelQuota.update((currentLevelQuota) => currentLevelQuota + borderCoinsUsed.length);
+  }
+
   public reset() {
     this.gameWon.set(false);
     this.setQuota(0);
+    this._levelQuota.set(0);
     this.clearSelectedCoins();
   }
 
@@ -202,11 +225,13 @@ export class CoinsService {
 
     // Use makeAdditions to update total and trigger break logic
     this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
+    this.updateQuota();
   }
 
   // Clear selected coins
   public clearSelectedCoins(): void {
     this._selectedCoins.set([]);
+    this.updateQuota();
   }
 
   public removeSelectedCoin(coinId: number): void {
@@ -215,6 +240,7 @@ export class CoinsService {
     );
     // Update the total after removing a coin
     this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
+    this.updateQuota();
   }
 
   // Increment coins in the coinsArray
@@ -260,14 +286,12 @@ export class CoinsService {
 
   // Call this when a break is made to update quota
   public updateQuotaForBreak(): void {
-    // Only count and process border coins in the last selection
-    const borderCoinsUsed = this._selectedCoins().filter(
-      (coin) => !coin.entryCoin
-    );
-    this._quota.update((currentQuota) => currentQuota + borderCoinsUsed.length);
     this._breakCounter++; // Increment break counter
 
     // Set used border coins to 0
+    const borderCoinsUsed = this._selectedCoins().filter(
+      (coin) => !coin.entryCoin
+    );
     borderCoinsUsed.forEach((usedCoin) => {
       if (usedCoin.id) {
         const coin = this._coinsArray.find((c) => c.id === usedCoin.id);
@@ -295,7 +319,7 @@ export class CoinsService {
   }
 
   checkForQuotaWin(): boolean {
-    return this.quota >= this._mathsService.quotaLimit();
+    return this._levelQuota() >= this._mathsService.quotaLimit();
   }
 
   public updateCoin(coin: CoinArray, newValue: string) {

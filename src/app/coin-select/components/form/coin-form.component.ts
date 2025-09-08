@@ -38,16 +38,9 @@ export class CoinFormComponent {
     1,
     [Validators.required, Validators.min(1), Validators.max(9)] // <-- Add validators for required, min, max
   );
-  playerInitials: string = this._playerService.getInitials();
 
   get entryCoinsArray(): CoinArray[] {
     return this._coinsService.entryCoinsArray$();
-  }
-
-  onInitialsChange(event: Event) {
-    const inputElement = event.target as HTMLInputElement;
-    this.playerInitials = inputElement.value;
-    this._playerService.setInitials(this.playerInitials);
   }
 
   onSubmit() {

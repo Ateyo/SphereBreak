@@ -6,18 +6,9 @@
 
   <div *ngIf="data.isHighscore">
     <h3>New High Score!</h3>
-    <form [formGroup]="highscoreForm" (ngSubmit)="saveHighscore()">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="highscoreForm.invalid">
-        Save High Score
-      </button>
-      <button mat-button type="button" (click)="cancelSave()">
-        Don't Save
-      </button>
-    </form>
+    <button mat-raised-button color="primary" (click)="openHighscoreEntry()">
+      Save score
+    </button>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
