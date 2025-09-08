@@ -13,8 +13,9 @@ export class MathsService {
   break: WritableSignal<boolean> = signal(false);
   coinCounter: WritableSignal<number> = signal(0);
   coinUsedSave: number = 0;
-  turnLimit = 15;
+  turnLimit: WritableSignal<number> = signal(15);
   quotaLimit: WritableSignal<number> = signal(20);
+  gameEnded: WritableSignal<boolean> = signal(false);
 
   constructor() {
     this._coreSphere = 1;
@@ -70,17 +71,28 @@ export class MathsService {
   public getNextMultiples(total?: number): number[] {
     const result: number[] = [];
     let count = 0;
-    let currentNumber = this._coreSphere;
+    let currentNumber = total ? total + 1 : this._coreSphere;
 
-    while (count < 5) {
-      if (
-        currentNumber % this._coreSphere === 0 &&
-        currentNumber > (total ? total : 0)
-      ) {
+    if (this._coreSphere === 1) {
+      // If core sphere is 1, generate a sequence of 3 numbers starting from total + 1
+      currentNumber = total ? total + 1 : 1;
+      while (count < 3) {
         result.push(currentNumber);
+        currentNumber++;
         count++;
       }
-      currentNumber++;
+    } else {
+      // Existing logic for core sphere not equal to 1
+      while (count < 5) {
+        if (
+          currentNumber % this._coreSphere === 0 &&
+          currentNumber > (total ? total : 0)
+        ) {
+          result.push(currentNumber);
+          count++;
+        }
+        currentNumber++;
+      }
     }
     this.nextMultiples.set(result);
     return result;
@@ -102,7 +114,7 @@ export class MathsService {
   }
 
   public newTurn() {
-    if (this.turn() < this.turnLimit) {
+    if (this.turn() < this.turnLimit()) {
       console.log('Starting new turn: ' + this.turn());
       this.changeCoreSphere();
       this.getNextMultiples(0);
@@ -110,11 +122,9 @@ export class MathsService {
       this._numberOfCoinsAdded = 0;
       this.turn.set(this.turn() + 1);
       // Reset coin counter for new turn
-    } else {
-      // Game over: emit event only, quota check should be handled elsewhere
-      this.break.set(false);
-      // Optionally emit a game over event here
-      //@Todo add game over logic
+    } else if (this.turn() >= this.turnLimit()) {
+      console.log('end of turns');
+      this.gameEnded.set(true);
     }
   }
 
@@ -131,5 +141,9 @@ export class MathsService {
 
   public setQuotaLimit(limit: number): void {
     this.quotaLimit.set(limit);
+  }
+
+  public setTurnLimit(limit: number): void {
+    this.turnLimit.set(limit);
   }
 }

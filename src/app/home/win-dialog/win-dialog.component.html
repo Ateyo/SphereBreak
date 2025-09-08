@@ -1,6 +1,24 @@
 <h2 mat-dialog-title>Congratulations!</h2>
 <mat-dialog-content>
-  <p>You have met the quota. What would you like to do next?</p>
+  <p>You have met the quota.</p>
+  <p>Your Score: {{ data.score }}</p>
+  <p>Level Completed: {{ data.level }}</p>
+
+  <div *ngIf="data.isHighscore">
+    <h3>New High Score!</h3>
+    <form [formGroup]="highscoreForm" (ngSubmit)="saveHighscore()">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="highscoreForm.invalid">
+        Save High Score
+      </button>
+      <button mat-button type="button" (click)="cancelSave()">
+        Don't Save
+      </button>
+    </form>
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button [mat-dialog-close]="true">Replay Level</button>

@@ -1,10 +1,15 @@
 import js from '@eslint/js';
 import angular from 'angular-eslint';
-import eslintConfigPrettier from 'eslint-config-prettier';
 import prettierPlugin from 'eslint-plugin-prettier';
 import simpleImportSortPlugin from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import ts from 'typescript-eslint';
+
+function sanitizeGlobals(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key.trim(), value])
+  );
+}
 
 export default ts.config(
   {
@@ -13,7 +18,7 @@ export default ts.config(
     processor: angular.processInlineTemplates,
     languageOptions: {
       globals: {
-        ...globals.browser
+        ...sanitizeGlobals(globals.browser)
       }
     },
     rules: {
@@ -47,7 +52,7 @@ export default ts.config(
     files: ['**/*.spec.ts'],
     languageOptions: {
       globals: {
-        ...globals.jasmine
+        ...sanitizeGlobals(globals.jasmine)
       }
     },
     rules: {
@@ -61,7 +66,6 @@ export default ts.config(
       'simple-import-sort': simpleImportSortPlugin
     },
     rules: {
-      ...eslintConfigPrettier.rules,
       'prettier/prettier': [
         'error',
         {

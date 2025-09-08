@@ -287,8 +287,8 @@ export class CoinsService {
       }
     });
 
-    // Check for end of game and quota win/loss
-    if (this._mathsService.turn() >= this._mathsService.turnLimit) {
+    // Check for end of game and quota win/loss only when turns are exceeded
+    if (this._mathsService.turn() > this._mathsService.turnLimit()) {
       if (this.checkForQuotaWin()) {
         this.gameWon.set(true);
       } else {
@@ -299,5 +299,17 @@ export class CoinsService {
 
   checkForQuotaWin(): boolean {
     return this.quota >= this._mathsService.quotaLimit();
+  }
+
+  public updateCoin(coin: CoinArray, newValue: string) {
+    const entryCoin = this._entryCoinsArray().find((c) => c.id === coin.id);
+    if (entryCoin) {
+      const parsedValue = parseInt(newValue, 10);
+      if (isNaN(parsedValue) || parsedValue < 0 || parsedValue > 9) {
+        console.error('Invalid coin value. Must be between 0 and 9.');
+        return;
+      }
+      entryCoin.coin.value = parsedValue;
+    }
   }
 }

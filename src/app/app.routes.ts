@@ -7,13 +7,18 @@ export const routes: Routes = [
       import('./home/home.module').then((m) => m.HomePageModule)
   },
   {
-    path: 'form',
+    path: 'coin-select',
     loadChildren: () =>
       import('./coin-select/coin-select.module').then((m) => m.CoinSelectModule)
   },
   {
+    path: 'highscores',
+    loadChildren: () =>
+      import('./highscore/highscore.module').then((m) => m.HighscoreModule)
+  },
+  {
     path: '',
-    redirectTo: 'form',
-    pathMatch: 'full'
+    loadChildren: () =>
+      import('./main-menu/main-menu.module').then((m) => m.MainMenuModule)
   }
 ];

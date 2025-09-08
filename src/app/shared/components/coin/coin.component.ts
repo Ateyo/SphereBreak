@@ -61,7 +61,7 @@ export class CoinComponent implements OnChanges {
       if (
         this._coinsService.selectedCoinsArray.some((c) => c.id === this.coinId)
       ) {
-        this._coinsService.removeSelectedCoin(this.coinId);
+        // If already selected, do nothing (no toggling)
       } else {
         this._coinsService.addSelectedCoin(coinToAdd, this.coinId);
       }
@@ -75,7 +75,7 @@ export class CoinComponent implements OnChanges {
       } else if (
         this._coinsService.selectedCoinsArray.some((c) => c.id === this.coinId)
       ) {
-        this._coinsService.removeSelectedCoin(this.coinId);
+        // If already selected, do nothing (no toggling)
       }
     }
   }
