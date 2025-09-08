@@ -18,9 +18,7 @@ export class CoinsService {
   turn: number = 1;
   coinSave: Array<{ id: number; breakCount: number }> = [];
 
-  private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([
-    { id: 1, coin: { value: 0, entryCoin: true } }
-  ]);
+  private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([]);
   private _quota: WritableSignal<number> = signal(0);
   private _coinsArray: CoinArray[] = [
     { id: 1, coin: { value: 0, entryCoin: false } }
@@ -34,13 +32,6 @@ export class CoinsService {
   isCoinsSet: WritableSignal<boolean> = signal(false);
 
   constructor() {
-    // Initialize with test coins
-    this.entryCoinsArray = [
-      { id: 1, coin: { value: 2, entryCoin: true } },
-      { id: 2, coin: { value: 3, entryCoin: true } },
-      { id: 3, coin: { value: 5, entryCoin: true } },
-      { id: 4, coin: { value: 8, entryCoin: true } }
-    ];
     this._coinsArray = [
       {
         id: 101,
@@ -132,12 +123,6 @@ export class CoinsService {
     effect(() => {
       this.turn = this._mathsService.turn();
     });
-    // Subscribe to break$ to update quota on break
-    // this._mathsService.break$.subscribe((isBreak) => {
-    //   if (isBreak) {
-    //     this.updateQuotaForBreak();
-    //   }
-    // });
   }
 
   get entryCoinsArray$() {
@@ -155,6 +140,18 @@ export class CoinsService {
   }
   get entryCoinsArray(): CoinArray[] {
     return this._entryCoinsArray();
+  }
+
+  addEntryCoin(value: number) {
+    const newCoin: CoinArray = {
+      id: this._entryCoinsArray().length + 1,
+      coin: { value, entryCoin: true }
+    };
+    this._entryCoinsArray.update(coins => [...coins, newCoin]);
+  }
+
+  removeEntryCoin(coin: CoinArray) {
+    this._entryCoinsArray.update(coins => coins.filter(c => c.id !== coin.id));
   }
 
   get coinsArray(): CoinArray[] {
