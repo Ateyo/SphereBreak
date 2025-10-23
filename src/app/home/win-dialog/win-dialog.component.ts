@@ -6,7 +6,12 @@ import {
   inject
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog';
 import { HighscoreEntryComponent } from '../highscore-entry/highscore-entry.component';
 
 interface WinDialogData {
@@ -21,14 +26,11 @@ interface WinDialogData {
   styleUrls: ['./win-dialog.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatDialogModule,
-    CommonModule,
-    MatButtonModule
-  ]
+  imports: [MatDialogModule, CommonModule, MatButtonModule]
 })
 export class WinDialogComponent {
   private dialog = inject(MatDialog);
+  private dialogRef = inject(MatDialogRef<WinDialogComponent>);
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: WinDialogData) {}
 
@@ -38,5 +40,18 @@ export class WinDialogComponent {
         score: this.data.score
       }
     });
+  }
+
+  quitAndSaveScore(): void {
+    this.dialog
+      .open(HighscoreEntryComponent, {
+        data: {
+          score: this.data.score
+        }
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.dialogRef.close('quit');
+      });
   }
 }

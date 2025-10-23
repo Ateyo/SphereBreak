@@ -3,11 +3,17 @@
   <p>Your score: {{ data.score }}</p>
   <div class="initials-container">
     <div *ngFor="let initial of initials; let i = index" class="initial-char">
-      <button mat-icon-button (click)="changeChar(i, 1)">
+      <button
+        mat-icon-button
+        (click)="changeChar(i, 1)"
+        [attr.aria-label]="'Increase character ' + (i + 1)">
         <mat-icon>arrow_drop_up</mat-icon>
       </button>
       <span>{{ initial }}</span>
-      <button mat-icon-button (click)="changeChar(i, -1)">
+      <button
+        mat-icon-button
+        (click)="changeChar(i, -1)"
+        [attr.aria-label]="'Decrease character ' + (i + 1)">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
     </div>

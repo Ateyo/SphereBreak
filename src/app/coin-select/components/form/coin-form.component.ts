@@ -45,7 +45,7 @@ export class CoinFormComponent {
 
   onSubmit() {
     if (this.entryCoinsArray.length < 4) {
-      if (this.coinNumber.value !== null) {
+      if (this.coinNumber.valid && this.coinNumber.value !== null) {
         this._coinsService.addEntryCoin(this.coinNumber.value);
       }
     } 

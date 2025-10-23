@@ -151,8 +151,12 @@ export class CoinsService {
   }
 
   addEntryCoin(value: number) {
+    const maxId =
+      this._entryCoinsArray().length > 0
+        ? Math.max(...this._entryCoinsArray().map((c) => c.id))
+        : 0;
     const newCoin: CoinArray = {
-      id: this._entryCoinsArray().length + 1,
+      id: maxId + 1,
       coin: { value, entryCoin: true }
     };
     this._entryCoinsArray.update((coins) => [...coins, newCoin]);
@@ -201,7 +205,9 @@ export class CoinsService {
       (coin) => !coin.entryCoin
     );
     this.setQuota(borderCoinsUsed.length);
-    this._levelQuota.update((currentLevelQuota) => currentLevelQuota + borderCoinsUsed.length);
+    this._levelQuota.update(
+      (currentLevelQuota) => currentLevelQuota + borderCoinsUsed.length
+    );
   }
 
   public reset() {

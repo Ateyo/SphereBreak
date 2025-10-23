@@ -7,6 +7,7 @@ import {
   ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { take } from 'rxjs';
 
@@ -33,6 +34,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private dialog = inject<MatDialog>(MatDialog);
   private _highscoreService = inject<HighscoreService>(HighscoreService);
   private _playerService = inject<PlayerService>(PlayerService);
+  private router = inject(Router);
 
   levelQuota$ = this._coinsService.levelQuota$;
   isCoinsSet = false;
@@ -182,11 +184,14 @@ export class HomePageComponent implements OnInit, OnDestroy {
           this.replay();
         } else if (result === false) {
           this.nextLevel();
+        } else if (result === 'quit') {
+          this.quit();
         }
       },
       error: (error) => {
         console.error('Error closing win dialog:', error);
         this.dialogOpen = false; // Ensure flag is reset even on error
+        this._mathsService.gameEnded.set(false); // Reset gameEnded state even on error
         this.presentToastError('An error occurred. Please try again.');
       }
     });
@@ -229,6 +234,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
     } else {
       console.log('All levels completed!');
     }
+  }
+
+  quit() {
+    this.router.navigate(['/']);
   }
 
   loadLevel(level: number) {

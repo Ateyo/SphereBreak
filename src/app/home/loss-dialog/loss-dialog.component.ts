@@ -60,6 +60,7 @@ export class LossDialogComponent {
   }
 
   openHighscoreEntry(): void {
+    this.dialogRef.close();
     this.dialog.open(HighscoreEntryComponent, {
       data: {
         score: this.score

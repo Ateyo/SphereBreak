@@ -14,4 +14,7 @@
 <mat-dialog-actions>
   <button mat-button [mat-dialog-close]="true">Replay Level</button>
   <button mat-button [mat-dialog-close]="false">Next Level</button>
+  <button mat-button color="warn" (click)="quitAndSaveScore()">
+    Quit & Save Score
+  </button>
 </mat-dialog-actions>
