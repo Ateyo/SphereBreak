@@ -48,7 +48,7 @@ export class CoinFormComponent {
       if (this.coinNumber.valid && this.coinNumber.value !== null) {
         this._coinsService.addEntryCoin(this.coinNumber.value);
       }
-    } 
+    }
   }
 
   removeCoin(coin: CoinArray) {
