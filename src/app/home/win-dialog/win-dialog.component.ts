@@ -3,7 +3,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   Inject,
-  inject
+  inject,
+  Input
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
@@ -12,6 +13,7 @@ import {
   MatDialogModule,
   MatDialogRef
 } from '@angular/material/dialog';
+
 import { HighscoreEntryComponent } from '../highscore-entry/highscore-entry.component';
 
 interface WinDialogData {
@@ -32,12 +34,20 @@ export class WinDialogComponent {
   private dialog = inject(MatDialog);
   private dialogRef = inject(MatDialogRef<WinDialogComponent>);
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: WinDialogData) {}
+  @Input() score!: number;
+  @Input() level!: number;
+  @Input() isHighscore!: boolean;
+
+  constructor(@Inject(MAT_DIALOG_DATA) private data: WinDialogData) {
+    this.score = this.data.score;
+    this.level = this.data.level;
+    this.isHighscore = this.data.isHighscore;
+  }
 
   openHighscoreEntry(): void {
     this.dialog.open(HighscoreEntryComponent, {
       data: {
-        score: this.data.score
+        score: this.score
       }
     });
   }
@@ -46,7 +56,7 @@ export class WinDialogComponent {
     this.dialog
       .open(HighscoreEntryComponent, {
         data: {
-          score: this.data.score
+          score: this.score
         }
       })
       .afterClosed()

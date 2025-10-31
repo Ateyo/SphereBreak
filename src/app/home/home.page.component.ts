@@ -1,4 +1,6 @@
+import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   effect,
   inject,
@@ -25,7 +27,8 @@ import { WinDialogComponent } from './win-dialog/win-dialog.component';
   selector: 'app-home-page',
   imports: [GridComponent, IonicModule],
   templateUrl: 'home.page.component.html',
-  styleUrls: ['home.page.component.scss']
+  styleUrls: ['home.page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit, OnDestroy {
   private _coinsService = inject<CoinsService>(CoinsService);
@@ -37,17 +40,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
   levelQuota$ = this._coinsService.levelQuota$;
-  isCoinsSet = false;
-  total: number = 0;
-  nextMultiples: Array<number> = [];
-  break = false;
-  score: number = 0;
-  turn: number = 1;
-  turnLimit: number = 15;
-  quotaLimit: number = 0;
-  echo = 0;
-  coinCounter = 0;
-  gameWon = false;
+  isCoinsSet$ = this._coinsService.isCoinsSet.asReadonly();
+  total$ = this._mathsService.currentTotal.asReadonly();
+  nextMultiples$ = this._mathsService.nextMultiples.asReadonly();
+  break$ = this._mathsService.break.asReadonly();
+  score$ = this._mathsService.currentScore.asReadonly();
+  turn$ = this._mathsService.turn.asReadonly();
+  turnLimit$ = this._mathsService.turnLimit.asReadonly();
+  quotaLimit$ = this._mathsService.quotaLimit.asReadonly();
+  echo$ = this._mathsService.echo.asReadonly();
+  coinCounter$ = this._mathsService.coinCounter.asReadonly();
+  gameWon$ = this._coinsService.gameWon.asReadonly();
   level = 0;
   private dialogOpen = false;
 
@@ -56,21 +59,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      this.isCoinsSet = this._coinsService.isCoinsSet();
-    });
-    effect(() => {
-      this.total = this._mathsService.currentTotal();
-      this.nextMultiples = this._mathsService.nextMultiples();
-      this.turn = this._mathsService.turn();
-      this.turnLimit = this._mathsService.turnLimit();
-      this.echo = this._mathsService.echo();
-      this.coinCounter = this._mathsService.coinCounter();
-      this.quotaLimit = this._mathsService.quotaLimit();
-    });
-
-    effect(() => {
-      this.break = this._mathsService.break();
-      if (this.break) {
+      if (this.break$()) {
         if (this.breakTimeout) {
           clearTimeout(this.breakTimeout);
         }
@@ -84,10 +73,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      this.score = this._mathsService.currentScore();
-    });
-
-    effect(() => {
       if (this._mathsService.gameEnded() && !this.dialogOpen) {
         this.handleGameEnd();
       }
@@ -96,7 +81,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadLevel(this.level);
-    this.isCoinsSet = this._coinsService.isCoinsSet();
   }
 
   ngOnDestroy(): void {
@@ -138,7 +122,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   handleGameEnd() {
     this.dialogOpen = true;
-    const isWin = this.levelQuota$() >= this._mathsService.quotaLimit();
+    const isWin = this.levelQuota$() >= this.quotaLimit$();
 
     if (isWin) {
       const isLastLevel = this.level + 1 >= levels.length;
@@ -149,7 +133,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
           next: (currentHighscores) => {
             const qualifiesForHighscore =
               currentHighscores.length < 10 ||
-              this.score >
+              this.score$() >
                 currentHighscores[currentHighscores.length - 1].score;
 
             if (isLastLevel && qualifiesForHighscore) {
@@ -173,7 +157,11 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   openWinDialog(isHighscore: boolean) {
     const dialogRef = this.dialog.open(WinDialogComponent, {
-      data: { score: this.score, level: this.level, isHighscore: isHighscore }
+      data: {
+        score: this.score$(),
+        level: this.level,
+        isHighscore: isHighscore
+      }
     });
 
     dialogRef.afterClosed().subscribe({
@@ -199,7 +187,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   openLossDialog() {
     const dialogRef = this.dialog.open(LossDialogComponent, {
-      data: { score: this.score, level: this.level }
+      data: { score: this.score$(), level: this.level }
     });
 
     dialogRef.afterClosed().subscribe({
@@ -251,6 +239,5 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this._coinsService.reset();
     this._mathsService.gameEnded.set(false); // Reset gameEnded state on level load
     this.dialogOpen = false; // Reset dialogOpen flag on level load
-    this.nextMultiples = this._mathsService.getNextMultiples();
   }
 }

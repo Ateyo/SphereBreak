@@ -1,10 +1,10 @@
 <h2 mat-dialog-title>Congratulations!</h2>
 <mat-dialog-content>
   <p>You have met the quota.</p>
-  <p>Your Score: {{ data.score }}</p>
-  <p>Level Completed: {{ data.level }}</p>
+  <p>Your Score: {{ score }}</p>
+  <p>Level Completed: {{ level }}</p>
 
-  <div *ngIf="data.isHighscore">
+  <div *ngIf="isHighscore">
     <h3>New High Score!</h3>
     <button mat-raised-button color="primary" (click)="openHighscoreEntry()">
       Save score

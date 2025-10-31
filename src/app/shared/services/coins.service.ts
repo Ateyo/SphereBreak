@@ -21,9 +21,9 @@ export class CoinsService {
   private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([]);
   private _quota: WritableSignal<number> = signal(0);
   private _levelQuota: WritableSignal<number> = signal(0);
-  private _coinsArray: CoinArray[] = [
+  private _coinsArray: WritableSignal<CoinArray[]> = signal([
     { id: 1, coin: { value: 0, entryCoin: false } }
-  ];
+  ]);
   private _selectedCoins: WritableSignal<Array<Coin>> = signal([]);
   private _breakCounter = 0; // Track number of breaks
   private _coinZeroBreaks = new Map<number, number>(); // Track at which break count each coin was set to 0
@@ -40,7 +40,7 @@ export class CoinsService {
       { id: 3, coin: { value: 5, entryCoin: true } },
       { id: 4, coin: { value: 8, entryCoin: true } }
     ];
-    this._coinsArray = [
+    this._coinsArray.set([
       {
         id: 101,
         coin: {
@@ -125,7 +125,7 @@ export class CoinsService {
           entryCoin: false
         }
       }
-    ];
+    ]);
     this.isCoinsSet.set(true);
 
     effect(() => {
@@ -168,12 +168,12 @@ export class CoinsService {
     );
   }
 
-  get coinsArray(): CoinArray[] {
-    return this._coinsArray;
+  get coinsArray$() {
+    return this._coinsArray.asReadonly();
   }
 
   set coinsArray(value: CoinArray[]) {
-    this._coinsArray = value;
+    this._coinsArray.set(value);
     this.isCoinsSet.set(true);
   }
 
@@ -255,30 +255,34 @@ export class CoinsService {
   // If a coin's value is 0, it will be set to a random value between 1 and 9 after 3 breaks
   // If a coin's value is between 1 and 8, it will be incremented by 1
   public incrementCoinsArray(): void {
-    this.coinsArray.forEach((coin) => {
-      if (!coin.coin.entryCoin) {
-        // Skip entry coins
-        if (coin.coin.value === 9) {
-          this.coinSave.push({
-            id: coin.id,
-            breakCount: this._mathsService.turn()
-          });
-          coin.coin.value = 0;
-        } else if (coin.coin.value === 0) {
-          const savedCoin = this.coinSave.find((c) => c.id === coin.id);
-          if (savedCoin && this.countTurns(savedCoin.breakCount)) {
-            coin.coin.value = this._mathsService.getRandomIntInclusive(1, 9);
-            // Remove from coinSave as it's no longer at 0
-            this.coinSave = this.coinSave.filter((c) => c.id !== coin.id);
+    this._coinsArray.update((coins) =>
+      coins.map((coin) => {
+        if (!coin.coin.entryCoin) {
+          // Skip entry coins
+          if (coin.coin.value === 9) {
+            this.coinSave.push({
+              id: coin.id,
+              breakCount: this._mathsService.turn()
+            });
+            return { ...coin, coin: { ...coin.coin, value: 0 } };
+          } else if (coin.coin.value === 0) {
+            const savedCoin = this.coinSave.find((c) => c.id === coin.id);
+            if (savedCoin && this.countTurns(savedCoin.breakCount)) {
+              const newValue = this._mathsService.getRandomIntInclusive(1, 9);
+              // Remove from coinSave as it's no longer at 0
+              this.coinSave = this.coinSave.filter((c) => c.id !== coin.id);
+              return { ...coin, coin: { ...coin.coin, value: newValue } };
+            }
+          } else {
+            return {
+              ...coin,
+              coin: { ...coin.coin, value: coin.coin.value + 1 }
+            };
           }
-        } else {
-          coin.coin.value++;
         }
-      }
-    });
-
-    // Trigger change detection
-    this._coinsArray = [...this._coinsArray];
+        return coin;
+      })
+    );
   }
 
   // countTurns before a coin needs to reappear
@@ -300,9 +304,13 @@ export class CoinsService {
     );
     borderCoinsUsed.forEach((usedCoin) => {
       if (usedCoin.id) {
-        const coin = this._coinsArray.find((c) => c.id === usedCoin.id);
+        const coin = this._coinsArray().find((c) => c.id === usedCoin.id);
         if (coin) {
-          coin.coin.value = 0;
+          this._coinsArray.update((coins) =>
+            coins.map((c) =>
+              c.id === coin.id ? { ...c, coin: { ...c.coin, value: 0 } } : c
+            )
+          );
 
           this.coinSave.push({
             id: usedCoin.id,

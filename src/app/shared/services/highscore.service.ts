@@ -1,10 +1,9 @@
-import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http'; // Import HttpHeaders
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 import { Highscore } from '../interfaces/highscore.interface';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,11 +22,19 @@ export class HighscoreService {
   }
 
   loadHighscores(): Observable<Highscore[]> {
-    return this.http.get<Highscore[]>(this.getApiUrl, { headers: this.getHeaders() });
+    return this.http.get<Highscore[]>(this.getApiUrl, {
+      headers: this.getHeaders()
+    });
   }
 
-  addHighscore(initials: string, score: number, level: number): Observable<any> {
+  addHighscore(
+    initials: string,
+    score: number,
+    level: number
+  ): Observable<any> {
     const newHighscore = { initials, score, level };
-    return this.http.post(this.saveApiUrl, newHighscore, { headers: this.getHeaders() });
+    return this.http.post(this.saveApiUrl, newHighscore, {
+      headers: this.getHeaders()
+    });
   }
 }
