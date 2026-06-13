@@ -19,7 +19,9 @@ export const routes: Routes = [
   {
     path: 'coin-prototype',
     loadComponent: () =>
-      import('./coin-prototype/coin-prototype.component').then((m) => m.CoinPrototypeComponent)
+      import('./coin-prototype/coin-prototype.component').then(
+        (m) => m.CoinPrototypeComponent
+      )
   },
   {
     path: '',

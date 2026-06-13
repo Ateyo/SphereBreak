@@ -10,7 +10,11 @@ describe('HomePageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, IonicModule.forRoot(), HomePageComponent]
+      imports: [
+        HttpClientTestingModule,
+        IonicModule.forRoot(),
+        HomePageComponent
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomePageComponent);

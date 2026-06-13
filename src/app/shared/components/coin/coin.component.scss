@@ -2,6 +2,35 @@
   display: flex;
   position: relative;
 
+  @media only screen and (max-width: 600px) {
+    .coin {
+      height: 3.5rem;
+      width: 3.5rem;
+
+      &:before,
+      &:after {
+        height: 3.5rem;
+        width: 3.5rem;
+      }
+
+      &:after {
+        width: 0.5em;
+        left: 1.5rem;
+      }
+    }
+
+    .tails,
+    .heads {
+      height: 3.5rem;
+      width: 3.5rem;
+    }
+
+    & .coin-number {
+      font-size: 2.5rem;
+    }
+  }
+
+
   & .coin-number {
     position: absolute;
     animation: none;

@@ -1,10 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  effect,
-  inject,
-  Input
-} from '@angular/core';
+import { Component, effect, inject, Input } from '@angular/core';
 
 import { GridEngine } from '../../services/grid-engine.service';
 
@@ -24,9 +19,9 @@ export class CoinComponent {
 
   constructor() {
     effect(() => {
-      this.selectedCoin = this._gridEngine.selectedCoins$().some(
-        (c) => c.id === this.coinId && c.entryCoin === this.entryCoin
-      );
+      this.selectedCoin = this._gridEngine
+        .selectedCoins$()
+        .some((c) => c.id === this.coinId && c.entryCoin === this.entryCoin);
     });
   }
 

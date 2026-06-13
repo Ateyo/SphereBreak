@@ -10,6 +10,10 @@
     transform: translate(-50%, -50%);
   }
 
+  @media only screen and (max-width: 600px) {
+    gap: 0.15rem;
+  }
+
   app-coin {
     margin: 0.25rem auto;
 

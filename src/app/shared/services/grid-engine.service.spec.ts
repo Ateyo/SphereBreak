@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { TurnEngine } from './turn-engine.service';
+
 import { GridEngine } from './grid-engine.service';
+import { TurnEngine } from './turn-engine.service';
 
 describe('GridEngine', () => {
   let engine: GridEngine;
@@ -37,14 +38,20 @@ describe('GridEngine', () => {
 
   it('selectCoin rejects border coin when no entry coin selected', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 3, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 3, entryCoin: false }]
+    );
     engine.selectCoin(101);
     expect(engine.selectedCoins$().length).toBe(0);
   });
 
   it('selectCoin allows border coin after entry coin selected', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     engine.selectCoin(1);
     engine.selectCoin(101);
     expect(engine.selectedCoins$().length).toBe(2);
@@ -60,7 +67,10 @@ describe('GridEngine', () => {
 
   it('confirmBreak increments levelQuota by border coins used', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     engine.selectCoin(1);
     engine.selectCoin(101);
     expect(turnEngine.break$()).toBeTrue();
@@ -77,7 +87,10 @@ describe('GridEngine', () => {
 
   it('isValidSelection returns false for non-existent coin', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     expect(engine.isValidSelection(999)).toBeFalse();
   });
 
@@ -89,13 +102,19 @@ describe('GridEngine', () => {
 
   it('isValidSelection returns false for border coin without entry coin selected', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     expect(engine.isValidSelection(101)).toBeFalse();
   });
 
   it('isValidSelection returns true for border coin after entry coin selected', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     engine.selectCoin(1);
     expect(engine.isValidSelection(101)).toBeTrue();
   });
@@ -119,7 +138,10 @@ describe('GridEngine', () => {
 
   it('regenerates zeroed border coins after 3 turns', () => {
     turnEngine.setCoreSphere(2);
-    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.makeGrid(
+      [{ value: 2, entryCoin: true }],
+      [{ value: 4, entryCoin: false }]
+    );
     engine.selectCoin(1);
     engine.selectCoin(101);
     engine.confirmBreak();
