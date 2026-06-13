@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 type Design = 'neon-v1' | 'obsidian' | 'gold';
 
@@ -15,8 +15,7 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
         <button
           mat-raised-button
           [color]="current() === d ? 'primary' : null"
-          (click)="current.set(d)"
-        >
+          (click)="current.set(d)">
           {{ d }}
         </button>
       }
@@ -38,8 +37,9 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
               [style.animation-duration.s]="c.duration"
               [style.font-size.rem]="c.size"
               [style.width.rem]="c.size"
-              [style.height.rem]="c.size"
-            >{{ c.v }}</span>
+              [style.height.rem]="c.size">
+              {{ c.v }}
+            </span>
           }
           <div class="orbit-ring"></div>
           <div class="core-sphere">&#9679;</div>
@@ -53,8 +53,9 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
               class="coin gold-coin"
               [style.top.%]="c.y"
               [style.left.%]="c.x"
-              [style.animation-delay.s]="c.delay"
-            >{{ c.v }}</span>
+              [style.animation-delay.s]="c.delay">
+              {{ c.v }}
+            </span>
           }
         </div>
       }
@@ -140,7 +141,7 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
         margin-bottom: 3rem;
         letter-spacing: 0.5rem;
         position: relative;
-        text-align:center;
+        text-align: center;
         z-index: 3;
       }
 
@@ -202,7 +203,9 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
       .exploded-grid .obsidian {
         background: radial-gradient(circle at 40% 35%, #2a2a3a, #080810);
         color: rgba(200, 220, 255, 0.95);
-        box-shadow: 0 0 8px rgba(100, 180, 255, 0.2), inset 0 0 6px rgba(100, 180, 255, 0.05);
+        box-shadow:
+          0 0 8px rgba(100, 180, 255, 0.2),
+          inset 0 0 6px rgba(100, 180, 255, 0.05);
         text-shadow: 0 0 8px rgba(100, 180, 255, 0.6);
       }
 
@@ -236,7 +239,9 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
         margin-left: -1.75rem;
         border-radius: 50%;
         background: #00bfff;
-        box-shadow: 0 0 20px #00bfff, 0 0 40px rgba(0, 191, 255, 0.5);
+        box-shadow:
+          0 0 20px #00bfff,
+          0 0 40px rgba(0, 191, 255, 0.5);
         border: 2px solid rgba(255, 255, 255, 0.6);
         display: flex;
         align-items: center;
@@ -244,7 +249,9 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
         font-size: 2rem;
         color: rgba(152, 251, 152, 0.9);
         transform: rotate(5deg);
-        animation: sphere-orbit 20s linear infinite, sphere-pulse 2s ease-in-out infinite alternate;
+        animation:
+          sphere-orbit 20s linear infinite,
+          sphere-pulse 2s ease-in-out infinite alternate;
         z-index: 2;
         font-family: kiwi_font, 'Audiowide', cursive;
       }
@@ -254,33 +261,77 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
       }
 
       @keyframes neon-pulse {
-        from { text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 40px #00ffff; }
-        to { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff, 0 0 120px #00ffff; }
+        from {
+          text-shadow:
+            0 0 10px #00ffff,
+            0 0 20px #00ffff,
+            0 0 40px #00ffff;
+        }
+        to {
+          text-shadow:
+            0 0 20px #00ffff,
+            0 0 40px #00ffff,
+            0 0 80px #00ffff,
+            0 0 120px #00ffff;
+        }
       }
 
       @keyframes coin-drift {
-        0%   { opacity: 0; transform: translateY(0) rotate(0deg); }
-        10%  { opacity: 0.7; }
-        85%  { opacity: 0.7; }
-        100% { opacity: 0; transform: translateY(-80px) rotate(360deg); }
+        0% {
+          opacity: 0;
+          transform: translateY(0) rotate(0deg);
+        }
+        10% {
+          opacity: 0.7;
+        }
+        85% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-80px) rotate(360deg);
+        }
       }
 
       @keyframes ring-rotate {
-        0%   { transform: translate(-50%, -50%) rotate(0deg); }
-        100% { transform: translate(-50%, -50%) rotate(360deg); }
+        0% {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        100% {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
       }
 
       @keyframes sphere-orbit {
-        0%   { transform: rotate(5deg) translate(14rem, 0) rotate(0deg); }
-        25%  { transform: rotate(5deg) translate(0, 9rem) rotate(-90deg); }
-        50%  { transform: rotate(5deg) translate(-14rem, 0) rotate(-180deg); }
-        75%  { transform: rotate(5deg) translate(0, -9rem) rotate(-270deg); }
-        100% { transform: rotate(5deg) translate(14rem, 0) rotate(-360deg); }
+        0% {
+          transform: rotate(5deg) translate(14rem, 0) rotate(0deg);
+        }
+        25% {
+          transform: rotate(5deg) translate(0, 9rem) rotate(-90deg);
+        }
+        50% {
+          transform: rotate(5deg) translate(-14rem, 0) rotate(-180deg);
+        }
+        75% {
+          transform: rotate(5deg) translate(0, -9rem) rotate(-270deg);
+        }
+        100% {
+          transform: rotate(5deg) translate(14rem, 0) rotate(-360deg);
+        }
       }
 
       @keyframes sphere-pulse {
-        from { box-shadow: 0 0 20px #00bfff, 0 0 40px rgba(0, 191, 255, 0.3); }
-        to { box-shadow: 0 0 30px #00bfff, 0 0 60px rgba(0, 191, 255, 0.6), 0 0 80px rgba(0, 191, 255, 0.3); }
+        from {
+          box-shadow:
+            0 0 20px #00bfff,
+            0 0 40px rgba(0, 191, 255, 0.3);
+        }
+        to {
+          box-shadow:
+            0 0 30px #00bfff,
+            0 0 60px rgba(0, 191, 255, 0.6),
+            0 0 80px rgba(0, 191, 255, 0.3);
+        }
       }
 
       /* === GOLD coins layer (simple variant) === */
@@ -312,10 +363,20 @@ type Design = 'neon-v1' | 'obsidian' | 'gold';
       }
 
       @keyframes coin-float {
-        0%   { opacity: 0; transform: translateY(20px) rotate(0deg); }
-        10%  { opacity: 0.7; }
-        90%  { opacity: 0.7; }
-        100% { opacity: 0; transform: translateY(-120px) rotate(360deg); }
+        0% {
+          opacity: 0;
+          transform: translateY(20px) rotate(0deg);
+        }
+        10% {
+          opacity: 0.7;
+        }
+        90% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-120px) rotate(360deg);
+        }
       }
     `
   ]
@@ -325,10 +386,18 @@ export class MainMenuPrototypeComponent {
   protected current = signal<Design>('obsidian');
 
   private pos = [
-    { x: 5, y: 10 }, { x: 88, y: 15 }, { x: 20, y: 35 },
-    { x: 75, y: 40 }, { x: 10, y: 60 }, { x: 85, y: 65 },
-    { x: 50, y: 20 }, { x: 35, y: 70 }, { x: 65, y: 75 },
-    { x: 45, y: 85 }, { x: 15, y: 80 }, { x: 80, y: 50 }
+    { x: 5, y: 10 },
+    { x: 88, y: 15 },
+    { x: 20, y: 35 },
+    { x: 75, y: 40 },
+    { x: 10, y: 60 },
+    { x: 85, y: 65 },
+    { x: 50, y: 20 },
+    { x: 35, y: 70 },
+    { x: 65, y: 75 },
+    { x: 45, y: 85 },
+    { x: 15, y: 80 },
+    { x: 80, y: 50 }
   ];
 
   private values = [3, 7, 5, 9, 2, 8, 4, 6, 1, 3, 8, 9];
@@ -343,35 +412,215 @@ export class MainMenuPrototypeComponent {
 
   protected explodedCoins = [
     // top border row (obsidian)
-    { id: 1,  x: 4,  y: 6,  v: 3,  type: 'obsidian', delay: 0,   duration: 18, size: 2.2 },
-    { id: 2,  x: 22, y: 4,  v: 7,  type: 'obsidian', delay: 1.5, duration: 20, size: 2.5 },
-    { id: 3,  x: 72, y: 5,  v: 5,  type: 'obsidian', delay: 3,   duration: 17, size: 2.2 },
-    { id: 4,  x: 92, y: 7,  v: 9,  type: 'gold',     delay: 0.5, duration: 19, size: 2.5 },
+    {
+      id: 1,
+      x: 4,
+      y: 6,
+      v: 3,
+      type: 'obsidian',
+      delay: 0,
+      duration: 18,
+      size: 2.2
+    },
+    {
+      id: 2,
+      x: 22,
+      y: 4,
+      v: 7,
+      type: 'obsidian',
+      delay: 1.5,
+      duration: 20,
+      size: 2.5
+    },
+    {
+      id: 3,
+      x: 72,
+      y: 5,
+      v: 5,
+      type: 'obsidian',
+      delay: 3,
+      duration: 17,
+      size: 2.2
+    },
+    {
+      id: 4,
+      x: 92,
+      y: 7,
+      v: 9,
+      type: 'gold',
+      delay: 0.5,
+      duration: 19,
+      size: 2.5
+    },
 
     // right border column (obsidian)
-    { id: 5,  x: 93, y: 28, v: 2,  type: 'obsidian', delay: 2,   duration: 22, size: 2.0 },
-    { id: 6,  x: 91, y: 68, v: 8,  type: 'gold',     delay: 4,   duration: 16, size: 2.8 },
+    {
+      id: 5,
+      x: 93,
+      y: 28,
+      v: 2,
+      type: 'obsidian',
+      delay: 2,
+      duration: 22,
+      size: 2.0
+    },
+    {
+      id: 6,
+      x: 91,
+      y: 68,
+      v: 8,
+      type: 'gold',
+      delay: 4,
+      duration: 16,
+      size: 2.8
+    },
 
     // bottom border row (obsidian)
-    { id: 7,  x: 3,  y: 90, v: 4,  type: 'obsidian', delay: 5,   duration: 19, size: 2.5 },
-    { id: 8,  x: 28, y: 92, v: 6,  type: 'obsidian', delay: 0.8, duration: 21, size: 2.2 },
-    { id: 9,  x: 68, y: 91, v: 1,  type: 'obsidian', delay: 3.5, duration: 18, size: 2.5 },
-    { id: 10, x: 95, y: 89, v: 3,  type: 'gold',     delay: 6,   duration: 20, size: 2.2 },
+    {
+      id: 7,
+      x: 3,
+      y: 90,
+      v: 4,
+      type: 'obsidian',
+      delay: 5,
+      duration: 19,
+      size: 2.5
+    },
+    {
+      id: 8,
+      x: 28,
+      y: 92,
+      v: 6,
+      type: 'obsidian',
+      delay: 0.8,
+      duration: 21,
+      size: 2.2
+    },
+    {
+      id: 9,
+      x: 68,
+      y: 91,
+      v: 1,
+      type: 'obsidian',
+      delay: 3.5,
+      duration: 18,
+      size: 2.5
+    },
+    {
+      id: 10,
+      x: 95,
+      y: 89,
+      v: 3,
+      type: 'gold',
+      delay: 6,
+      duration: 20,
+      size: 2.2
+    },
 
     // left border column (obsidian)
-    { id: 11, x: 4,  y: 30, v: 8,  type: 'obsidian', delay: 2.5, duration: 23, size: 2.0 },
-    { id: 12, x: 6,  y: 65, v: 9,  type: 'gold',     delay: 1.2, duration: 17, size: 2.8 },
+    {
+      id: 11,
+      x: 4,
+      y: 30,
+      v: 8,
+      type: 'obsidian',
+      delay: 2.5,
+      duration: 23,
+      size: 2.0
+    },
+    {
+      id: 12,
+      x: 6,
+      y: 65,
+      v: 9,
+      type: 'gold',
+      delay: 1.2,
+      duration: 17,
+      size: 2.8
+    },
 
     // entry coins (gold, clustered near center but exploded outward)
-    { id: 13, x: 33, y: 36, v: 3,  type: 'gold',     delay: 0.3, duration: 24, size: 3.2 },
-    { id: 14, x: 60, y: 34, v: 5,  type: 'gold',     delay: 1.8, duration: 22, size: 3.2 },
-    { id: 15, x: 35, y: 56, v: 8,  type: 'gold',     delay: 2.2, duration: 21, size: 3.2 },
-    { id: 16, x: 58, y: 58, v: 9,  type: 'gold',     delay: 3.8, duration: 23, size: 3.2 },
+    {
+      id: 13,
+      x: 33,
+      y: 36,
+      v: 3,
+      type: 'gold',
+      delay: 0.3,
+      duration: 24,
+      size: 3.2
+    },
+    {
+      id: 14,
+      x: 60,
+      y: 34,
+      v: 5,
+      type: 'gold',
+      delay: 1.8,
+      duration: 22,
+      size: 3.2
+    },
+    {
+      id: 15,
+      x: 35,
+      y: 56,
+      v: 8,
+      type: 'gold',
+      delay: 2.2,
+      duration: 21,
+      size: 3.2
+    },
+    {
+      id: 16,
+      x: 58,
+      y: 58,
+      v: 9,
+      type: 'gold',
+      delay: 3.8,
+      duration: 23,
+      size: 3.2
+    },
 
     // extra border coins scattered (obsidian)
-    { id: 17, x: 48, y: 12, v: 2,  type: 'obsidian', delay: 4.5, duration: 20, size: 1.8 },
-    { id: 18, x: 12, y: 50, v: 6,  type: 'obsidian', delay: 5.5, duration: 19, size: 1.8 },
-    { id: 19, x: 85, y: 50, v: 7,  type: 'obsidian', delay: 0.7, duration: 22, size: 1.8 },
-    { id: 20, x: 46, y: 82, v: 4,  type: 'obsidian', delay: 3.2, duration: 18, size: 1.8 },
+    {
+      id: 17,
+      x: 48,
+      y: 12,
+      v: 2,
+      type: 'obsidian',
+      delay: 4.5,
+      duration: 20,
+      size: 1.8
+    },
+    {
+      id: 18,
+      x: 12,
+      y: 50,
+      v: 6,
+      type: 'obsidian',
+      delay: 5.5,
+      duration: 19,
+      size: 1.8
+    },
+    {
+      id: 19,
+      x: 85,
+      y: 50,
+      v: 7,
+      type: 'obsidian',
+      delay: 0.7,
+      duration: 22,
+      size: 1.8
+    },
+    {
+      id: 20,
+      x: 46,
+      y: 82,
+      v: 4,
+      type: 'obsidian',
+      delay: 3.2,
+      duration: 18,
+      size: 1.8
+    }
   ];
 }
