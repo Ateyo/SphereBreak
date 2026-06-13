@@ -35,9 +35,9 @@ MainMenu → CoinSelect → Game (Home) → Win/Loss Dialog → Highscore
 **State management:** Angular Signals (no NgRx/NgXs). Game services expose `WritableSignal` internally and readonly signals (convention: `$` suffix) to components. `effect()` used for side effects (break detection, game-end).
 
 **Data flow:**
-1. Player picks 4 entry coins (values 1-9) → stored in `CoinsService`
+1. Player picks 4 entry coins (values 1-9) → stored in `GridEngine`
 2. Game generates 12 random border coins → 4×4 grid (4 entry + 12 border)
-3. Each turn: `MathsService` generates core sphere (1-9) → player selects coins → sum checked vs multiples
+3. Each turn: `TurnEngine` generates core sphere (1-9) → player selects coins → sum checked vs multiples
 4. Break detected → score added, quota incremented, border coins consumed → regenerated after 3 turns
 5. Turn limit reached → check quota vs target → win/loss dialog
 
@@ -57,9 +57,9 @@ MainMenu → CoinSelect → Game (Home) → Win/Loss Dialog → Highscore
 ### Core Services
 
 | Service | File | Responsibilities | Key Signals |
-|---|---|---|---|
-| `MathsService` | `shared/services/maths.service.ts` | Break logic, scoring, turn management, core sphere generation | `coreSphere`, `currentScore`, `turn`, `echo`, `break`, `turnLimit`, `gameEnded` |
-| `CoinsService` | `shared/services/coins.service.ts` | Grid management, entry/border coins, selection, quota, coin regeneration | `entryCoinsArray`, `quota`, `levelQuota`, `coinsArray`, `selectedCoins`, `gameWon` |
+|---|---|---|---|---|
+| `TurnEngine` | `shared/services/turn-engine.service.ts` | Turn lifecycle, break detection, scoring, core sphere generation, game-end | `currentTotal$`, `nextMultiples$`, `break$`, `currentScore$`, `echo$`, `coinCounter$`, `turn$`, `turnLimit$`, `quotaLimit$`, `gameEnded$` |
+| `GridEngine` | `shared/services/grid-engine.service.ts` | Coin grid, entry/border coins, selection validation, quota, coin regeneration | `entryCoinsArray$`, `coinsArray$`, `selectedCoins$`, `levelQuota$`, `isCoinsSet$` |
 | `HighscoreService` | `shared/services/highscore.service.ts` | HTTP client for PHP backend (get/save scores) | — |
 | `PlayerService` | `shared/services/player.service.ts` | Player initials persistence (localStorage) | `playerInitials` |
 
@@ -81,7 +81,7 @@ src/app/
 ├── highscore/             # Leaderboard (fetches from API)
 └── shared/
     ├── interfaces/        # Coin, CoinArray, Highscore, PortfolioItem
-    ├── services/          # MathsService, CoinsService, HighscoreService, PlayerService
+    ├── services/          # TurnEngine, GridEngine, HighscoreService, PlayerService
     └── components/
         ├── coin/          # CoinComponent (individual coin display/click)
         └── dialog/        # DialogComponent (reusable confirmation)
@@ -102,6 +102,23 @@ src/assets/levels.json     # 15 level definitions (turns, quota, time limit)
 - **Imports** — sorted via `eslint-plugin-simple-import-sort` (external first, then internal)
 - **Material over Ionic** — prefer Angular Material components where applicable
 - **TypeScript strict** — `strict: true` with all strict flags enabled
+
+---
+
+## Git Flow
+
+- **`dev`** — integration branch. All feature branches merge here.
+- **`feature/*`** — branches for new features / refactors. Branch from `dev`, merge back to `dev`.
+- **`main`** — production. Only `release/*` or `hotfix/*` branches merge here.
+- **`release/*`** — release candidates branched from `dev`, merged to `main` + back to `dev`.
+- **`hotfix/*`** — urgent fixes branched from `main`, merged to `main` + `dev`.
+
+### Process
+1. `git checkout dev && git pull`
+2. `git checkout -b feature/my-feature`
+3. Work, commit, push
+4. Create PR on GitHub: `feature/my-feature` → `dev`
+5. Merge via PR (no direct pushes to `dev` or `main`)
 
 ---
 
@@ -147,6 +164,6 @@ PHP/SQLite API in `api/` directory for highscore persistence.
 ## Testing
 
 - **Framework:** Jasmine 5.1 + Karma 6.4
-- **15 spec files** co-located with components/services
+- **Spec files** co-located with components/services
 - Coverage via `karma-coverage` (HTML + text-summary reporters)
-- Most specs are smoke tests; `coins.service.spec.ts` and `maths.service.spec.ts` have substantive unit tests
+- Smoke tests for components; unit tests for `turn-engine.service.spec.ts` and `grid-engine.service.spec.ts`

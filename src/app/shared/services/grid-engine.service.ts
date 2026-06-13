@@ -45,12 +45,20 @@ export class GridEngine {
     this._entryCoinsArray.update(coins => coins.filter(c => c.id !== id));
   }
 
-  selectCoin(coinId: number): void {
+  isValidSelection(coinId: number): boolean {
     const allCoins = [...this._entryCoinsArray(), ...this._coinsArray()];
     const target = allCoins.find(c => c.id === coinId);
-    if (!target || this._selectedCoins().some(c => c.id === coinId)) return;
+    if (!target) return false;
+    if (this._selectedCoins().some(c => c.id === coinId)) return false;
+    if (!target.coin.entryCoin && !this._selectedCoins().some(c => c.entryCoin)) return false;
+    return true;
+  }
 
-    if (!target.coin.entryCoin && !this._selectedCoins().some(c => c.entryCoin)) return;
+  selectCoin(coinId: number): void {
+    if (!this.isValidSelection(coinId)) return;
+
+    const allCoins = [...this._entryCoinsArray(), ...this._coinsArray()];
+    const target = allCoins.find(c => c.id === coinId)!;
 
     this._selectedCoins.update(coins => [...coins, {
       value: target.coin.value, entryCoin: target.coin.entryCoin, id: coinId

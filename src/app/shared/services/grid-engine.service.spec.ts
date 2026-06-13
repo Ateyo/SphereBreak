@@ -75,6 +75,38 @@ describe('GridEngine', () => {
     expect(engine.selectedCoins$().length).toBe(0);
   });
 
+  it('isValidSelection returns false for non-existent coin', () => {
+    turnEngine.setCoreSphere(2);
+    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    expect(engine.isValidSelection(999)).toBeFalse();
+  });
+
+  it('isValidSelection returns true for selectable entry coin', () => {
+    turnEngine.setCoreSphere(2);
+    engine.makeGrid([{ value: 2, entryCoin: true }], []);
+    expect(engine.isValidSelection(1)).toBeTrue();
+  });
+
+  it('isValidSelection returns false for border coin without entry coin selected', () => {
+    turnEngine.setCoreSphere(2);
+    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    expect(engine.isValidSelection(101)).toBeFalse();
+  });
+
+  it('isValidSelection returns true for border coin after entry coin selected', () => {
+    turnEngine.setCoreSphere(2);
+    engine.makeGrid([{ value: 2, entryCoin: true }], [{ value: 4, entryCoin: false }]);
+    engine.selectCoin(1);
+    expect(engine.isValidSelection(101)).toBeTrue();
+  });
+
+  it('isValidSelection returns false for already selected coin', () => {
+    turnEngine.setCoreSphere(2);
+    engine.makeGrid([{ value: 2, entryCoin: true }], []);
+    engine.selectCoin(1);
+    expect(engine.isValidSelection(1)).toBeFalse();
+  });
+
   it('startNewTurn clears selection', () => {
     turnEngine.setCoreSphere(2);
     engine.makeGrid([{ value: 2, entryCoin: true }], []);
