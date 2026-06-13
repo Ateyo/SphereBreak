@@ -5,24 +5,27 @@
   & .coin-number {
     position: absolute;
     animation: none;
-    color: rgba(128, 128, 128, 0.9);
+    color: rgba(200, 220, 255, 0.95);
     font-family: kiwi_font;
     font-size: 4rem;
+    font-weight: 300;
     left: 50%;
     pointer-events: none;
+    text-shadow: 0 0 10px rgba(100, 180, 255, 0.8), 0 0 20px rgba(100, 180, 255, 0.4);
     top: 50%;
     transform: translate(-50%, -50%) rotate(5deg);
   }
+
   .coin {
     display: flex;
     align-items: center;
-    border: 1px solid #5c5551;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     cursor: pointer;
     height: 5rem;
     justify-content: center;
     width: 5rem;
-    transition: background-color 0.3s ease-in;
+    transition: background-color 0.3s ease-in, box-shadow 0.3s ease-in, transform 0.3s ease-in-out;
     position: relative;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
@@ -42,23 +45,37 @@
     }
 
     &.border-coin {
-      background-color: #52595d;
+      background: radial-gradient(circle at 40% 35%, #2a2a3a, #080810);
+      box-shadow: 0 0 8px rgba(100, 180, 255, 0.2), inset 0 0 12px rgba(100, 180, 255, 0.03);
 
       & + .coin-number {
-        color: rgba(183, 183, 183, 0.9);
+        color: rgba(200, 220, 255, 0.95);
+        text-shadow: 0 0 10px rgba(100, 180, 255, 0.8), 0 0 20px rgba(100, 180, 255, 0.4);
+        font-weight: 300;
       }
+
       &:after,
       &:before {
-        background-color: #5c5551;
+        background: radial-gradient(circle at 40% 35%, #1a1a2a, #050510);
       }
+
       .tails {
-        background-color: #5c5551;
-        border: 1px solid #5c5551;
+        background: radial-gradient(circle at 40% 35%, #1a1a2a, #050510);
+        border: 1px solid #1a1a2a;
       }
 
       .heads {
-        background-color: #52595d;
-        border: 1px solid #5c5551;
+        background: radial-gradient(circle at 40% 35%, #2a2a3a, #080810);
+        border: 1px solid #1a1a2a;
+      }
+
+      &.selected-coin {
+        box-shadow: 0 0 25px rgba(100, 180, 255, 0.8), inset 0 0 20px rgba(100, 180, 255, 0.08);
+        transform: scale(1.05);
+
+        & + .coin-number {
+          text-shadow: 0 0 16px rgba(100, 180, 255, 1), 0 0 30px rgba(100, 180, 255, 0.6);
+        }
       }
     }
 
@@ -66,20 +83,17 @@
       animation: spin 2s linear infinite;
 
       &.entry-coin {
-        background-color: #ffd900;
-      }
-      & * {
-        box-shadow: 0 0 12px #00bfff;
-        outline: 2px rgba(0, 255, 255, 0.5) solid;
-      }
-      &:after,
-      &:before {
-        background-color: #00bfff;
+        background: radial-gradient(circle at 40% 35%, #e6c800, #997a00);
       }
 
-      .tails {
-        box-shadow: 0 0 12px #00bfff;
-        background-color: #00bfff;
+      .tails,
+      .heads {
+        box-shadow: 0 0 12px #64b4ff;
+        background-color: #64b4ff;
+      }
+
+      &:after {
+        background-color: #64b4ff;
       }
     }
 
@@ -107,27 +121,28 @@
     }
   }
 }
-.entry-coin {
-  background-color: #ffd900;
-  &:after {
-    background-color: #ff9900;
-  }
 
-  &:before {
-    background-color: #ff9900;
+.entry-coin {
+  background: radial-gradient(circle at 40% 35%, #e6c800, #997a00);
+  box-shadow: 0 0 10px rgba(230, 200, 0, 0.3);
+
+  &:before,
+  &:after {
+    background: radial-gradient(circle at 40% 35%, #c4a800, #7a6100);
   }
 
   &:hover {
     animation: 3s ease-in-out oscilloRotate3d infinite;
   }
+
   .tails {
-    background-color: #ff9900;
-    border: 1px solid #ff9900;
+    background: radial-gradient(circle at 40% 35%, #c4a800, #7a6100);
+    border: 1px solid #997a00;
   }
 
   .heads {
-    background-color: #ffd900;
-    border: 1px solid #ff9900;
+    background: radial-gradient(circle at 40% 35%, #e6c800, #997a00);
+    border: 1px solid #997a00;
   }
 }
 
