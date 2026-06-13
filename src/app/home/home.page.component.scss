@@ -1,3 +1,18 @@
+.debug-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  background: #ffd700;
+  color: #1a1a2e;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
 #container {
   text-align: center;
   display: grid;
@@ -77,26 +92,6 @@
   color: rgb(255, 215, 0);
   text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
   transition: all 0.3s;
-}
-
-.core-hud {
-  margin-bottom: 0.25rem;
-
-  .core-value {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #00bfff;
-    color: rgba(152, 251, 152, 0.9);
-    border-radius: 50%;
-    width: 1.8rem;
-    height: 1.8rem;
-    font-size: 1.1rem;
-    border: 1px solid #fff;
-    box-shadow: 0 0 6px #00bfff;
-    margin-left: 0.25rem;
-    vertical-align: middle;
-  }
 }
 
 .next-multiples {

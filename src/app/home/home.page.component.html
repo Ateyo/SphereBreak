@@ -1,3 +1,7 @@
+@if (debugMode) {
+  <button class="debug-toggle" (click)="debugPanel?.open()">Debug</button>
+}
+<app-debug-panel></app-debug-panel>
 <div id="container">
   <div class="card left-side">
     <!-- <button (click)="newTurn()">New Turn</button> -->
@@ -31,9 +35,6 @@
           Sum:
           <p>{{ total$() }}</p>
         </strong>
-      </div>
-      <div class="core-hud">
-        <strong>Core: <span class="core-value">{{ coreSphere$() }}</span></strong>
       </div>
       @if (nextMultiples$(); as nextMultiples) {
         @if (nextMultiples && nextMultiples.length >= 3) {
