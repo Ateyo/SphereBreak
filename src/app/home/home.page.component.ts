@@ -11,19 +11,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { take } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 import levels from '../../assets/levels.json';
+import { DebugPanelComponent } from '../shared/debug-panel/debug-panel.component';
 import { GridEngine } from '../shared/services/grid-engine.service';
 import { HighscoreService } from '../shared/services/highscore.service';
 import { PlayerService } from '../shared/services/player.service';
 import { TurnEngine } from '../shared/services/turn-engine.service';
+import { TurnHistoryService } from '../shared/services/turn-history.service';
 import { GridComponent } from './grid/grid.component';
 import { LossDialogComponent } from './loss-dialog/loss-dialog.component';
 import { WinDialogComponent } from './win-dialog/win-dialog.component';
 
 @Component({
   selector: 'app-home-page',
-  imports: [GridComponent, IonicModule],
+  imports: [DebugPanelComponent, GridComponent, IonicModule],
   templateUrl: 'home.page.component.html',
   styleUrls: ['home.page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,7 +38,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private dialog = inject<MatDialog>(MatDialog);
   private _highscoreService = inject<HighscoreService>(HighscoreService);
   private _playerService = inject<PlayerService>(PlayerService);
+  private _turnHistoryService = inject(TurnHistoryService);
   private router = inject(Router);
+
+  protected debugMode = environment.debug;
 
   levelQuota$ = this._gridEngine.levelQuota$;
   isCoinsSet$ = this._gridEngine.isCoinsSet$;
@@ -54,6 +60,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   private breakTimeout?: ReturnType<typeof setTimeout>;
   @ViewChild(IonToast) toast: IonToast | undefined;
+  @ViewChild(DebugPanelComponent) debugPanel: DebugPanelComponent | undefined;
+  private _lastSelectionLength = 0;
 
   constructor() {
     effect(() => {
@@ -78,6 +86,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
       if (this._turnEngine.gameEnded$() && !this.dialogOpen) {
         this.handleGameEnd();
       }
+    });
+
+    effect(() => {
+      if (!this.debugMode) return;
+      const len = this._gridEngine.selectedCoins$().length;
+      if (len > this._lastSelectionLength) {
+        this._turnHistoryService.snapshot();
+      }
+      this._lastSelectionLength = len;
     });
   }
 
@@ -241,6 +258,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this._turnEngine.loadLevel(levels[level].turns, levels[level].quota);
     this._gridEngine.reset();
     this._setupGrid();
+    this._turnHistoryService.clear();
+    this._lastSelectionLength = 0;
     this.dialogOpen = false;
   }
 }

@@ -3,6 +3,13 @@ import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { Coin, CoinArray } from '../interfaces';
 import { TurnEngine } from './turn-engine.service';
 
+export interface GridEngineSnapshot {
+  coinsArray: CoinArray[];
+  levelQuota: number;
+  selectedCoins: Coin[];
+  turnsSinceRegen: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -142,6 +149,25 @@ export class GridEngine {
         })
       );
     }
+  }
+
+  getSnapshot(): GridEngineSnapshot {
+    return {
+      coinsArray: this._coinsArray().map((c) => ({
+        ...c,
+        coin: { ...c.coin }
+      })),
+      levelQuota: this._levelQuota(),
+      selectedCoins: this._selectedCoins().map((c) => ({ ...c })),
+      turnsSinceRegen: this._turnsSinceRegen
+    };
+  }
+
+  restoreSnapshot(snapshot: GridEngineSnapshot): void {
+    this._coinsArray.set(snapshot.coinsArray);
+    this._levelQuota.set(snapshot.levelQuota);
+    this._selectedCoins.set(snapshot.selectedCoins);
+    this._turnsSinceRegen = snapshot.turnsSinceRegen;
   }
 
   reset(): void {

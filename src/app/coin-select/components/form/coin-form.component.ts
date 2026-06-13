@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
 import { CoinArray } from 'src/app/shared/interfaces';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { environment } from 'src/environments/environment';
 
 import { GridEngine } from '../../../shared/services/grid-engine.service';
 
@@ -27,7 +28,7 @@ import { GridEngine } from '../../../shared/services/grid-engine.service';
   templateUrl: './coin-form.component.html',
   styleUrls: ['./coin-form.component.scss']
 })
-export class CoinFormComponent {
+export class CoinFormComponent implements OnInit {
   private router = inject(Router);
   private _gridEngine = inject(GridEngine);
 
@@ -41,6 +42,16 @@ export class CoinFormComponent {
 
   get entryCoinsArray(): CoinArray[] {
     return this._gridEngine.entryCoinsArray$();
+  }
+
+  ngOnInit(): void {
+    if (environment.debug) {
+      this._gridEngine.addEntryCoin(3);
+      this._gridEngine.addEntryCoin(5);
+      this._gridEngine.addEntryCoin(8);
+      this._gridEngine.addEntryCoin(9);
+      this.startGame();
+    }
   }
 
   onSubmit() {

@@ -14,7 +14,7 @@ describe('TurnEngine', () => {
     engine.setCoreSphere(5);
     engine.evaluateSelection([2, 3]);
     expect(engine.currentTotal$()).toBe(5);
-    expect(engine.nextMultiples$()).toEqual([10, 15, 20, 25, 30]);
+    expect(engine.nextMultiples$()).toEqual([5, 10, 15, 20, 25]);
   });
 
   it('detects break when total is a multiple of coreSphere', () => {

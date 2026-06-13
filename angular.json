@@ -69,6 +69,18 @@
             },
             "ci": {
               "progress": false
+            },
+            "debug": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.debug.ts"
+                }
+              ],
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
@@ -81,6 +93,9 @@
             },
             "development": {
               "buildTarget": "app:build:development"
+            },
+            "debug": {
+              "buildTarget": "app:build:debug"
             }
           },
           "defaultConfiguration": "development"

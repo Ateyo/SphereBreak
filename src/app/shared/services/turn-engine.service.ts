@@ -1,5 +1,18 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 
+export interface TurnEngineSnapshot {
+  turn: number;
+  score: number;
+  echo: number;
+  lastCoinCount: number;
+  numberOfCoinsAdded: number;
+  coreSphere: number;
+  currentTotal: number;
+  nextMultiples: number[];
+  break: boolean;
+  gameEnded: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,13 +73,17 @@ export class TurnEngine {
     this._currentTotal.set(0);
     this._lastCoinCount = this._numberOfCoinsAdded;
     this._numberOfCoinsAdded = 0;
-    this._computeNextMultiples(0);
     this._turn.update((t) => t + 1);
     if (this._turn() > this._turnLimit()) {
       this._gameEnded.set(true);
     } else {
       this._generateCoreSphere();
     }
+    this._computeNextMultiples(0);
+  }
+
+  clearBreak(): void {
+    this._break.set(false);
   }
 
   resetGame(): void {
@@ -118,10 +135,38 @@ export class TurnEngine {
     this._currentScore.update((s) => s + coinsUsed * 10 + multiplesFound * 50);
   }
 
+  getSnapshot(): TurnEngineSnapshot {
+    return {
+      turn: this._turn(),
+      score: this._currentScore(),
+      echo: this._echo(),
+      lastCoinCount: this._lastCoinCount,
+      numberOfCoinsAdded: this._numberOfCoinsAdded,
+      coreSphere: this._coreSphere(),
+      currentTotal: this._currentTotal(),
+      nextMultiples: [...this._nextMultiples()],
+      break: this._break(),
+      gameEnded: this._gameEnded()
+    };
+  }
+
+  restoreSnapshot(snapshot: TurnEngineSnapshot): void {
+    this._turn.set(snapshot.turn);
+    this._currentScore.set(snapshot.score);
+    this._echo.set(snapshot.echo);
+    this._lastCoinCount = snapshot.lastCoinCount;
+    this._numberOfCoinsAdded = snapshot.numberOfCoinsAdded;
+    this._coreSphere.set(snapshot.coreSphere);
+    this._currentTotal.set(snapshot.currentTotal);
+    this._nextMultiples.set(snapshot.nextMultiples);
+    this._break.set(snapshot.break);
+    this._gameEnded.set(snapshot.gameEnded);
+  }
+
   private _computeNextMultiples(total: number): void {
     const result: number[] = [];
     let count = 0;
-    let current = total + 1;
+    let current = total;
 
     while (count < 5) {
       if (current % this._coreSphere() === 0) {
