@@ -28,5 +28,7 @@
   </nav>
 </div>
 
-<a routerLink="/coin-prototype" class="dev-link">Coin Designer</a>
-<a routerLink="/menu-prototype" class="dev-link menu-proto-link">Menu Designs</a>
+@if (debug) {
+  <a routerLink="/coin-prototype" class="dev-link">Coin Designer</a>
+  <a routerLink="/menu-prototype" class="dev-link menu-proto-link">Menu Designs</a>
+}

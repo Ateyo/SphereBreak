@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NgClass } from '@angular/common';
 
 import { SharedModule } from '../shared/shared.module';
+import { environment } from '../../environments/environment';
 
 interface CoinData {
   id: number;
@@ -21,6 +22,7 @@ interface CoinData {
   styleUrl: './main-menu.component.css'
 })
 export class MainMenuComponent {
+  protected debug = environment.debug;
   protected explodedCoins: CoinData[] = [
     { id: 1,  x: 4,  y: 6,  v: 3,  type: 'obsidian', delay: 0,   duration: 18, size: 2.2 },
     { id: 2,  x: 22, y: 4,  v: 7,  type: 'obsidian', delay: 1.5, duration: 20, size: 2.5 },

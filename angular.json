@@ -50,7 +50,7 @@
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "8kb",
-                  "maximumError": "16kb" <!-- raised from 2kb/4kb for coin prototype; revisit after deleting prototype -->
+                  "maximumError": "16kb"
                 }
               ],
               "fileReplacements": [
