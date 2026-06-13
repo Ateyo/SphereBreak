@@ -1,3 +1,11 @@
 app-coin {
   pointer-events: none;
 }
+
+.text-secondary {
+  color: var(--text-secondary, #666);
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}

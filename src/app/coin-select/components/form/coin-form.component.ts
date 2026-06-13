@@ -1,14 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms'; // <-- Add Validators import
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
 import { CoinArray } from 'src/app/shared/interfaces';
-import { PlayerService } from 'src/app/shared/services/player.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { GridEngine } from '../../../shared/services/grid-engine.service';
@@ -23,7 +21,8 @@ import { GridEngine } from '../../../shared/services/grid-engine.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    RouterLink
   ],
   templateUrl: './coin-form.component.html',
   styleUrls: ['./coin-form.component.scss']
@@ -31,24 +30,33 @@ import { GridEngine } from '../../../shared/services/grid-engine.service';
 export class CoinFormComponent {
   private router = inject(Router);
   private _gridEngine = inject(GridEngine);
-  private _playerService = inject(PlayerService);
 
-  readonly dialog = inject(MatDialog);
   coinNumber = new FormControl(
     1,
-    [Validators.required, Validators.min(1), Validators.max(9)] // <-- Add validators for required, min, max
+    [Validators.required, Validators.min(1), Validators.max(9)]
   );
+
+  coinError = '';
 
   get entryCoinsArray(): CoinArray[] {
     return this._gridEngine.entryCoinsArray$();
   }
 
   onSubmit() {
-    if (this.entryCoinsArray.length < 4) {
-      if (this.coinNumber.valid && this.coinNumber.value !== null) {
-        this._gridEngine.addEntryCoin(this.coinNumber.value);
-      }
+    if (this.entryCoinsArray.length >= 4) return;
+
+    if (this.coinNumber.invalid) {
+      this.coinError = 'Enter a value between 1 and 9';
+      return;
     }
+    this.coinError = '';
+
+    const value = this.coinNumber.value;
+    if (value === null || value === undefined) return;
+
+    this._gridEngine.addEntryCoin(value);
+    this.coinNumber.setValue(1, { emitEvent: false });
+    this.coinNumber.markAsUntouched();
   }
 
   removeCoin(coin: CoinArray) {
@@ -56,6 +64,7 @@ export class CoinFormComponent {
   }
 
   startGame() {
+    if (this.entryCoinsArray.length < 4) return;
     this.router.navigate(['/home']);
   }
 }
