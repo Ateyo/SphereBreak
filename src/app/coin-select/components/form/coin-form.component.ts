@@ -31,10 +31,11 @@ export class CoinFormComponent {
   private router = inject(Router);
   private _gridEngine = inject(GridEngine);
 
-  coinNumber = new FormControl(
-    1,
-    [Validators.required, Validators.min(1), Validators.max(9)]
-  );
+  coinNumber = new FormControl(1, [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(9)
+  ]);
 
   coinError = '';
 

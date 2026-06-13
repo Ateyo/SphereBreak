@@ -57,7 +57,9 @@ export class HomePageComponent implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       if (this.break$()) {
-        console.log(`[HomePage] Break detected! total=${this.total$()} coreSphere=${this._turnEngine.coreSphere} score=${this.score$()} turn=${this.turn$()}`);
+        console.log(
+          `[HomePage] Break detected! total=${this.total$()} coreSphere=${this._turnEngine.coreSphere} score=${this.score$()} turn=${this.turn$()}`
+        );
         if (this.breakTimeout) {
           clearTimeout(this.breakTimeout);
         }
@@ -219,7 +221,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   private _setupGrid(): void {
-    const entryCoins = this._gridEngine.entryCoinsArray$().map(c => ({
+    const entryCoins = this._gridEngine.entryCoinsArray$().map((c) => ({
       value: c.coin.value,
       entryCoin: true
     }));

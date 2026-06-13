@@ -1,20 +1,36 @@
-# Game Rules for SphereBreak
+# SphereBreak — AI Context
 
-## Core Gameplay:
-The game is played by matching a multiple of the core sphere with the sum of the value of the coins.
+## Core Game Rules
+- Match multiples of the core sphere (1-9) by summing coin values
+- 4 entry coins per game, must be selected first each turn
+- Border coins can only be selected after an entry coin
+- Win: meet/exceed quota before turn limit
+- Lose: fail quota by turn limit
+- 15 levels (progressive difficulty)
 
-## Coin Selection:
-- Players choose 4 entryCoins to set on the grid.
-- An entryCoin must be played first (entry).
-- BorderCoins cannot be selected first.
-- A coin selected on the grid cannot be unselected.
+## Key Files
 
-## Win/Loss Conditions:
-- To win, you must meet or exceed the quota limit after the turnLimit.
-- If after the turn limit you have not met or exceeded the quota limit, you have lost.
+| File | Purpose |
+|---|---|
+| `CONTEXT.md` | Full project overview, architecture, conventions |
+| `docs/GAME_LOOP.md` | Detailed turn lifecycle, scoring, echo, border regen |
+| `docs/COMPONENT_TREE.md` | Component hierarchy, signal flow, router map |
+| `docs/STYLES_AND_THEMING.md` | Theme system, CSS variables, font/asset inventory |
+| `docs/TESTING.md` | Test inventory, gaps, Karma/Jasmine config |
+| `docs/API.md` | PHP backend endpoints, validation, errors |
+| `docs/CONFIG_FILES.md` | All config files (angular, ts, eslint, prettier, etc.) |
+| `src/shared/services/turn-engine.service.ts` | Turn logic, break detection, scoring |
+| `src/shared/services/grid-engine.service.ts` | Grid state, selection rules, border evolution |
+| `src/home/home.page.component.ts` | Game orchestrator, break effects, dialog management |
 
-## Levels:
-- Levels are loaded from JSON.
+## Key Conventions
+- Signals: `WritableSignal` private → `asReadonly()` with `$` suffix
+- DI: `inject()` only, no constructor DI
+- Standalone components preferred (older pages still use NgModules)
+- OnPush: game grid, home page, core sphere, win dialog
+- Material over Ionic components
 
-# Development Preferences:
-- Prefer using Material Angular components instead of Ionic components where applicable.
+## URLs
+- Dev: `http://localhost:4200`
+- API: `http://localhost:8000/api/` (run `php -S localhost:8000 -t api/`)
+- Prod: `https://www.tom-gonzalez.com/api/`

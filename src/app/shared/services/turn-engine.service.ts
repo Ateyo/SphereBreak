@@ -49,7 +49,9 @@ export class TurnEngine {
     this._numberOfCoinsAdded = values.length;
     this._currentTotal.set(total);
     this._computeNextMultiples(total);
-    console.log(`[TurnEngine] evaluateSelection: values=[${values}] total=${total} coreSphere=${this._coreSphere()} total%coreSphere=${total % this._coreSphere()}`);
+    console.log(
+      `[TurnEngine] evaluateSelection: values=[${values}] total=${total} coreSphere=${this._coreSphere()} total%coreSphere=${total % this._coreSphere()}`
+    );
     this._checkForBreak(total);
   }
 
@@ -59,7 +61,7 @@ export class TurnEngine {
     this._lastCoinCount = this._numberOfCoinsAdded;
     this._numberOfCoinsAdded = 0;
     this._computeNextMultiples(0);
-    this._turn.update(t => t + 1);
+    this._turn.update((t) => t + 1);
     if (this._turn() > this._turnLimit()) {
       this._gameEnded.set(true);
     } else {
@@ -92,21 +94,28 @@ export class TurnEngine {
 
   private _checkForBreak(total: number): void {
     const isMultiple = total > 0 && total % this._coreSphere() === 0;
-    console.log(`[TurnEngine] _checkForBreak: total=${total} coreSphere=${this._coreSphere()} isMultiple=${isMultiple} alreadyBroken=${this._break()}`);
+    console.log(
+      `[TurnEngine] _checkForBreak: total=${total} coreSphere=${this._coreSphere()} isMultiple=${isMultiple} alreadyBroken=${this._break()}`
+    );
     if (isMultiple && !this._break()) {
-      console.log(`[TurnEngine] BREAK! coins=${this._numberOfCoinsAdded} multiples=${total / this._coreSphere()}`);
+      console.log(
+        `[TurnEngine] BREAK! coins=${this._numberOfCoinsAdded} multiples=${total / this._coreSphere()}`
+      );
       this._break.set(true);
       this._coinCounter.set(this._numberOfCoinsAdded);
       const multiplesFound = total / this._coreSphere();
       this._calculateScore(this._numberOfCoinsAdded, multiplesFound);
-      if (this._lastCoinCount > 0 && this._lastCoinCount === this._numberOfCoinsAdded) {
-        this._echo.update(e => e + 1);
+      if (
+        this._lastCoinCount > 0 &&
+        this._lastCoinCount === this._numberOfCoinsAdded
+      ) {
+        this._echo.update((e) => e + 1);
       }
     }
   }
 
   private _calculateScore(coinsUsed: number, multiplesFound: number): void {
-    this._currentScore.update(s => s + coinsUsed * 10 + multiplesFound * 50);
+    this._currentScore.update((s) => s + coinsUsed * 10 + multiplesFound * 50);
   }
 
   private _computeNextMultiples(total: number): void {

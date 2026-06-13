@@ -10,7 +10,11 @@ describe('HighscoreComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, HighscoreComponent]
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        HighscoreComponent
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HighscoreComponent);

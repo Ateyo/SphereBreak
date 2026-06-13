@@ -52,7 +52,8 @@ export class CoinPrototypeComponent {
     {
       id: 'obsidian',
       name: 'Obsidian',
-      description: 'Near-black gradient + bright blue-white glow, high contrast',
+      description:
+        'Near-black gradient + bright blue-white glow, high contrast',
       theme: 'dark'
     },
     {
@@ -93,7 +94,7 @@ export class CoinPrototypeComponent {
   }
 
   toggleCoin(coinId: number) {
-    const coin = this.grid.find(c => c.id === coinId);
+    const coin = this.grid.find((c) => c.id === coinId);
     if (coin) {
       coin.selected = !coin.selected;
     }
@@ -109,7 +110,7 @@ export class CoinPrototypeComponent {
   }
 
   get activeVariation(): CoinVariation | undefined {
-    return this.variations.find(v => v.id === this.activeThemeId());
+    return this.variations.find((v) => v.id === this.activeThemeId());
   }
 
   themeBtnClasses(v: CoinVariation): Record<string, boolean> {
