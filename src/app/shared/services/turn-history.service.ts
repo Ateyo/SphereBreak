@@ -21,11 +21,12 @@ export class TurnHistoryService {
   readonly history$ = this._history.asReadonly();
 
   snapshot(): void {
+    const turnSnap = this._turnEngine.getSnapshot();
     this._history.update((h) => [
       ...h,
       {
-        turn: this._turnEngine.getSnapshot().turn,
-        turnEngine: this._turnEngine.getSnapshot(),
+        turn: turnSnap.turn,
+        turnEngine: turnSnap,
         gridEngine: this._gridEngine.getSnapshot()
       }
     ]);

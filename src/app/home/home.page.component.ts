@@ -10,7 +10,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { IonicModule, IonToast, ToastController } from '@ionic/angular';
-import { take } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 import levels from '../../assets/levels.json';
@@ -133,36 +133,26 @@ export class HomePageComponent implements OnInit, OnDestroy {
     await toast.present();
   }
 
-  handleGameEnd() {
+  async handleGameEnd() {
     this.dialogOpen = true;
     const isWin = this.levelQuota$() >= this.quotaLimit$();
 
     if (isWin) {
       const isLastLevel = this.level + 1 >= levels.length;
-      this._highscoreService
-        .loadHighscores()
-        .pipe(take(1))
-        .subscribe({
-          next: (currentHighscores) => {
-            const qualifiesForHighscore =
-              currentHighscores.length < 10 ||
-              this.score$() >
-                currentHighscores[currentHighscores.length - 1].score;
+      try {
+        const currentHighscores = await firstValueFrom(
+          this._highscoreService.loadHighscores()
+        );
+        const qualifiesForHighscore =
+          currentHighscores.length < 10 ||
+          this.score$() > currentHighscores[currentHighscores.length - 1].score;
 
-            if (isLastLevel && qualifiesForHighscore) {
-              this.openWinDialog(true);
-            } else {
-              this.openWinDialog(false);
-            }
-          },
-          error: (error) => {
-            console.error('Error loading highscores:', error);
-            this.presentToastError(
-              'Could not load highscores. Please try again.'
-            );
-            this.openWinDialog(false);
-          }
-        });
+        this.openWinDialog(isLastLevel && qualifiesForHighscore);
+      } catch (error) {
+        console.error('Error loading highscores:', error);
+        this.presentToastError('Could not load highscores. Please try again.');
+        this.openWinDialog(false);
+      }
     } else {
       this.openLossDialog();
     }

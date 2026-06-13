@@ -7,27 +7,28 @@ import { HighscoreService } from './highscore.service';
 })
 export class PlayerService {
   private _highscoreService = inject(HighscoreService);
-  playerInitials: WritableSignal<string> = signal('');
+  private _playerInitials: WritableSignal<string> = signal('');
+  readonly playerInitials$ = this._playerInitials.asReadonly();
 
   constructor() {
     const savedInitials = localStorage.getItem('playerInitials');
     if (savedInitials) {
-      this.playerInitials.set(savedInitials);
+      this._playerInitials.set(savedInitials);
     }
   }
 
   setInitials(initials: string): void {
-    this.playerInitials.set(initials);
+    this._playerInitials.set(initials);
     localStorage.setItem('playerInitials', initials);
   }
 
   getInitials(): string {
-    return this.playerInitials();
+    return this._playerInitials();
   }
 
   saveScore(score: number, level: number) {
     return this._highscoreService.addHighscore(
-      this.playerInitials(),
+      this._playerInitials(),
       score,
       level
     );

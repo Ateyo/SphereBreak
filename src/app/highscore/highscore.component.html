@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (score of highscores; track score.score ?? $index; let i = $index) {
+      @for (score of highscores; track score.initials + '-' + score.score + '-' + score.level; let i = $index) {
         <tr>
           <td>{{ i + 1 }}</td>
           <td>{{ score.initials }}</td>
