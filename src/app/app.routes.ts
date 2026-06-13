@@ -17,6 +17,11 @@ export const routes: Routes = [
       import('./highscore/highscore.module').then((m) => m.HighscoreModule)
   },
   {
+    path: 'coin-prototype',
+    loadComponent: () =>
+      import('./coin-prototype/coin-prototype.component').then((m) => m.CoinPrototypeComponent)
+  },
+  {
     path: '',
     loadChildren: () =>
       import('./main-menu/main-menu.module').then((m) => m.MainMenuModule)

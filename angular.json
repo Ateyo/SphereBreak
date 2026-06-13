@@ -49,8 +49,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "16kb" <!-- raised from 2kb/4kb for coin prototype; revisit after deleting prototype -->
                 }
               ],
               "fileReplacements": [
