@@ -13,8 +13,10 @@ export const routes: Routes = [
   },
   {
     path: 'highscores',
-    loadChildren: () =>
-      import('./highscore/highscore.module').then((m) => m.HighscoreModule)
+    loadComponent: () =>
+      import('./highscore/highscore.component').then(
+        (m) => m.HighscoreComponent
+      )
   },
   {
     path: 'coin-prototype',
