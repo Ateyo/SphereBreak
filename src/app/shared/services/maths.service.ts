@@ -30,17 +30,8 @@ export class MathsService {
     this._coreSphere = value;
   }
 
-  // get currentTotal(): Observable<number> {
-  //   return this._currentTotal;
-  // }
-
-  // set currentTotal(value: number) {
-  //   this._currentTotal = value;
-  // }
-
   public changeCoreSphere() {
     this._coreSphere = this.getRandomIntInclusive(1, 9);
-    //this._coreSphere = 7; // For testing purposes, set to 1
   }
 
   public getRandomIntInclusive(min: number, max: number) {

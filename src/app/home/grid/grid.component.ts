@@ -1,11 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject
-} from '@angular/core';
-import { CoinComponent } from 'src/app/shared/components/coin/coin.component'; // <-- Import CoinComponent
-import { CoinArray } from 'src/app/shared/interfaces';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
 import { CoinsService } from 'src/app/shared/services/coins.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 

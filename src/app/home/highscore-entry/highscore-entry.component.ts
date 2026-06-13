@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { take } from 'rxjs/operators';
 import { PlayerService } from 'src/app/shared/services/player.service';
 
 @Component({
@@ -10,20 +10,28 @@ import { PlayerService } from 'src/app/shared/services/player.service';
   templateUrl: './highscore-entry.component.html',
   styleUrls: ['./highscore-entry.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule]
+  imports: [MatButtonModule, MatIconModule]
 })
 export class HighscoreEntryComponent {
-  public data: { score: number } = inject(MAT_DIALOG_DATA);
+  public data: { score: number; level: number } = inject(MAT_DIALOG_DATA);
   private playerService = inject(PlayerService);
   private dialogRef = inject(MatDialogRef<HighscoreEntryComponent>);
 
   alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  initials: string[] = ['A', 'A', 'A'];
+  initials: string[] = this.getInitialInitials();
   currentInitialIndex = 0;
 
+  private getInitialInitials(): string[] {
+    const saved = this.playerService.getInitials();
+    if (saved && saved.length === 3) {
+      return saved.split('');
+    }
+    return ['A', 'A', 'A'];
+  }
+
   changeChar(initialIndex: number, direction: number): void {
-    const currentLeter = this.initials[initialIndex];
-    let currentIndex = this.alphabet.indexOf(currentLeter);
+    const currentLetter = this.initials[initialIndex];
+    let currentIndex = this.alphabet.indexOf(currentLetter);
     currentIndex += direction;
 
     if (currentIndex < 0) {
@@ -38,7 +46,12 @@ export class HighscoreEntryComponent {
   save(): void {
     const initials = this.initials.join('');
     this.playerService.setInitials(initials);
-    //this.playerService.saveScore(this.data.score);
-    this.dialogRef.close();
+    this.playerService
+      .saveScore(this.data.score, this.data.level)
+      .pipe(take(1))
+      .subscribe({
+        next: () => this.dialogRef.close(),
+        error: (err) => console.error('Failed to save score:', err)
+      });
   }
 }

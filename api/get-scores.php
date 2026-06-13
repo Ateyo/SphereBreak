@@ -5,10 +5,9 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 header('Content-Type: application/json');
-// header('Access-Control-Allow-Origin: https://tom-gonzalez.com'); // PROD
-header('Access-Control-Allow-Origin: http://localhost:4200'); // DEV
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS'); // Add POST for save-score.php
-header('Access-Control-Allow-Headers: Content-Type, X-API-Key'); // Allow custom header
+header('Access-Control-Allow-Origin: ' . ($_ENV['CORS_ORIGIN'] ?? '*'));
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, X-API-Key');
 
 // Handle OPTIONS request for CORS preflight
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -22,7 +21,7 @@ if (!isset($_SERVER['HTTP_X_API_KEY']) || $_SERVER['HTTP_X_API_KEY'] !== $_ENV['
     exit();
 }
 
-$dbPath = '../highscores.db'; // Path to your SQLite database file
+$dbPath = __DIR__ . '/../highscores.db';
 
 try {
     $db = new PDO('sqlite:' . $dbPath);
