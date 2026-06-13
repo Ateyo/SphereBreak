@@ -1,6 +1,6 @@
 <div class="app-grid">
-  @if (entryCoinsArray.length === 4) {
-    @for (entryCoin of entryCoinsArray; track entryCoin) {
+  @if (entryCoinsArray$().length === 4) {
+    @for (entryCoin of entryCoinsArray$(); track entryCoin) {
       <app-coin
         class="entry-coin"
         [coinId]="entryCoin.id"
@@ -8,7 +8,7 @@
         [coinValue]="entryCoin.coin.value"></app-coin>
     }
 
-    @for (coin of coinsArray; track coin) {
+    @for (coin of coinsArray$(); track coin.id) {
       <app-coin [coinId]="coin.id" [coinValue]="coin.coin.value"></app-coin>
     }
     <app-core-sphere></app-core-sphere>

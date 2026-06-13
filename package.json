@@ -6,6 +6,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:debug": "ng serve --configuration debug",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
@@ -39,12 +40,12 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.2",
     "@angular/build": "^20.0.1",
     "@angular/cli": "^20.0.1",
     "@angular/compiler-cli": "^20.0.2",
     "@angular/language-service": "^20.0.2",
     "@capacitor/android": "^7.3.0",
+    "@capacitor/cli": "^7.4.2",
     "@eslint/js": "^9.28.0",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",

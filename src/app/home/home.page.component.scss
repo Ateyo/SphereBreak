@@ -1,3 +1,18 @@
+.debug-toggle {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  background: #ffd700;
+  color: #1a1a2e;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+}
+
 #container {
   text-align: center;
   display: grid;
@@ -15,7 +30,6 @@
   .card {
     margin: 0.25rem;
 
-    /* Extra small devices (phones, 600px and down) */
     @media only screen and (max-width: 600px) {
       &:nth-child(3) {
         grid-column-start: 1;
@@ -23,21 +37,39 @@
       }
     }
   }
+
+  @media only screen and (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+
+    .card {
+      font-size: 0.9rem;
+      padding: 0.35rem;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .left-side,
+    .right-side {
+      grid-column: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {
   app-grid {
-    grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column: 1 / -1;
 
     &.blocked {
       &:after {
-        content: 'Blocked';
+        content: 'BREAK!';
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        color: rgba(255, 0, 0, 0.8);
+        color: rgba(255, 215, 0, 0.8);
         font-size: 1.5rem;
         font-weight: bold;
       }
@@ -56,12 +88,19 @@
   border-color: var(--mat-sys-analogous);
 }
 
+.total.break-matched p {
+  color: rgb(255, 215, 0);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+  transition: all 0.3s;
+}
+
 .next-multiples {
   span {
     margin: 0 0.25rem;
+    transition: color 0.3s;
 
     &:first-child {
-      color: gold;
+      color: rgb(255, 215, 0);
       animation: 0.8s ease-in-out blink infinite;
     }
   }

@@ -35,7 +35,9 @@
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],
             "scripts": [],
-            "browser": "src/main.ts"
+            "browser": "src/main.ts",
+            "baseHref": "/spherebreak/",
+            "deployUrl": "/spherebreak/"
           },
           "configurations": {
             "production": {
@@ -47,8 +49,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "8kb",
+                  "maximumError": "16kb"
                 }
               ],
               "fileReplacements": [
@@ -67,6 +69,18 @@
             },
             "ci": {
               "progress": false
+            },
+            "debug": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.debug.ts"
+                }
+              ],
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           },
           "defaultConfiguration": "production"
@@ -79,6 +93,9 @@
             },
             "development": {
               "buildTarget": "app:build:development"
+            },
+            "debug": {
+              "buildTarget": "app:build:debug"
             }
           },
           "defaultConfiguration": "development"

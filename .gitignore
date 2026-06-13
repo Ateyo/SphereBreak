@@ -69,3 +69,17 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Custom additions for API keys and generated files
+.env
+vendor/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+src/environments/environment.local.ts

@@ -1,48 +1,73 @@
 <div class="flex justify-center">
   <div class="container card flex flex-col">
-    <div class="flex flex-col">
-      <h2 class="h2 mb-3">Choose Coins</h2>
-      <div class="flex flex-row items-center">
-        <mat-form-field class="flex grow">
-          <mat-label>Enter Coin Value</mat-label>
-          <input
-            matInput
-            [formControl]="coinNumber"
-            type="number"
-            min="1"
-            max="9"
-            placeholder="1-9" />
-        </mat-form-field>
-        <button
-          matButton="filled"
-          class="mb-5 ml-5"
-          (click)="onSubmit()"
-          type="button">
-          Submit
-        </button>
-      </div>
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="h2 mb-0">Choose Coins</h2>
+      <a routerLink="/" mat-button aria-label="Back to Menu">Back</a>
     </div>
-    <div class="flex" *ngIf="entryCoinsArray.length > 0">
-      <div class="flex flex-row">
-        @for (entryCoin of entryCoinsArray; track entryCoin) {
-          <div>
+
+    <p class="text-secondary mb-3">
+      Pick <strong>4 coins</strong> with values between 1 and 9.
+    </p>
+
+    <div class="flex flex-row items-center">
+      <mat-form-field class="flex grow">
+        <mat-label>Coin Value</mat-label>
+        <input
+          matInput
+          [formControl]="coinNumber"
+          type="number"
+          min="1"
+          max="9"
+          placeholder="1-9"
+          (keyup.enter)="onSubmit()" />
+        @if (coinError) {
+          <mat-error>{{ coinError }}</mat-error>
+        }
+      </mat-form-field>
+      <button
+        mat-raised-button
+        color="primary"
+        class="mb-5 ml-5"
+        type="button"
+        (click)="onSubmit()"
+        [disabled]="entryCoinsArray.length === 4">
+        Add Coin
+      </button>
+    </div>
+
+    <div class="flex items-center gap-2 mt-2">
+      <span class="text-secondary">Coins:</span>
+      <strong>{{ entryCoinsArray.length }} / 4</strong>
+    </div>
+
+    @if (entryCoinsArray.length > 0) {
+      <div class="flex flex-row gap-8 mt-3">
+        @for (entryCoin of entryCoinsArray; track entryCoin.id) {
+          <div class="flex flex-col items-center">
             <app-coin
               class="flex"
               [entryCoin]="entryCoin.coin.entryCoin"
               [coinValue]="entryCoin.coin.value"></app-coin>
-            <div>
-              <mat-label>Coin Value</mat-label>
-              <input
-                type="number"
-                min="1"
-                max="9"
-                [value]="entryCoin.coin.value"
-                style="width: 60px; margin-top: 8px"
-                readonly />
-            </div>
+            <button mat-icon-button (click)="removeCoin(entryCoin)" type="button">
+              <mat-icon>remove_circle</mat-icon>
+            </button>
           </div>
         }
       </div>
-    </div>
+    } @else {
+      <p class="text-secondary mt-3">No coins yet. Add your first coin above.</p>
+    }
+
+    @if (entryCoinsArray.length === 4) {
+      <div class="flex justify-center mt-5">
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="startGame()"
+          type="button">
+          Start Game
+        </button>
+      </div>
+    }
   </div>
 </div>

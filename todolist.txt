@@ -1,0 +1,17 @@
+todolist
+
+Win when quota is met
+
+Dialog next level space between buttons
+
+Try to get a better fit in portrait
+
+Add padding in top for dropbar
+
+Add save highscore
+
+Reset grid for new game
+
+Add random for bordercoins
+
+Add main menu

@@ -1,7 +1,6 @@
-import { Component, effect, inject } from '@angular/core';
-import { CoinComponent } from 'src/app/shared/components/coin/coin.component'; // <-- Import CoinComponent
-import { CoinArray } from 'src/app/shared/interfaces';
-import { CoinsService } from 'src/app/shared/services/coins.service';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
+import { GridEngine } from 'src/app/shared/services/grid-engine.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
@@ -11,19 +10,12 @@ import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
   imports: [SharedModule, CoreSphereComponent, CoinComponent],
   standalone: true,
   templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss']
+  styleUrls: ['./grid.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent {
-  private coinsService = inject(CoinsService);
+  private _gridEngine = inject(GridEngine);
 
-  entryCoinsArray: CoinArray[];
-  coinsArray: CoinArray[];
-
-  constructor() {
-    this.coinsArray = this.coinsService.coinsArray;
-    this.entryCoinsArray = this.coinsService.entryCoinsArray$();
-    effect(() => {
-      this.entryCoinsArray = [...this.coinsService.entryCoinsArray$()];
-    });
-  }
+  entryCoinsArray$ = this._gridEngine.entryCoinsArray$;
+  coinsArray$ = this._gridEngine.coinsArray$;
 }

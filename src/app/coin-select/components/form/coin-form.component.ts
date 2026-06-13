@@ -1,61 +1,82 @@
-import { Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { Router, RouterLink } from '@angular/router';
 import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
-import { DialogComponent } from 'src/app/shared/components/dialog/dialog.component';
 import { CoinArray } from 'src/app/shared/interfaces';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { environment } from 'src/environments/environment';
 
-import { CoinsService } from '../../../shared/services/coins.service';
+import { GridEngine } from '../../../shared/services/grid-engine.service';
 
 @Component({
   selector: 'app-form',
-  imports: [SharedModule, CoinComponent, ReactiveFormsModule],
+  standalone: true,
+  imports: [
+    SharedModule,
+    CoinComponent,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    RouterLink
+  ],
   templateUrl: './coin-form.component.html',
   styleUrls: ['./coin-form.component.scss']
 })
-export class CoinFormComponent {
+export class CoinFormComponent implements OnInit {
   private router = inject(Router);
-  private _coinsService = inject(CoinsService);
+  private _gridEngine = inject(GridEngine);
 
-  readonly dialog = inject(MatDialog);
-  coinNumber = new FormControl();
+  coinNumber = new FormControl(1, [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(9)
+  ]);
+
+  coinError = '';
 
   get entryCoinsArray(): CoinArray[] {
-    return this._coinsService.entryCoinsArray$();
+    return this._gridEngine.entryCoinsArray$();
   }
 
-  onSubmit() {
-    if (this.entryCoinsArray.length < 4) {
-      this._coinsService.entryCoinsArray = [
-        ...this.entryCoinsArray,
-        this.coinNumber.value
-      ];
-    } else {
-      this.openDialog();
+  ngOnInit(): void {
+    if (environment.debug) {
+      this._gridEngine.addEntryCoin(3);
+      this._gridEngine.addEntryCoin(5);
+      this._gridEngine.addEntryCoin(8);
+      this._gridEngine.addEntryCoin(9);
+      setTimeout(() => this.startGame());
     }
   }
 
-  openDialog() {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      position: {
-        top: '20px'
-      },
-      data: {
-        title: 'Ready to Start?',
-        content:
-          'You have selected 4 entry coins. Would you like to start the game?',
-        confirmText: 'Start Game',
-        cancelText: 'Keep Editing'
-        // selectedCoins: this.entryCoinsArray // Pass the selected coins
-      }
-    });
+  onSubmit() {
+    if (this.entryCoinsArray.length >= 4) return;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.router.navigate(['/home']);
-      }
-    });
+    if (this.coinNumber.invalid) {
+      this.coinError = 'Enter a value between 1 and 9';
+      return;
+    }
+    this.coinError = '';
+
+    const value = this.coinNumber.value;
+    if (value === null || value === undefined) return;
+
+    this._gridEngine.addEntryCoin(value);
+    this.coinNumber.setValue(1, { emitEvent: false });
+    this.coinNumber.markAsUntouched();
+  }
+
+  removeCoin(coin: CoinArray) {
+    this._gridEngine.removeEntryCoin(coin.id);
+  }
+
+  startGame() {
+    if (this.entryCoinsArray.length < 4) return;
+    this.router.navigate(['/home']);
   }
 }

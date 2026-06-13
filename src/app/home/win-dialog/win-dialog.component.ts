@@ -1,7 +1,19 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef
+} from '@angular/material/dialog';
+
+import { HighscoreEntryComponent } from '../highscore-entry/highscore-entry.component';
+
+interface WinDialogData {
+  score: number;
+  level: number;
+  isHighscore: boolean;
+}
 
 @Component({
   selector: 'app-win-dialog',
@@ -9,6 +21,37 @@ import { MatDialogModule } from '@angular/material/dialog';
   styleUrls: ['./win-dialog.component.scss'],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatDialogModule, CommonModule, MatButtonModule]
+  imports: [MatDialogModule, MatButtonModule]
 })
-export class WinDialogComponent {}
+export class WinDialogComponent {
+  private dialog = inject(MatDialog);
+  private dialogRef = inject(MatDialogRef<WinDialogComponent>);
+
+  private data = inject(MAT_DIALOG_DATA) as WinDialogData;
+  score = this.data.score;
+  level = this.data.level;
+  isHighscore = this.data.isHighscore;
+
+  openHighscoreEntry(): void {
+    this.dialog.open(HighscoreEntryComponent, {
+      data: {
+        score: this.score,
+        level: this.level
+      }
+    });
+  }
+
+  quitAndSaveScore(): void {
+    this.dialog
+      .open(HighscoreEntryComponent, {
+        data: {
+          score: this.score,
+          level: this.level
+        }
+      })
+      .afterClosed()
+      .subscribe(() => {
+        this.dialogRef.close('quit');
+      });
+  }
+}

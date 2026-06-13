@@ -1,0 +1,51 @@
+<div class="prototype-container">
+  <div class="header">
+    <a routerLink="/" class="back-link">← Back to Menu</a>
+    <h1>Coin Style Prototype</h1>
+    <p class="subtitle">Toggle between themes below to compare. Click any coin in the grid to see its selected state.</p>
+  </div>
+
+  <div class="theme-selector">
+    @for (v of variations; track v.id) {
+      <button
+        class="theme-btn"
+        [ngClass]="themeBtnClasses(v)"
+        (click)="setTheme(v.id)">
+        {{ v.name }}
+      </button>
+    }
+  </div>
+
+  <div class="active-info">
+    <span class="badge" [ngClass]="activeVariation?.theme">{{ activeVariation?.theme }}</span>
+    <span class="active-name">{{ activeVariation?.name }}</span>
+    <span class="active-desc">{{ activeVariation?.description }}</span>
+  </div>
+
+  <div class="game-grid">
+    @for (coin of grid; track coin.id) {
+      <div
+        class="grid-cell"
+        (click)="toggleCoin(coin.id)"
+        role="button"
+        tabindex="0"
+        (keyup.enter)="toggleCoin(coin.id)"
+        (keyup.space)="toggleCoin(coin.id)">
+        <div class="coin-wrapper">
+          <div class="coin" [ngClass]="coinClasses(coin)">
+            <div class="tails"></div>
+            <div class="heads"></div>
+          </div>
+          <span class="coin-number">{{ coin.value }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <section class="legend">
+    <h3>Legend</h3>
+    <p><span class="mini-coin entry-sample"></span> Entry coin (gold) — chosen by player at start</p>
+    <p><span class="mini-coin border-sample"></span> Border coin (theme colour) — randomly generated</p>
+    <p><span class="mini-coin selected-sample"></span> Selected — spins with glow effect</p>
+  </section>
+</div>

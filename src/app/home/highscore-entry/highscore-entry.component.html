@@ -1,0 +1,24 @@
+<div class="highscore-entry-container">
+  <h2 class="h2">New Highscore!</h2>
+  <p>Your score: {{ data.score }}</p>
+  <div class="initials-container">
+    @for (initial of initials; track $index) {
+      <div class="initial-char">
+      <button
+        mat-icon-button
+        (click)="changeChar($index, 1)"
+        [attr.aria-label]="'Increase character ' + ($index + 1)">
+        <mat-icon>arrow_drop_up</mat-icon>
+      </button>
+      <span>{{ initial }}</span>
+      <button
+        mat-icon-button
+        (click)="changeChar($index, -1)"
+        [attr.aria-label]="'Decrease character ' + ($index + 1)">
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+    </div>
+  }
+  </div>
+  <button mat-raised-button color="primary" (click)="save()">Save Score</button>
+</div>

@@ -2,8 +2,14 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+// Replace the apiKey with your actual key from .env before running the backend.
+// See environment.example.ts for reference.
+
 export const environment = {
-  production: false
+  production: false,
+  debug: false,
+  url: 'http://localhost:8000/api/',
+  apiKey: 'YOUR_API_KEY_HERE'
 };
 
 /*
