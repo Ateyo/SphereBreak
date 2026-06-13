@@ -1,0 +1,77 @@
+<div id="container">
+  <div class="card left-side">
+    <!-- <button (click)="newTurn()">New Turn</button> -->
+    <div>
+      <div class="turn">
+        <strong>
+          Turn:
+          <span>{{ turn$() }}</span>
+          /
+          <span>{{ turnLimit$() }}</span>
+        </strong>
+      </div>
+      <div class="score">
+        <strong>
+          Score:
+          <p>{{ score$() }}</p>
+        </strong>
+      </div>
+      <div class="quota">
+        <strong>
+          Quota:
+          <span>{{ levelQuota$() }} / {{ quotaLimit$() }}</span>
+        </strong>
+      </div>
+    </div>
+  </div>
+  <div class="card right-side">
+    <div>
+      <div class="total">
+        <strong>
+          Sum:
+          <p>{{ total$() }}</p>
+        </strong>
+      </div>
+      @if (nextMultiples$(); as nextMultiples) {
+        @if (nextMultiples && nextMultiples.length >= 3) {
+          <div class="next-multiples">
+            <strong>
+              Next multiples:
+              <span>{{ nextMultiples[0] }}</span>
+              <span>{{ nextMultiples[1] }}</span>
+              <span>{{ nextMultiples[2] }}</span>
+            </strong>
+          </div>
+        } @else {
+          <span>Loading...</span>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="echo">
+      <strong>
+        Echo:
+        <span>{{ echo$() }} times</span>
+      </strong>
+    </div>
+
+    <div class="coinCounter">
+      <strong>
+        Coins count:
+        <span>{{ coinCounter$() }}</span>
+      </strong>
+    </div>
+  </div>
+  @if (isCoinsSet$()) {
+    <app-grid [class.blocked]="break$()"></app-grid>
+  }
+</div>
+@if (!isCoinsSet$()) {
+  <strong>Haven't set coins ?</strong>
+  <p>
+    Click to
+    <a routerLink="/coin-select">set coins</a>
+  </p>
+}

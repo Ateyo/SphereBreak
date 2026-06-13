@@ -18,13 +18,12 @@ export class CoinsService {
   turn: number = 1;
   coinSave: Array<{ id: number; breakCount: number }> = [];
 
-  private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([
-    { id: 1, coin: { value: 0, entryCoin: true } }
-  ]);
+  private _entryCoinsArray: WritableSignal<CoinArray[]> = signal([]);
   private _quota: WritableSignal<number> = signal(0);
-  private _coinsArray: CoinArray[] = [
+  private _levelQuota: WritableSignal<number> = signal(0);
+  private _coinsArray: WritableSignal<CoinArray[]> = signal([
     { id: 1, coin: { value: 0, entryCoin: false } }
-  ];
+  ]);
   private _selectedCoins: WritableSignal<Array<Coin>> = signal([]);
   private _breakCounter = 0; // Track number of breaks
   private _coinZeroBreaks = new Map<number, number>(); // Track at which break count each coin was set to 0
@@ -41,7 +40,7 @@ export class CoinsService {
       { id: 3, coin: { value: 5, entryCoin: true } },
       { id: 4, coin: { value: 8, entryCoin: true } }
     ];
-    this._coinsArray = [
+    this._coinsArray.set([
       {
         id: 101,
         coin: {
@@ -126,18 +125,12 @@ export class CoinsService {
           entryCoin: false
         }
       }
-    ];
+    ]);
     this.isCoinsSet.set(true);
 
     effect(() => {
       this.turn = this._mathsService.turn();
     });
-    // Subscribe to break$ to update quota on break
-    // this._mathsService.break$.subscribe((isBreak) => {
-    //   if (isBreak) {
-    //     this.updateQuotaForBreak();
-    //   }
-    // });
   }
 
   get entryCoinsArray$() {
@@ -157,12 +150,30 @@ export class CoinsService {
     return this._entryCoinsArray();
   }
 
-  get coinsArray(): CoinArray[] {
-    return this._coinsArray;
+  addEntryCoin(value: number) {
+    const maxId =
+      this._entryCoinsArray().length > 0
+        ? Math.max(...this._entryCoinsArray().map((c) => c.id))
+        : 0;
+    const newCoin: CoinArray = {
+      id: maxId + 1,
+      coin: { value, entryCoin: true }
+    };
+    this._entryCoinsArray.update((coins) => [...coins, newCoin]);
+  }
+
+  removeEntryCoin(coin: CoinArray) {
+    this._entryCoinsArray.update((coins) =>
+      coins.filter((c) => c.id !== coin.id)
+    );
+  }
+
+  get coinsArray$() {
+    return this._coinsArray.asReadonly();
   }
 
   set coinsArray(value: CoinArray[]) {
-    this._coinsArray = value;
+    this._coinsArray.set(value);
     this.isCoinsSet.set(true);
   }
 
@@ -177,17 +188,32 @@ export class CoinsService {
   }
 
   // Quota tracking
-  get quota(): number {
-    return this._quota();
+  get quota$() {
+    return this._quota.asReadonly();
+  }
+
+  get levelQuota$() {
+    return this._levelQuota.asReadonly();
   }
 
   public setQuota(val: number) {
     this._quota.set(val);
   }
 
+  public updateQuota(): void {
+    const borderCoinsUsed = this._selectedCoins().filter(
+      (coin) => !coin.entryCoin
+    );
+    this.setQuota(borderCoinsUsed.length);
+    this._levelQuota.update(
+      (currentLevelQuota) => currentLevelQuota + borderCoinsUsed.length
+    );
+  }
+
   public reset() {
     this.gameWon.set(false);
     this.setQuota(0);
+    this._levelQuota.set(0);
     this.clearSelectedCoins();
   }
 
@@ -205,11 +231,13 @@ export class CoinsService {
 
     // Use makeAdditions to update total and trigger break logic
     this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
+    this.updateQuota();
   }
 
   // Clear selected coins
   public clearSelectedCoins(): void {
     this._selectedCoins.set([]);
+    this.updateQuota();
   }
 
   public removeSelectedCoin(coinId: number): void {
@@ -218,6 +246,7 @@ export class CoinsService {
     );
     // Update the total after removing a coin
     this._mathsService.makeAdditions(this._selectedCoins().map((c) => c.value));
+    this.updateQuota();
   }
 
   // Increment coins in the coinsArray
@@ -226,30 +255,34 @@ export class CoinsService {
   // If a coin's value is 0, it will be set to a random value between 1 and 9 after 3 breaks
   // If a coin's value is between 1 and 8, it will be incremented by 1
   public incrementCoinsArray(): void {
-    this.coinsArray.forEach((coin) => {
-      if (!coin.coin.entryCoin) {
-        // Skip entry coins
-        if (coin.coin.value === 9) {
-          this.coinSave.push({
-            id: coin.id,
-            breakCount: this._mathsService.turn()
-          });
-          coin.coin.value = 0;
-        } else if (coin.coin.value === 0) {
-          const savedCoin = this.coinSave.find((c) => c.id === coin.id);
-          if (savedCoin && this.countTurns(savedCoin.breakCount)) {
-            coin.coin.value = this._mathsService.getRandomIntInclusive(1, 9);
-            // Remove from coinSave as it's no longer at 0
-            this.coinSave = this.coinSave.filter((c) => c.id !== coin.id);
+    this._coinsArray.update((coins) =>
+      coins.map((coin) => {
+        if (!coin.coin.entryCoin) {
+          // Skip entry coins
+          if (coin.coin.value === 9) {
+            this.coinSave.push({
+              id: coin.id,
+              breakCount: this._mathsService.turn()
+            });
+            return { ...coin, coin: { ...coin.coin, value: 0 } };
+          } else if (coin.coin.value === 0) {
+            const savedCoin = this.coinSave.find((c) => c.id === coin.id);
+            if (savedCoin && this.countTurns(savedCoin.breakCount)) {
+              const newValue = this._mathsService.getRandomIntInclusive(1, 9);
+              // Remove from coinSave as it's no longer at 0
+              this.coinSave = this.coinSave.filter((c) => c.id !== coin.id);
+              return { ...coin, coin: { ...coin.coin, value: newValue } };
+            }
+          } else {
+            return {
+              ...coin,
+              coin: { ...coin.coin, value: coin.coin.value + 1 }
+            };
           }
-        } else {
-          coin.coin.value++;
         }
-      }
-    });
-
-    // Trigger change detection
-    this._coinsArray = [...this._coinsArray];
+        return coin;
+      })
+    );
   }
 
   // countTurns before a coin needs to reappear
@@ -263,19 +296,21 @@ export class CoinsService {
 
   // Call this when a break is made to update quota
   public updateQuotaForBreak(): void {
-    // Only count and process border coins in the last selection
-    const borderCoinsUsed = this._selectedCoins().filter(
-      (coin) => !coin.entryCoin
-    );
-    this._quota.update((currentQuota) => currentQuota + borderCoinsUsed.length);
     this._breakCounter++; // Increment break counter
 
     // Set used border coins to 0
+    const borderCoinsUsed = this._selectedCoins().filter(
+      (coin) => !coin.entryCoin
+    );
     borderCoinsUsed.forEach((usedCoin) => {
       if (usedCoin.id) {
-        const coin = this._coinsArray.find((c) => c.id === usedCoin.id);
+        const coin = this._coinsArray().find((c) => c.id === usedCoin.id);
         if (coin) {
-          coin.coin.value = 0;
+          this._coinsArray.update((coins) =>
+            coins.map((c) =>
+              c.id === coin.id ? { ...c, coin: { ...c.coin, value: 0 } } : c
+            )
+          );
 
           this.coinSave.push({
             id: usedCoin.id,
@@ -287,8 +322,8 @@ export class CoinsService {
       }
     });
 
-    // Check for end of game and quota win/loss
-    if (this._mathsService.turn() >= this._mathsService.turnLimit) {
+    // Check for end of game and quota win/loss only when turns are exceeded
+    if (this._mathsService.turn() > this._mathsService.turnLimit()) {
       if (this.checkForQuotaWin()) {
         this.gameWon.set(true);
       } else {
@@ -298,6 +333,18 @@ export class CoinsService {
   }
 
   checkForQuotaWin(): boolean {
-    return this.quota >= this._mathsService.quotaLimit();
+    return this._levelQuota() >= this._mathsService.quotaLimit();
+  }
+
+  public updateCoin(coin: CoinArray, newValue: string) {
+    const entryCoin = this._entryCoinsArray().find((c) => c.id === coin.id);
+    if (entryCoin) {
+      const parsedValue = parseInt(newValue, 10);
+      if (isNaN(parsedValue) || parsedValue < 0 || parsedValue > 9) {
+        console.error('Invalid coin value. Must be between 0 and 9.');
+        return;
+      }
+      entryCoin.coin.value = parsedValue;
+    }
   }
 }

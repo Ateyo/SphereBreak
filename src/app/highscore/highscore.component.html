@@ -1,0 +1,30 @@
+<div class="highscore-container card">
+  <h2>Highscores</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Level</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (score of highscores; track score.score ?? $index; let i = $index) {
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td>{{ score.initials }}</td>
+          <td>{{ score.level }}</td>
+          <td>{{ score.score }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4">No highscores yet</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <div>
+    <a mat-flat-button routerLink="/" aria-label="Back to Menu">Back to Menu</a>
+  </div>
+</div>

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomePage } from './home.page';
+import { HomePageComponent } from './home.page.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: HomePage,
+    component: HomePageComponent,
     title: 'Sphere Break'
   }
 ];
