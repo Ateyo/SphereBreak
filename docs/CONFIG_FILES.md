@@ -32,7 +32,7 @@
 - Commands: `ng`, `start`, `build`, `watch`, `test`, `lint`, `lint:fix`
 
 ### `capacitor.config.ts`
-- App ID: `io.ionic.starter`
+- App ID: `com.ateyo.spherebreak`
 - App Name: `SphereBreak`
 - Web Dir: `www`
 - Splash screen: 3s duration, dark bg (#121316), centered, no spinner
