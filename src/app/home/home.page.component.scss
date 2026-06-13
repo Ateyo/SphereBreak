@@ -15,7 +15,6 @@
   .card {
     margin: 0.25rem;
 
-    /* Extra small devices (phones, 600px and down) */
     @media only screen and (max-width: 600px) {
       &:nth-child(3) {
         grid-column-start: 1;
@@ -23,12 +22,30 @@
       }
     }
   }
+
+  @media only screen and (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+
+    .card {
+      font-size: 0.9rem;
+      padding: 0.35rem;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    .left-side,
+    .right-side {
+      grid-column: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {
   app-grid {
-    grid-column-start: 1;
-    grid-column-end: 3;
+    grid-column: 1 / -1;
 
     &.blocked {
       &:after {

@@ -17,4 +17,10 @@
     color: rgba(152, 251, 152, 0.9);
     transform: rotate(5deg);
   }
+
+  @media only screen and (max-width: 600px) {
+    font-size: 3rem;
+    height: 3.8rem;
+    width: 3.8rem;
+  }
 }
