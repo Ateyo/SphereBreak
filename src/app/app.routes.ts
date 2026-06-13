@@ -24,6 +24,13 @@ export const routes: Routes = [
       )
   },
   {
+    path: 'menu-prototype',
+    loadComponent: () =>
+      import('./main-menu-prototype/main-menu-prototype.component').then(
+        (m) => m.MainMenuPrototypeComponent
+      )
+  },
+  {
     path: '',
     loadChildren: () =>
       import('./main-menu/main-menu.module').then((m) => m.MainMenuModule)

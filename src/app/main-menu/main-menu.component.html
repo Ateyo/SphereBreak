@@ -1,8 +1,32 @@
-<div class="main-menu-container">
+<div class="scanlines"></div>
+
+<div class="exploded-grid">
+  @for (c of explodedCoins; track c.id) {
+    <span
+      class="coin"
+      [ngClass]="c.type"
+      [style.top.%]="c.y"
+      [style.left.%]="c.x"
+      [style.animation-delay.s]="c.delay"
+      [style.animation-duration.s]="c.duration"
+      [style.font-size.rem]="c.size"
+      [style.width.rem]="c.size"
+      [style.height.rem]="c.size"
+    >{{ c.v }}</span>
+  }
+  <div class="orbit-ring"></div>
+  <div class="core-sphere">&#9679;</div>
+</div>
+
+<div class="menu-content">
   <h1 class="game-title">SphereBreak</h1>
-  <div class="menu-items">
+  <p class="subtitle">Break the sphere</p>
+
+  <nav class="menu-items">
     <a routerLink="/coin-select" class="menu-item">Start Game</a>
     <a routerLink="/highscores" class="menu-item">Highscores</a>
-  </div>
-  <a routerLink="/coin-prototype" class="dev-link">Coin Designer</a>
+  </nav>
 </div>
+
+<a routerLink="/coin-prototype" class="dev-link">Coin Designer</a>
+<a routerLink="/menu-prototype" class="dev-link menu-proto-link">Menu Designs</a>
