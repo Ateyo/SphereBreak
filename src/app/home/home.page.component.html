@@ -26,17 +26,20 @@
   </div>
   <div class="card right-side">
     <div>
-      <div class="total">
+      <div class="total" [class.break-matched]="break$()">
         <strong>
           Sum:
           <p>{{ total$() }}</p>
         </strong>
       </div>
+      <div class="core-hud">
+        <strong>Core: <span class="core-value">{{ coreSphere$() }}</span></strong>
+      </div>
       @if (nextMultiples$(); as nextMultiples) {
         @if (nextMultiples && nextMultiples.length >= 3) {
           <div class="next-multiples">
             <strong>
-              Next multiples:
+              Multiples:
               <span>{{ nextMultiples[0] }}</span>
               <span>{{ nextMultiples[1] }}</span>
               <span>{{ nextMultiples[2] }}</span>

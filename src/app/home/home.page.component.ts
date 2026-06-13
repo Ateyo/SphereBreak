@@ -48,6 +48,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   quotaLimit$ = this._turnEngine.quotaLimit$;
   echo$ = this._turnEngine.echo$;
   coinCounter$ = this._turnEngine.coinCounter$;
+  coreSphere$ = this._turnEngine.coreSphere$;
   level = 0;
   private dialogOpen = false;
 
