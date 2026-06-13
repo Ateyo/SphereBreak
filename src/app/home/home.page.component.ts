@@ -57,10 +57,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
   constructor() {
     effect(() => {
       if (this.break$()) {
+        console.log(`[HomePage] Break detected! total=${this.total$()} coreSphere=${this._turnEngine.coreSphere} score=${this.score$()} turn=${this.turn$()}`);
         if (this.breakTimeout) {
           clearTimeout(this.breakTimeout);
         }
         this.breakTimeout = setTimeout(() => {
+          console.log('[HomePage] Confirming break...');
           this.presentBreakToast('middle');
           this._gridEngine.confirmBreak();
           this._gridEngine.startNewTurn();
@@ -77,6 +79,10 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this._gridEngine.entryCoinsArray$().length === 0) {
+      this.router.navigate(['/']);
+      return;
+    }
     this.loadLevel(this.level);
   }
 

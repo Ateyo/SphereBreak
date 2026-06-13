@@ -36,3 +36,17 @@
   color: #ffff00; /* Yellow */
   transform: scale(1.1);
 }
+
+.dev-link {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.dev-link:hover {
+  color: rgba(0, 191, 255, 0.6);
+}

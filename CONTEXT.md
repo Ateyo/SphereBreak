@@ -138,7 +138,7 @@ src/assets/levels.json     # 15 level definitions (turns, quota, time limit)
 ## Commands
 
 | Command | Description |
-|---|---|
+|---|---|---|
 | `npm start` | Dev server (`ng serve`) |
 | `ionic serve` | Dev server with live reload |
 | `npm test` | Run unit tests (Karma) |
@@ -146,7 +146,8 @@ src/assets/levels.json     # 15 level definitions (turns, quota, time limit)
 | `npm run lint:fix` | Lint and auto-fix |
 | `ionic build --prod` | Production build → `www/` |
 | `ionic capacitor build android` | Build Android native |
-| `npx cap open androi`d | Open Android Studio |
+| `npx cap open android` | Open Android Studio |
+| `git checkout dev && git checkout -b feature/<name>` | Start new feature branch (gitflow) |
 
 ---
 

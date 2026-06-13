@@ -4,12 +4,14 @@
   <p>Your Score: {{ score }}</p>
   <p>Level Completed: {{ level }}</p>
 
-  <div *ngIf="isHighscore">
-    <h3>New High Score!</h3>
-    <button mat-raised-button color="primary" (click)="openHighscoreEntry()">
-      Save score
-    </button>
-  </div>
+  @if (isHighscore) {
+    <div>
+      <h3>New High Score!</h3>
+      <button mat-raised-button color="primary" (click)="openHighscoreEntry()">
+        Save score
+      </button>
+    </div>
+  }
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button [mat-dialog-close]="true">Replay Level</button>

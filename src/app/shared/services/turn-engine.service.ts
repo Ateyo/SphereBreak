@@ -26,16 +26,18 @@ export class TurnEngine {
   readonly quotaLimit$ = this._quotaLimit.asReadonly();
   readonly gameEnded$ = this._gameEnded.asReadonly();
 
-  private _coreSphere = 1;
+  private _coreSphere: WritableSignal<number> = signal(1);
   private _numberOfCoinsAdded = 0;
   private _lastCoinCount = 0;
 
+  readonly coreSphere$ = this._coreSphere.asReadonly();
+
   setCoreSphere(value: number) {
-    this._coreSphere = value;
+    this._coreSphere.set(value);
   }
 
   get coreSphere(): number {
-    return this._coreSphere;
+    return this._coreSphere();
   }
 
   getRandomIntInclusive(min: number, max: number) {
@@ -47,6 +49,7 @@ export class TurnEngine {
     this._numberOfCoinsAdded = values.length;
     this._currentTotal.set(total);
     this._computeNextMultiples(total);
+    console.log(`[TurnEngine] evaluateSelection: values=[${values}] total=${total} coreSphere=${this._coreSphere()} total%coreSphere=${total % this._coreSphere()}`);
     this._checkForBreak(total);
   }
 
@@ -84,14 +87,17 @@ export class TurnEngine {
   }
 
   private _generateCoreSphere(): void {
-    this._coreSphere = this.getRandomIntInclusive(1, 9);
+    this._coreSphere.set(this.getRandomIntInclusive(1, 9));
   }
 
   private _checkForBreak(total: number): void {
-    if (total > 0 && total % this._coreSphere === 0 && !this._break()) {
+    const isMultiple = total > 0 && total % this._coreSphere() === 0;
+    console.log(`[TurnEngine] _checkForBreak: total=${total} coreSphere=${this._coreSphere()} isMultiple=${isMultiple} alreadyBroken=${this._break()}`);
+    if (isMultiple && !this._break()) {
+      console.log(`[TurnEngine] BREAK! coins=${this._numberOfCoinsAdded} multiples=${total / this._coreSphere()}`);
       this._break.set(true);
       this._coinCounter.set(this._numberOfCoinsAdded);
-      const multiplesFound = total / this._coreSphere;
+      const multiplesFound = total / this._coreSphere();
       this._calculateScore(this._numberOfCoinsAdded, multiplesFound);
       if (this._lastCoinCount > 0 && this._lastCoinCount === this._numberOfCoinsAdded) {
         this._echo.update(e => e + 1);
@@ -109,7 +115,7 @@ export class TurnEngine {
     let current = total + 1;
 
     while (count < 5) {
-      if (current % this._coreSphere === 0) {
+      if (current % this._coreSphere() === 0) {
         result.push(current);
         count++;
       }
