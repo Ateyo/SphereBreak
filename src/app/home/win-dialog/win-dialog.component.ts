@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  inject
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -32,15 +27,10 @@ export class WinDialogComponent {
   private dialog = inject(MatDialog);
   private dialogRef = inject(MatDialogRef<WinDialogComponent>);
 
-  score: number;
-  level: number;
-  isHighscore: boolean;
-
-  constructor(@Inject(MAT_DIALOG_DATA) private data: WinDialogData) {
-    this.score = data.score;
-    this.level = data.level;
-    this.isHighscore = data.isHighscore;
-  }
+  private data = inject(MAT_DIALOG_DATA) as WinDialogData;
+  score = this.data.score;
+  level = this.data.level;
+  isHighscore = this.data.isHighscore;
 
   openHighscoreEntry(): void {
     this.dialog.open(HighscoreEntryComponent, {

@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import {
   MAT_DIALOG_DATA,
@@ -46,10 +46,7 @@ import { HighscoreEntryComponent } from '../highscore-entry/highscore-entry.comp
 export class LossDialogComponent {
   private dialogRef = inject<MatDialogRef<LossDialogComponent>>(MatDialogRef);
   private dialog = inject(MatDialog);
-  constructor(
-    // eslint-disable-next-line no-unused-vars
-    @Inject(MAT_DIALOG_DATA) private _data: { score: number; level: number }
-  ) {}
+  private _data = inject(MAT_DIALOG_DATA) as { score: number; level: number };
 
   onReplayClick(): void {
     this.dialogRef.close(true);
@@ -63,7 +60,8 @@ export class LossDialogComponent {
     this.dialogRef.close();
     this.dialog.open(HighscoreEntryComponent, {
       data: {
-        score: this.score
+        score: this.score,
+        level: this.level
       }
     });
   }
