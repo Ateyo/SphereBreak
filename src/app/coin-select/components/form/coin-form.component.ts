@@ -50,7 +50,7 @@ export class CoinFormComponent implements OnInit {
       this._gridEngine.addEntryCoin(5);
       this._gridEngine.addEntryCoin(8);
       this._gridEngine.addEntryCoin(9);
-      this.startGame();
+      setTimeout(() => this.startGame());
     }
   }
 

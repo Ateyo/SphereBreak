@@ -40,7 +40,7 @@ try {
     $count = $stmt->fetchColumn();
 
     // If empty, insert a dummy score
-    if ($count == 0) {
+    if ((int)$count === 0) {
         $db->exec("INSERT INTO highscores (initials, score, level) VALUES ('TOM', 1500, 2)");
     }
 
@@ -50,6 +50,7 @@ try {
     echo json_encode($highscores);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    error_log('Database error in get-scores.php: ' . $e->getMessage());
+    echo json_encode(['error' => 'An error occurred while retrieving high scores.']);
 }
 ?>
