@@ -60,10 +60,14 @@ export class GridEngine {
     const allCoins = [...this._entryCoinsArray(), ...this._coinsArray()];
     const target = allCoins.find(c => c.id === coinId)!;
 
+    console.log(`[GridEngine] selectCoin: id=${coinId} value=${target.coin.value} entryCoin=${target.coin.entryCoin}`);
+
     this._selectedCoins.update(coins => [...coins, {
       value: target.coin.value, entryCoin: target.coin.entryCoin, id: coinId
     }]);
-    this._turnEngine.evaluateSelection(this._selectedCoins().map(c => c.value));
+    const selectedValues = this._selectedCoins().map(c => c.value);
+    console.log(`[GridEngine] selected values: [${selectedValues}]`);
+    this._turnEngine.evaluateSelection(selectedValues);
   }
 
   confirmBreak(): void {
