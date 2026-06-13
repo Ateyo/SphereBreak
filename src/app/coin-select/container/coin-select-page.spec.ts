@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CoinSelectPageComponent } from './coin-select-page';
@@ -8,7 +9,7 @@ describe('CoinSelectPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CoinSelectPageComponent]
+      imports: [HttpClientTestingModule, CoinSelectPageComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoinSelectPageComponent);

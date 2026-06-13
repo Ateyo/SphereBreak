@@ -11,7 +11,7 @@ import { CoinArray } from 'src/app/shared/interfaces';
 import { PlayerService } from 'src/app/shared/services/player.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-import { CoinsService } from '../../../shared/services/coins.service';
+import { GridEngine } from '../../../shared/services/grid-engine.service';
 
 @Component({
   selector: 'app-form',
@@ -30,7 +30,7 @@ import { CoinsService } from '../../../shared/services/coins.service';
 })
 export class CoinFormComponent {
   private router = inject(Router);
-  private _coinsService = inject(CoinsService);
+  private _gridEngine = inject(GridEngine);
   private _playerService = inject(PlayerService);
 
   readonly dialog = inject(MatDialog);
@@ -40,19 +40,19 @@ export class CoinFormComponent {
   );
 
   get entryCoinsArray(): CoinArray[] {
-    return this._coinsService.entryCoinsArray$();
+    return this._gridEngine.entryCoinsArray$();
   }
 
   onSubmit() {
     if (this.entryCoinsArray.length < 4) {
       if (this.coinNumber.valid && this.coinNumber.value !== null) {
-        this._coinsService.addEntryCoin(this.coinNumber.value);
+        this._gridEngine.addEntryCoin(this.coinNumber.value);
       }
     }
   }
 
   removeCoin(coin: CoinArray) {
-    this._coinsService.removeEntryCoin(coin);
+    this._gridEngine.removeEntryCoin(coin.id);
   }
 
   startGame() {

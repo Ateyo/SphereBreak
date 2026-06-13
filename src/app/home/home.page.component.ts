@@ -13,11 +13,10 @@ import { IonicModule, IonToast, ToastController } from '@ionic/angular';
 import { take } from 'rxjs';
 
 import levels from '../../assets/levels.json';
-//import levels from '../../assets/levels_tests.json';
-import { CoinsService } from '../shared/services/coins.service';
+import { GridEngine } from '../shared/services/grid-engine.service';
 import { HighscoreService } from '../shared/services/highscore.service';
-import { MathsService } from '../shared/services/maths.service';
 import { PlayerService } from '../shared/services/player.service';
+import { TurnEngine } from '../shared/services/turn-engine.service';
 import { GridComponent } from './grid/grid.component';
 import { LossDialogComponent } from './loss-dialog/loss-dialog.component';
 import { WinDialogComponent } from './win-dialog/win-dialog.component';
@@ -30,26 +29,25 @@ import { WinDialogComponent } from './win-dialog/win-dialog.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomePageComponent implements OnInit, OnDestroy {
-  private _coinsService = inject<CoinsService>(CoinsService);
-  private _mathsService = inject<MathsService>(MathsService);
+  private _turnEngine = inject(TurnEngine);
+  private _gridEngine = inject(GridEngine);
   private toastController = inject<ToastController>(ToastController);
   private dialog = inject<MatDialog>(MatDialog);
   private _highscoreService = inject<HighscoreService>(HighscoreService);
   private _playerService = inject<PlayerService>(PlayerService);
   private router = inject(Router);
 
-  levelQuota$ = this._coinsService.levelQuota$;
-  isCoinsSet$ = this._coinsService.isCoinsSet.asReadonly();
-  total$ = this._mathsService.currentTotal.asReadonly();
-  nextMultiples$ = this._mathsService.nextMultiples.asReadonly();
-  break$ = this._mathsService.break.asReadonly();
-  score$ = this._mathsService.currentScore.asReadonly();
-  turn$ = this._mathsService.turn.asReadonly();
-  turnLimit$ = this._mathsService.turnLimit.asReadonly();
-  quotaLimit$ = this._mathsService.quotaLimit.asReadonly();
-  echo$ = this._mathsService.echo.asReadonly();
-  coinCounter$ = this._mathsService.coinCounter.asReadonly();
-  gameWon$ = this._coinsService.gameWon.asReadonly();
+  levelQuota$ = this._gridEngine.levelQuota$;
+  isCoinsSet$ = this._gridEngine.isCoinsSet$;
+  total$ = this._turnEngine.currentTotal$;
+  nextMultiples$ = this._turnEngine.nextMultiples$;
+  break$ = this._turnEngine.break$;
+  score$ = this._turnEngine.currentScore$;
+  turn$ = this._turnEngine.turn$;
+  turnLimit$ = this._turnEngine.turnLimit$;
+  quotaLimit$ = this._turnEngine.quotaLimit$;
+  echo$ = this._turnEngine.echo$;
+  coinCounter$ = this._turnEngine.coinCounter$;
   level = 0;
   private dialogOpen = false;
 
@@ -64,15 +62,15 @@ export class HomePageComponent implements OnInit, OnDestroy {
         }
         this.breakTimeout = setTimeout(() => {
           this.presentBreakToast('middle');
-          this._coinsService.updateQuotaForBreak();
-          this.startNewTurn();
-          this._mathsService.break.set(false);
+          this._gridEngine.confirmBreak();
+          this._gridEngine.startNewTurn();
+          this._turnEngine.advanceTurn();
         }, 1000);
       }
     });
 
     effect(() => {
-      if (this._mathsService.gameEnded() && !this.dialogOpen) {
+      if (this._turnEngine.gameEnded$() && !this.dialogOpen) {
         this.handleGameEnd();
       }
     });
@@ -86,16 +84,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     if (this.breakTimeout) {
       clearTimeout(this.breakTimeout);
     }
-  }
-
-  startNewTurn() {
-    // Return any border coins due this turn
-    this._coinsService.incrementCoinsArray();
-    this._coinsService.clearSelectedCoins();
-  }
-
-  newTurn() {
-    this.startNewTurn();
   }
 
   async presentBreakToast(position: 'top' | 'middle' | 'bottom') {
@@ -165,8 +153,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        this.dialogOpen = false; // Reset flag when dialog is closed
-        this._mathsService.gameEnded.set(false); // Reset gameEnded state after dialog is closed
+        this.dialogOpen = false;
+        this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
         } else if (result === false) {
@@ -177,8 +165,8 @@ export class HomePageComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error closing win dialog:', error);
-        this.dialogOpen = false; // Ensure flag is reset even on error
-        this._mathsService.gameEnded.set(false); // Reset gameEnded state even on error
+        this.dialogOpen = false;
+        this._turnEngine.resetGame();
         this.presentToastError('An error occurred. Please try again.');
       }
     });
@@ -191,18 +179,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        this.dialogOpen = false; // Reset flag when dialog is closed
-        this._mathsService.gameEnded.set(false); // Reset gameEnded state after dialog is closed
+        this.dialogOpen = false;
+        this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
         } else if (result === false) {
-          // Optionally handle next level for loss, maybe disable it
           this.nextLevel();
         }
       },
       error: (error) => {
         console.error('Error closing loss dialog:', error);
-        this.dialogOpen = false; // Ensure flag is reset even on error
+        this.dialogOpen = false;
         this.presentToastError('An error occurred. Please try again.');
       }
     });
@@ -210,14 +197,12 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
   replay() {
     this.loadLevel(this.level);
-    this._coinsService.gameWon.set(false);
   }
 
   nextLevel() {
     if (this.level + 1 < levels.length) {
       this.level++;
       this.loadLevel(this.level);
-      this._coinsService.gameWon.set(false);
     } else {
       console.log('All levels completed!');
     }
@@ -227,16 +212,26 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
+  private _setupGrid(): void {
+    const entryCoins = this._gridEngine.entryCoinsArray$().map(c => ({
+      value: c.coin.value,
+      entryCoin: true
+    }));
+    const borderCoins = Array.from({ length: 12 }, () => ({
+      value: this._turnEngine.getRandomIntInclusive(1, 9),
+      entryCoin: false
+    }));
+    this._gridEngine.makeGrid(entryCoins, borderCoins);
+  }
+
   loadLevel(level: number) {
     if (level < 0 || level >= levels.length) {
       console.error(`Invalid level: ${level}`);
       return;
     }
-    this._mathsService.setTurnLimit(levels[level].turns);
-    this._mathsService.setQuotaLimit(levels[level].quota);
-    this._mathsService.turn.set(1);
-    this._coinsService.reset();
-    this._mathsService.gameEnded.set(false); // Reset gameEnded state on level load
-    this.dialogOpen = false; // Reset dialogOpen flag on level load
+    this._turnEngine.loadLevel(levels[level].turns, levels[level].quota);
+    this._gridEngine.reset();
+    this._setupGrid();
+    this.dialogOpen = false;
   }
 }

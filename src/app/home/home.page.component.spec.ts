@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
@@ -9,7 +10,7 @@ describe('HomePageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(), HomePageComponent]
+      imports: [HttpClientTestingModule, IonicModule.forRoot(), HomePageComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomePageComponent);
