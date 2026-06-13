@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CoinComponent } from 'src/app/shared/components/coin/coin.component';
-import { CoinsService } from 'src/app/shared/services/coins.service';
+import { GridEngine } from 'src/app/shared/services/grid-engine.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
@@ -14,8 +14,8 @@ import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent {
-  private coinsService = inject(CoinsService);
+  private gridEngine = inject(GridEngine);
 
-  entryCoinsArray$ = this.coinsService.entryCoinsArray$;
-  coinsArray$ = this.coinsService.coinsArray$;
+  entryCoinsArray$ = this.gridEngine.entryCoinsArray;
+  coinsArray$ = this.gridEngine.coinsArray;
 }

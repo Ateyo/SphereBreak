@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { MainMenuComponent } from './main-menu.component';
 
@@ -8,7 +9,7 @@ describe('MainMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainMenuComponent]
+      imports: [RouterTestingModule, MainMenuComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(MainMenuComponent);

@@ -1,5 +1,5 @@
 import { Component, effect, inject } from '@angular/core';
-import { MathsService } from 'src/app/shared/services/maths.service';
+import { TurnEngine } from 'src/app/shared/services/turn-engine.service';
 
 @Component({
   selector: 'app-core-sphere',
@@ -7,14 +7,13 @@ import { MathsService } from 'src/app/shared/services/maths.service';
   styleUrls: ['./core-sphere.component.scss']
 })
 export class CoreSphereComponent {
-  private _mathsService = inject(MathsService);
+  private _turnEngine = inject(TurnEngine);
 
   value: number = 1;
   constructor() {
     effect(() => {
-      console.log('EFFFECTTTTTT CORE SPHERE');
-      this._mathsService.turn();
-      this.value = this._mathsService.coreSphere;
+      this._turnEngine.turn();
+      this.value = this._turnEngine.coreSphere;
     });
   }
 }

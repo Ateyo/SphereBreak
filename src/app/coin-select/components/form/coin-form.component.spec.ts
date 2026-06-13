@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
@@ -9,7 +10,7 @@ describe('CoinFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [IonicModule.forRoot(), CoinFormComponent]
+      imports: [HttpClientTestingModule, IonicModule.forRoot(), CoinFormComponent]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CoinFormComponent);
