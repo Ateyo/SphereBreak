@@ -14,8 +14,8 @@ import { CoreSphereComponent } from '../core-sphere/core-sphere.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GridComponent {
-  private gridEngine = inject(GridEngine);
+  private _gridEngine = inject(GridEngine);
 
-  entryCoinsArray$ = this.gridEngine.entryCoinsArray;
-  coinsArray$ = this.gridEngine.coinsArray;
+  entryCoinsArray$ = this._gridEngine.entryCoinsArray$;
+  coinsArray$ = this._gridEngine.coinsArray$;
 }

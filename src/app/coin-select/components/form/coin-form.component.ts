@@ -40,7 +40,7 @@ export class CoinFormComponent {
   );
 
   get entryCoinsArray(): CoinArray[] {
-    return this._gridEngine.entryCoinsArray();
+    return this._gridEngine.entryCoinsArray$();
   }
 
   onSubmit() {

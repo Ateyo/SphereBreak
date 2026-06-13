@@ -37,17 +37,17 @@ export class HomePageComponent implements OnInit, OnDestroy {
   private _playerService = inject<PlayerService>(PlayerService);
   private router = inject(Router);
 
-  levelQuota$ = this._gridEngine.levelQuota;
-  isCoinsSet$ = this._gridEngine.isCoinsSet;
-  total$ = this._turnEngine.currentTotal.asReadonly();
-  nextMultiples$ = this._turnEngine.nextMultiples.asReadonly();
-  break$ = this._turnEngine.break.asReadonly();
-  score$ = this._turnEngine.currentScore.asReadonly();
-  turn$ = this._turnEngine.turn.asReadonly();
-  turnLimit$ = this._turnEngine.turnLimit.asReadonly();
-  quotaLimit$ = this._turnEngine.quotaLimit.asReadonly();
-  echo$ = this._turnEngine.echo.asReadonly();
-  coinCounter$ = this._turnEngine.coinCounter.asReadonly();
+  levelQuota$ = this._gridEngine.levelQuota$;
+  isCoinsSet$ = this._gridEngine.isCoinsSet$;
+  total$ = this._turnEngine.currentTotal$;
+  nextMultiples$ = this._turnEngine.nextMultiples$;
+  break$ = this._turnEngine.break$;
+  score$ = this._turnEngine.currentScore$;
+  turn$ = this._turnEngine.turn$;
+  turnLimit$ = this._turnEngine.turnLimit$;
+  quotaLimit$ = this._turnEngine.quotaLimit$;
+  echo$ = this._turnEngine.echo$;
+  coinCounter$ = this._turnEngine.coinCounter$;
   level = 0;
   private dialogOpen = false;
 
@@ -70,7 +70,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      if (this._turnEngine.gameEnded() && !this.dialogOpen) {
+      if (this._turnEngine.gameEnded$() && !this.dialogOpen) {
         this.handleGameEnd();
       }
     });
@@ -154,7 +154,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         this.dialogOpen = false;
-        this._turnEngine.gameEnded.set(false);
+        this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
         } else if (result === false) {
@@ -166,7 +166,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error closing win dialog:', error);
         this.dialogOpen = false;
-        this._turnEngine.gameEnded.set(false);
+        this._turnEngine.resetGame();
         this.presentToastError('An error occurred. Please try again.');
       }
     });
@@ -180,7 +180,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe({
       next: (result) => {
         this.dialogOpen = false;
-        this._turnEngine.gameEnded.set(false);
+        this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
         } else if (result === false) {
@@ -213,7 +213,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   private _setupGrid(): void {
-    const entryCoins = this._gridEngine.entryCoinsArray().map(c => ({
+    const entryCoins = this._gridEngine.entryCoinsArray$().map(c => ({
       value: c.coin.value,
       entryCoin: true
     }));

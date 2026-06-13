@@ -13,12 +13,13 @@ export class GridEngine {
   private _selectedCoins: WritableSignal<Coin[]> = signal([]);
   private _levelQuota: WritableSignal<number> = signal(0);
   private _isCoinsSet: WritableSignal<boolean> = signal(false);
+  private _turnsSinceRegen = 0;
 
-  entryCoinsArray = this._entryCoinsArray.asReadonly();
-  coinsArray = this._coinsArray.asReadonly();
-  selectedCoins = this._selectedCoins.asReadonly();
-  levelQuota = this._levelQuota.asReadonly();
-  isCoinsSet = this._isCoinsSet.asReadonly();
+  readonly entryCoinsArray$ = this._entryCoinsArray.asReadonly();
+  readonly coinsArray$ = this._coinsArray.asReadonly();
+  readonly selectedCoins$ = this._selectedCoins.asReadonly();
+  readonly levelQuota$ = this._levelQuota.asReadonly();
+  readonly isCoinsSet$ = this._isCoinsSet.asReadonly();
 
   makeGrid(entryCoins: { value: number; entryCoin: boolean }[], borderCoins: { value: number; entryCoin: boolean }[]): void {
     this._entryCoinsArray.set(
@@ -72,6 +73,8 @@ export class GridEngine {
 
   startNewTurn(): void {
     this._selectedCoins.set([]);
+    this._turnsSinceRegen++;
+
     this._coinsArray.update(coins =>
       coins.map(c => {
         if (!c.coin.entryCoin) {
@@ -82,11 +85,24 @@ export class GridEngine {
         return c;
       })
     );
+
+    if (this._turnsSinceRegen >= 3) {
+      this._turnsSinceRegen = 0;
+      this._coinsArray.update(coins =>
+        coins.map(c => {
+          if (!c.coin.entryCoin && c.coin.value === 0) {
+            return { ...c, coin: { ...c.coin, value: this._turnEngine.getRandomIntInclusive(1, 9) } };
+          }
+          return c;
+        })
+      );
+    }
   }
 
   reset(): void {
     this._levelQuota.set(0);
     this._selectedCoins.set([]);
+    this._turnsSinceRegen = 0;
   }
 
   clearSelection(): void {

@@ -4,16 +4,28 @@ import { Injectable, signal, WritableSignal } from '@angular/core';
   providedIn: 'root'
 })
 export class TurnEngine {
-  currentTotal: WritableSignal<number> = signal(0);
-  nextMultiples: WritableSignal<number[]> = signal([]);
-  break: WritableSignal<boolean> = signal(false);
-  currentScore: WritableSignal<number> = signal(0);
-  echo: WritableSignal<number> = signal(0);
-  coinCounter: WritableSignal<number> = signal(0);
-  turn: WritableSignal<number> = signal(1);
-  turnLimit: WritableSignal<number> = signal(15);
-  quotaLimit: WritableSignal<number> = signal(20);
-  gameEnded: WritableSignal<boolean> = signal(false);
+  private _currentTotal: WritableSignal<number> = signal(0);
+  private _nextMultiples: WritableSignal<number[]> = signal([]);
+  private _break: WritableSignal<boolean> = signal(false);
+  private _currentScore: WritableSignal<number> = signal(0);
+  private _echo: WritableSignal<number> = signal(0);
+  private _coinCounter: WritableSignal<number> = signal(0);
+  private _turn: WritableSignal<number> = signal(1);
+  private _turnLimit: WritableSignal<number> = signal(15);
+  private _quotaLimit: WritableSignal<number> = signal(20);
+  private _gameEnded: WritableSignal<boolean> = signal(false);
+
+  readonly currentTotal$ = this._currentTotal.asReadonly();
+  readonly nextMultiples$ = this._nextMultiples.asReadonly();
+  readonly break$ = this._break.asReadonly();
+  readonly currentScore$ = this._currentScore.asReadonly();
+  readonly echo$ = this._echo.asReadonly();
+  readonly coinCounter$ = this._coinCounter.asReadonly();
+  readonly turn$ = this._turn.asReadonly();
+  readonly turnLimit$ = this._turnLimit.asReadonly();
+  readonly quotaLimit$ = this._quotaLimit.asReadonly();
+  readonly gameEnded$ = this._gameEnded.asReadonly();
+
   private _coreSphere = 1;
   private _numberOfCoinsAdded = 0;
   private _lastCoinCount = 0;
@@ -33,34 +45,38 @@ export class TurnEngine {
   evaluateSelection(values: number[]): void {
     const total = values.reduce((sum, v) => sum + v, 0);
     this._numberOfCoinsAdded = values.length;
-    this.currentTotal.set(total);
+    this._currentTotal.set(total);
     this._computeNextMultiples(total);
     this._checkForBreak(total);
   }
 
   advanceTurn(): void {
-    this.break.set(false);
-    this.currentTotal.set(0);
+    this._break.set(false);
+    this._currentTotal.set(0);
     this._lastCoinCount = this._numberOfCoinsAdded;
     this._numberOfCoinsAdded = 0;
     this._computeNextMultiples(0);
-    if (this.turn() < this.turnLimit()) {
-      this.turn.update(t => t + 1);
-      this._generateCoreSphere();
+    this._turn.update(t => t + 1);
+    if (this._turn() > this._turnLimit()) {
+      this._gameEnded.set(true);
     } else {
-      this.gameEnded.set(true);
+      this._generateCoreSphere();
     }
   }
 
+  resetGame(): void {
+    this._gameEnded.set(false);
+  }
+
   loadLevel(turns: number, quota: number): void {
-    this.turnLimit.set(turns);
-    this.quotaLimit.set(quota);
-    this.currentScore.set(0);
-    this.turn.set(1);
-    this.break.set(false);
-    this.gameEnded.set(false);
-    this.echo.set(0);
-    this.currentTotal.set(0);
+    this._turnLimit.set(turns);
+    this._quotaLimit.set(quota);
+    this._currentScore.set(0);
+    this._turn.set(1);
+    this._break.set(false);
+    this._gameEnded.set(false);
+    this._echo.set(0);
+    this._currentTotal.set(0);
     this._numberOfCoinsAdded = 0;
     this._lastCoinCount = 0;
     this._generateCoreSphere();
@@ -72,19 +88,19 @@ export class TurnEngine {
   }
 
   private _checkForBreak(total: number): void {
-    if (total > 0 && total % this._coreSphere === 0 && !this.break()) {
-      this.break.set(true);
-      this.coinCounter.set(this._numberOfCoinsAdded);
+    if (total > 0 && total % this._coreSphere === 0 && !this._break()) {
+      this._break.set(true);
+      this._coinCounter.set(this._numberOfCoinsAdded);
       const multiplesFound = total / this._coreSphere;
       this._calculateScore(this._numberOfCoinsAdded, multiplesFound);
       if (this._lastCoinCount > 0 && this._lastCoinCount === this._numberOfCoinsAdded) {
-        this.echo.update(e => e + 1);
+        this._echo.update(e => e + 1);
       }
     }
   }
 
   private _calculateScore(coinsUsed: number, multiplesFound: number): void {
-    this.currentScore.update(s => s + coinsUsed * 10 + multiplesFound * 50);
+    this._currentScore.update(s => s + coinsUsed * 10 + multiplesFound * 50);
   }
 
   private _computeNextMultiples(total: number): void {
@@ -99,6 +115,6 @@ export class TurnEngine {
       }
       current++;
     }
-    this.nextMultiples.set(result);
+    this._nextMultiples.set(result);
   }
 }

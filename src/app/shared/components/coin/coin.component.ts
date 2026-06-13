@@ -24,7 +24,7 @@ export class CoinComponent {
 
   constructor() {
     effect(() => {
-      this.selectedCoin = this._gridEngine.selectedCoins().some(
+      this.selectedCoin = this._gridEngine.selectedCoins$().some(
         (c) => c.id === this.coinId && c.entryCoin === this.entryCoin
       );
     });
