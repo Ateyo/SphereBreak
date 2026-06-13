@@ -3,6 +3,7 @@
 
 export const environment = {
   production: true,
+  debug: false,
   url: 'https://www.tom-gonzalez.com/api/',
   apiKey: 'YOUR_API_KEY_HERE'
 };
