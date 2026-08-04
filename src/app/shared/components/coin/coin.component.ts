@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  Input
+} from '@angular/core';
 
 import { GridEngine } from '../../services/grid-engine.service';
 
@@ -7,7 +13,8 @@ import { GridEngine } from '../../services/grid-engine.service';
   selector: 'app-coin',
   imports: [CommonModule],
   templateUrl: './coin.component.html',
-  styleUrls: ['./coin.component.scss']
+  styleUrls: ['./coin.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CoinComponent {
   private _gridEngine = inject(GridEngine);
@@ -15,15 +22,12 @@ export class CoinComponent {
   @Input() coinId: number = 0;
   @Input() coinValue: number = 0;
   @Input() entryCoin: boolean = false;
-  selectedCoin: boolean = false;
 
-  constructor() {
-    effect(() => {
-      this.selectedCoin = this._gridEngine
-        .selectedCoins$()
-        .some((c) => c.id === this.coinId && c.entryCoin === this.entryCoin);
-    });
-  }
+  selectedCoin = computed(() =>
+    this._gridEngine
+      .selectedCoins$()
+      .some((c) => c.id === this.coinId && c.entryCoin === this.entryCoin)
+  );
 
   coinSelection(): void {
     this._gridEngine.selectCoin(this.coinId);
