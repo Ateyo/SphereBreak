@@ -11,7 +11,7 @@
     [ngClass]="{
       'entry-coin': entryCoin === true,
       'border-coin': entryCoin === false,
-      'selected-coin': selectedCoin === true,
+      'selected-coin': selectedCoin(),
       hidden: coinValue === 0
     }">
     <div class="tails"></div>

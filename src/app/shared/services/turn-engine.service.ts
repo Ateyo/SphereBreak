@@ -1,5 +1,7 @@
 import { Injectable, signal, WritableSignal } from '@angular/core';
 
+import { getRandomIntInclusive } from '../utils/random';
+
 export interface TurnEngineSnapshot {
   turn: number;
   score: number;
@@ -53,10 +55,6 @@ export class TurnEngine {
     return this._coreSphere();
   }
 
-  getRandomIntInclusive(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
   evaluateSelection(values: number[]): void {
     const total = values.reduce((sum, v) => sum + v, 0);
     this._numberOfCoinsAdded = values.length;
@@ -106,7 +104,7 @@ export class TurnEngine {
   }
 
   private _generateCoreSphere(): void {
-    this._coreSphere.set(this.getRandomIntInclusive(1, 9));
+    this._coreSphere.set(getRandomIntInclusive(1, 9));
   }
 
   private _checkForBreak(total: number): void {

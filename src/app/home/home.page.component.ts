@@ -5,6 +5,7 @@ import {
   inject,
   OnDestroy,
   OnInit,
+  signal,
   ViewChild
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,6 +21,7 @@ import { HighscoreService } from '../shared/services/highscore.service';
 import { PlayerService } from '../shared/services/player.service';
 import { TurnEngine } from '../shared/services/turn-engine.service';
 import { TurnHistoryService } from '../shared/services/turn-history.service';
+import { getRandomIntInclusive } from '../shared/utils/random';
 import { GridComponent } from './grid/grid.component';
 import { LossDialogComponent } from './loss-dialog/loss-dialog.component';
 import { WinDialogComponent } from './win-dialog/win-dialog.component';
@@ -56,7 +58,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   coinCounter$ = this._turnEngine.coinCounter$;
   coreSphere$ = this._turnEngine.coreSphere$;
   level = 0;
-  private dialogOpen = false;
+  private dialogOpen = signal(false);
 
   private breakTimeout?: ReturnType<typeof setTimeout>;
   @ViewChild(IonToast) toast: IonToast | undefined;
@@ -83,7 +85,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
-      if (this._turnEngine.gameEnded$() && !this.dialogOpen) {
+      if (this._turnEngine.gameEnded$() && !this.dialogOpen()) {
         this.handleGameEnd();
       }
     });
@@ -134,7 +136,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
   }
 
   async handleGameEnd() {
-    this.dialogOpen = true;
+    this.dialogOpen.set(true);
     const isWin = this.levelQuota$() >= this.quotaLimit$();
 
     if (isWin) {
@@ -169,7 +171,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        this.dialogOpen = false;
+        this.dialogOpen.set(false);
         this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
@@ -181,7 +183,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error closing win dialog:', error);
-        this.dialogOpen = false;
+        this.dialogOpen.set(false);
         this._turnEngine.resetGame();
         this.presentToastError('An error occurred. Please try again.');
       }
@@ -195,7 +197,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        this.dialogOpen = false;
+        this.dialogOpen.set(false);
         this._turnEngine.resetGame();
         if (result === true) {
           this.replay();
@@ -205,7 +207,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Error closing loss dialog:', error);
-        this.dialogOpen = false;
+        this.dialogOpen.set(false);
         this.presentToastError('An error occurred. Please try again.');
       }
     });
@@ -234,7 +236,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       entryCoin: true
     }));
     const borderCoins = Array.from({ length: 12 }, () => ({
-      value: this._turnEngine.getRandomIntInclusive(1, 9),
+      value: getRandomIntInclusive(1, 9),
       entryCoin: false
     }));
     this._gridEngine.makeGrid(entryCoins, borderCoins);
@@ -250,6 +252,6 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this._setupGrid();
     this._turnHistoryService.clear();
     this._lastSelectionLength = 0;
-    this.dialogOpen = false;
+    this.dialogOpen.set(false);
   }
 }

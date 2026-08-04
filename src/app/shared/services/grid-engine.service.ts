@@ -1,6 +1,7 @@
 import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 
 import { Coin, CoinArray } from '../interfaces';
+import { getRandomIntInclusive } from '../utils/random';
 import { TurnEngine } from './turn-engine.service';
 
 export interface GridEngineSnapshot {
@@ -141,7 +142,7 @@ export class GridEngine {
               ...c,
               coin: {
                 ...c.coin,
-                value: this._turnEngine.getRandomIntInclusive(1, 9)
+                value: getRandomIntInclusive(1, 9)
               }
             };
           }
